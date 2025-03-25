@@ -2,10 +2,10 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    @include('includes.head')
     @isset($importedLinks)
         {{ $importedLinks }}
     @endisset
+    @include('includes.head')
 </head>
 
 <body>

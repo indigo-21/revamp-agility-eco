@@ -70,42 +70,42 @@
                             </a>
                         </li>
                         <li class=" ">
-                            <a href="" target="_blank">
+                            <a href="">
                                 <span class="pcoded-mtext">User Configuration</span>
                             </a>
                         </li>
                         <li class=" ">
-                            <a href="" target="_blank">
+                            <a href="">
                                 <span class="pcoded-mtext">User Profile Configuration</span>
                             </a>
                         </li>
                         <li class=" ">
-                            <a href="" target="_blank">
+                            <a href="">
                                 <span class="pcoded-mtext">Measure Configuration</span>
                             </a>
                         </li>
                         <li class=" ">
-                            <a href="" target="_blank">
+                            <a href="{{ route('property-inspector.index') }}">
                                 <span class="pcoded-mtext">Property Inspector Configuration</span>
                             </a>
                         </li>
                         <li class=" ">
-                            <a href="" target="_blank">
+                            <a href="">
                                 <span class="pcoded-mtext">Scheme Configuration</span>
                             </a>
                         </li>
                         <li class=" ">
-                            <a href="" target="_blank">
+                            <a href="">
                                 <span class="pcoded-mtext">Survey Question Set</span>
                             </a>
                         </li>
                         <li class=" ">
-                            <a href="" target="_blank">
+                            <a href="">
                                 <span class="pcoded-mtext">Installer Configuration</span>
                             </a>
                         </li>
                         <li class=" ">
-                            <a href="" target="_blank">
+                            <a href="">
                                 <span class="pcoded-mtext">Template Configuration</span>
                             </a>
                         </li>
