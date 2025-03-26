@@ -1,1 +1,1 @@
-$('#simpletable').DataTable();
+$('#simpletable').DataTable(); // Initialize DataTable if it exists
