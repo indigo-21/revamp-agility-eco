@@ -2,6 +2,10 @@
     <x-slot name="importedLinks">
         <link rel="stylesheet" type="text/css" href="{{ asset('plugins/jquery.steps/demo/css/jquery.steps.css') }}">
         <link rel="stylesheet" href="{{ asset('plugins/select2/dist/css/select2.min.css') }}" />
+        <!-- jquery file upload Frame work -->
+        <link href="{{ asset('dist/pages/jquery.filer/css/jquery.filer.css') }}" type="text/css" rel="stylesheet" />
+        <link href="{{ asset('dist/pages/jquery.filer/css/themes/jquery.filer-dragdropbox-theme.css') }}" type="text/css"
+            rel="stylesheet" />
     </x-slot>
 
     <x-slot name="content">
@@ -44,64 +48,16 @@
                                             <form class="wizard-form" id="example-advanced-form" action="#">
                                                 <h3> Registration </h3>
                                                 @include('pages.property-inspector.stepper.job-skills')
-                                                <h3> General information </h3>
-                                                <fieldset>
-                                                    <div class="form-group row">
-                                                        <div class="col-md-4 col-lg-2">
-                                                            <label for="name-2" class="block">First name
-                                                                *</label>
-                                                        </div>
-                                                        <div class="col-md-8 col-lg-10">
-                                                            <input id="name-2" name="name" type="text"
-                                                                class="form-control required">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row">
-                                                        <div class="col-md-4 col-lg-2">
-                                                            <label for="surname-2" class="block">Last name
-                                                                *</label>
-                                                        </div>
-                                                        <div class="col-md-8 col-lg-10">
-                                                            <input id="surname-2" name="surname" type="text"
-                                                                class="form-control required">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row">
-                                                        <div class="col-md-4 col-lg-2">
-                                                            <label for="phone-2" class="block">Phone
-                                                                #</label>
-                                                        </div>
-                                                        <div class="col-md-8 col-lg-10">
-                                                            <input id="phone-2" name="phone" type="number"
-                                                                class="form-control required phone">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row">
-                                                        <div class="col-md-4 col-lg-2">
-                                                            <label for="date" class="block">Date Of
-                                                                Birth</label>
-                                                        </div>
-                                                        <div class="col-md-8 col-lg-10">
-                                                            <input id="date" name="Date Of Birth" type="text"
-                                                                class="form-control required date-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row">
-                                                        <div class="col-md-4 col-lg-2">
-                                                            Select Country</div>
-                                                        <div class="col-md-8 col-lg-10">
-                                                            <select class="form-control required">
-                                                                <option>Select State
-                                                                </option>
-                                                                <option>Gujarat</option>
-                                                                <option>Kerala</option>
-                                                                <option>Manipur</option>
-                                                                <option>Tripura</option>
-                                                                <option>Sikkim</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </fieldset>
+                                                <h3> Photo & ID </h3>
+                                                @include('pages.property-inspector.stepper.photo-and-id')
+                                                <h3> Name & Address </h3>
+                                                @include('pages.property-inspector.stepper.name-and-address')
+                                                <h3> Commercials </h3>
+                                                @include('pages.property-inspector.stepper.commercials')
+                                                <h3> Measures </h3>
+                                                @include('pages.property-inspector.stepper.measures')
+                                                <h3> Qualifications </h3>
+                                                @include('pages.property-inspector.stepper.qualifications')
                                             </form>
                                         </section>
                                     </div>
@@ -120,6 +76,8 @@
         <script src="{{ asset('plugins/jquery.cookie/jquery.cookie.js') }}"></script>
         <script src="{{ asset('plugins/jquery.steps/build/jquery.steps.js') }}"></script>
         <script src="{{ asset('plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
+        <!-- jquery file upload js -->
+        <script src="{{ asset('dist/pages/jquery.filer/js/jquery.filer.min.js') }}"></script>
         <!-- Validation js -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>

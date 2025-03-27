@@ -7,6 +7,8 @@ $(document).ready(function () {
         headerTag: "h3",
         bodyTag: "fieldset",
         transitionEffect: "slideLeft",
+        autoAdjustHeight: true,
+        stepsOrientation: "vertical",
         onStepChanging: function (event, currentIndex, newIndex) {
 
             // Allways allow previous action even if the current form is not valid!
@@ -26,17 +28,18 @@ $(document).ready(function () {
             form.validate().settings.ignore = ":disabled,:hidden";
             return form.valid();
         },
-        onStepChanged: function (event, currentIndex, priorIndex) {
+        // onStepChanged: function (event, currentIndex, priorIndex) {
 
-            // Used to skip the "Warning" step if the user is old enough.
-            if (currentIndex === 2 && Number($("#age-2").val()) >= 18) {
-                form.steps("next");
-            }
-            // Used to skip the "Warning" step if the user is old enough and wants to the previous step.
-            if (currentIndex === 2 && priorIndex === 3) {
-                form.steps("previous");
-            }
-        },
+        //     // Used to skip the "Warning" step if the user is old enough.
+        //     if (currentIndex === 2 && Number($("#age-2").val()) >= 18) {
+        //         form.steps("next");
+        //     }
+        //     // Used to skip the "Warning" step if the user is old enough and wants to the previous step.
+        //     // if (currentIndex === 2 && priorIndex === 4) {
+        //     //     console.log('test');
+        //     //     form.steps("previous");
+        //     // }
+        // },     
         onFinishing: function (event, currentIndex) {
 
             form.validate().settings.ignore = ":disabled";
@@ -61,4 +64,13 @@ $(document).ready(function () {
     });
 
     $(".js-example-basic-single").select2();
+
+    $('.filer_input').filer({
+        limit: 3,
+        maxSize: 3,
+        extensions: ['jpg', 'jpeg', 'png', 'gif', 'psd'],
+        changeInput: true,
+        showThumbs: true,
+        addMore: false
+    });
 });
