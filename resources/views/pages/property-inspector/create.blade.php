@@ -1,11 +1,12 @@
 <x-app-layout>
     <x-slot name="importedLinks">
-        <link rel="stylesheet" type="text/css" href="{{ asset('plugins/jquery.steps/demo/css/jquery.steps.css') }}">
-        <link rel="stylesheet" href="{{ asset('plugins/select2/dist/css/select2.min.css') }}" />
+        @include('includes.datatable-head')
         <!-- jquery file upload Frame work -->
         <link href="{{ asset('dist/pages/jquery.filer/css/jquery.filer.css') }}" type="text/css" rel="stylesheet" />
         <link href="{{ asset('dist/pages/jquery.filer/css/themes/jquery.filer-dragdropbox-theme.css') }}" type="text/css"
             rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('plugins/jquery.steps/demo/css/jquery.steps.css') }}">
+        <link rel="stylesheet" href="{{ asset('plugins/select2/dist/css/select2.min.css') }}" />
     </x-slot>
 
     <x-slot name="content">
@@ -72,17 +73,20 @@
     </x-slot>
 
     <x-slot name="pageScripts">
-        <!--Forms - Wizard js-->
-        <script src="{{ asset('plugins/jquery.cookie/jquery.cookie.js') }}"></script>
-        <script src="{{ asset('plugins/jquery.steps/build/jquery.steps.js') }}"></script>
-        <script src="{{ asset('plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
         <!-- jquery file upload js -->
         <script src="{{ asset('dist/pages/jquery.filer/js/jquery.filer.min.js') }}"></script>
+        {{-- <script src="{{asset('dist/pages/filer/custom-filer.js')}}" type="text/javascript"></script>
+        <script src="{{asset('dist/pages/filer/jquery.fileuploads.init.js')}}" type="text/javascript"></script> --}}
         <!-- Validation js -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
         <script src="{{ asset('dist/pages/form-validation/validate.js') }}"></script>
         <script src="{{ asset('plugins/select2/dist/js/select2.full.min.js') }}"></script>
+        @include('includes.datatable-script')
+        <!--Forms - Wizard js-->
+        <script src="{{ asset('plugins/jquery.cookie/jquery.cookie.js') }}"></script>
+        <script src="{{ asset('plugins/jquery.steps/build/jquery.steps.js') }}"></script>
+        <script src="{{ asset('plugins/jquery-validation/dist/jquery.validate.js') }}"></script>
         <!-- Custom js -->
         <script src="{{ asset('assets/js/property-inspector-stepper.js') }}"></script>
     </x-slot>

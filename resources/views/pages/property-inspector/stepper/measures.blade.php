@@ -1,57 +1,49 @@
 <fieldset>
-    <div class="form-group row">
-        <div class="col-md-4 col-lg-2">
-            <label for="name-2" class="block">First name
-                *</label>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="measureCat" class="block">Measure CAT</label>
+                <select class="js-example-basic-single col-sm-12" id="measureCatSelect" name="measure_cat">
+                    <option value="AL">Alabama</option>
+                    <option value="WY">Wyoming</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="measureFeeValue" class="block">Measure Fee Value</label>
+                <input id="measureFeeValue" name="measure_fee_value" type="number" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="measureFeeCurrency" class="block">Measure Fee Currency</label>
+                <input id="measureFeeCurrency" name="measure_fee_currency" type="text" class="form-control"
+                    value="GBP">
+            </div>
+            <div class="form-group">
+                <label for="measureExpiryDate" class="block">Measure Expiry Date</label>
+                <input id="measureExpiryDate" name="measure_expiry_date" class="form-control" type="date" />
+            </div>
+            <div class="form-group">
+                <label for="measureCertificate" class="block">Measure Certificate</label>
+                <input type="file" name="measure_certificate" id="measureCertificate">
+            </div>
+            <button class="btn btn-primary btn-small" id="measureDataAdd" type="button">Add</button>
         </div>
-        <div class="col-md-8 col-lg-10">
-            <input id="name-2" name="name" type="text"
-                class="form-control ">
-        </div>
-    </div>
-    <div class="form-group row">
-        <div class="col-md-4 col-lg-2">
-            <label for="surname-2" class="block">Last name
-                *</label>
-        </div>
-        <div class="col-md-8 col-lg-10">
-            <input id="surname-2" name="surname" type="text"
-                class="form-control ">
-        </div>
-    </div>
-    <div class="form-group row">
-        <div class="col-md-4 col-lg-2">
-            <label for="phone-2" class="block">Phone
-                #</label>
-        </div>
-        <div class="col-md-8 col-lg-10">
-            <input id="phone-2" name="phone" type="number"
-                class="form-control  phone">
-        </div>
-    </div>
-    <div class="form-group row">
-        <div class="col-md-4 col-lg-2">
-            <label for="date" class="block">Date Of
-                Birth</label>
-        </div>
-        <div class="col-md-8 col-lg-10">
-            <input id="date" name="Date Of Birth" type="text"
-                class="form-control  date-control">
-        </div>
-    </div>
-    <div class="form-group row">
-        <div class="col-md-4 col-lg-2">
-            Select Country</div>
-        <div class="col-md-8 col-lg-10">
-            <select class="form-control ">
-                <option>Select State
-                </option>
-                <option>Gujarat</option>
-                <option>Kerala</option>
-                <option>Manipur</option>
-                <option>Tripura</option>
-                <option>Sikkim</option>
-            </select>
+        <div class="col-md-8">
+            <div class="dt-responsive table-responsive">
+                <table id="measureTable" class="table table-striped table-bordered nowrap">
+                    <thead>
+                        <tr>
+                            <th>Measure Cat</th>
+                            <th>Measure Fee Value</th>
+                            <th>Measure Fee Currency</th>
+                            <th>Measure Expiry Date</th>
+                            <th>Measure Certificate</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </fieldset>

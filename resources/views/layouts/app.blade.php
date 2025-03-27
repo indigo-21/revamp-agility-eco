@@ -2,9 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    @isset($importedLinks)
-        {{ $importedLinks }}
-    @endisset
+    
     @include('includes.head')
 </head>
 
@@ -69,9 +67,6 @@
         </div>
     </div>
     @include('includes.footer')
-    @isset($pageScripts)
-        {{ $pageScripts }}
-    @endisset
 </body>
 
 </html>
