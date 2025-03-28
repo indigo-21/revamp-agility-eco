@@ -1,1 +1,0 @@
-$('#simpletable').DataTable(); // Initialize DataTable if it exists
