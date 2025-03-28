@@ -1,8 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PropertyInspectorController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PropertyInspectorController;
+use App\Http\Controllers\ClientConfigurationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,6 +19,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('property-inspector', PropertyInspectorController::class);
+    Route::resource('client-configuration', ClientConfigurationController::class);
+    
+
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
