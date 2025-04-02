@@ -4,14 +4,8 @@
     @include('includes.datatables-links')
     <link rel="stylesheet" href="{{asset('plugins/select2/css/select2.min.css')}}">
     <link rel="stylesheet" href="{{asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
-    <style>
-        .step {
-            display: none;
-        }
-        .active-step {
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" href="{{asset('plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css')}}">
+    
 @endsection
 
 @section('content')
@@ -104,5 +98,6 @@
     @include('includes.datatables-scripts')
     <!-- Select2 -->
     <script src="{{asset('plugins/select2/js/select2.full.min.js')}}"></script>
+    <script src="{{asset('plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js')}}"></script>
     <script src="{{ asset('assets/js/client-configuration.js') }}"></script>
 @endsection

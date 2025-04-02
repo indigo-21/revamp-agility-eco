@@ -3,11 +3,25 @@
         <h3 class="card-title">Installers</h3>
     </div>
     <div class="card-body">
-        <h4>Step 5</h4>
-        <p>Enter your personal details.</p>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label>Multiple</label>
+                    <select class="duallistbox" multiple="multiple">
+                        <option selected>Alabama</option>
+                        <option>Alaska</option>
+                        <option>California</option>
+                        <option>Delaware</option>
+                        <option>Tennessee</option>
+                        <option>Texas</option>
+                        <option>Washington</option>
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card-footer">
-        <button class="btn btn-secondary prev">Previous</button>
-        <button class="btn btn-primary next">Next</button>
+    <div class="card-footer d-flex justify-content-end align-items-center">
+        <button class="btn btn-secondary prev w-25 mx-2">Previous</button>
+        <button class="btn btn-primary next w-25 mx-2">Next</button>
     </div>
 </div>
