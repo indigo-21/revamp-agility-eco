@@ -31,6 +31,7 @@ return new class extends Migration {
             $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('organization')->nullable();
+            $table->string('photo')->nullable();
             $table->string('mobile');
             $table->string('landline')->nullable();
             $table->integer('otp')->nullable();

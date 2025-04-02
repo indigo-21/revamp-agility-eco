@@ -19,7 +19,7 @@ class PropertyInspectorController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.property-inspector.form');
     }
 
     /**

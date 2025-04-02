@@ -31,10 +31,19 @@
                 <div class="col-md-12">
                     <div class="card card-default">
                         <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                List of Property Inspector
-                            </h3>
+                            <div class="w-100 d-flex justify-content-between align-items-center">
+                                <div class="left">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        List of Property Inspector
+                                    </h3>
+                                </div>
+                                <div class="right">
+                                    <a type="button" class="btn btn-block btn-outline-primary" href="{{route('property-inspector.create')}}">
+                                        <i class="fa fa-plus-circle" aria-hidden="true"></i> Add Property Inspector
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
