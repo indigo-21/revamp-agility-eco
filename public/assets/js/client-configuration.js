@@ -32,19 +32,22 @@ $(function () {
         
     }
 
-    $(".next").click(function () {
-        if (stepIndex < totalSteps - 1) {
-            stepIndex++;
-            updateStepper();
-        }
-    });
+        $(".next").click(function () {
+            let formID      = $(this).attr("formid");
+            let errorCount  = validateForm(formID);
+            if (errorCount < 1 &&(stepIndex < totalSteps - 1)) {
+                stepIndex++;
+                updateStepper();
+            }
+        });
 
-    $(".prev").click(function () {
-        if (stepIndex > 0) {
-            stepIndex--;
-            updateStepper();
-        }
-    });
+        $(".prev").click(function () {
+            if (stepIndex > 0) {
+                stepIndex--;
+                updateStepper();
+            }
+        });
+
     // END STEPPER SCRIPT
 
     //Initialize Select2 Elements
@@ -53,7 +56,6 @@ $(function () {
     //Bootstrap Duallistbox
     $('.duallistbox').bootstrapDualListbox()
 
-
-
-
 });
+
+

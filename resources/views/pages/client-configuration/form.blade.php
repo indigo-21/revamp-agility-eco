@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{{asset('plugins/select2/css/select2.min.css')}}">
     <link rel="stylesheet" href="{{asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{asset('plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css')}}">
-    
+
 @endsection
 
 @section('content')
@@ -100,4 +100,5 @@
     <script src="{{asset('plugins/select2/js/select2.full.min.js')}}"></script>
     <script src="{{asset('plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js')}}"></script>
     <script src="{{ asset('assets/js/client-configuration.js') }}"></script>
+    <script src="{{ asset('assets/js/global/validation.js') }}"></script>
 @endsection
