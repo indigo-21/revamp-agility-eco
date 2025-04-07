@@ -24,21 +24,18 @@
 
                 <x-date name="id_revision" label="ID Badge Rev" />
 
-                <div class="form-group">
-                    <label>ID Return</label>
-                    <select class="form-control select2" style="width: 100%;" name="id_location">
-                        <option selected="selected" disabled>-Select Location-</option>
-                        <option>Alaska</option>
-                    </select>
-                </div>
+                <x-select label="ID Badge Location" name="id_location" :multiple="false">
+                    <option value="With Property Inspector">With Property Inspector</option>
+                    <option value="At {{ env('EMPLOYER') }}">At {{ env('EMPLOYER') }}</option>
+                </x-select>
 
-                <x-date name="id_returned" label="Date ID Badge Returned" />
+                <x-date name="id_return" label="Date ID Badge Returned" />
 
             </div>
         </div>
     </div>
     <div class="card-footer d-flex justify-content-end align-items-center">
-        <button class="btn btn-secondary w-25 mx-2 prev">Previous</button>
-        <button class="btn btn-primary next w-25 mx-2">Next</button>
+        <button class="btn btn-secondary w-25 mx-2 prev" type="button">Previous</button>
+        <button class="btn btn-primary next w-25 mx-2" type="button">Next</button>
     </div>
 </div>

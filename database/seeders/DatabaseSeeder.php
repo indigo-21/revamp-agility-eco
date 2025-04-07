@@ -23,11 +23,12 @@ class DatabaseSeeder extends Seeder
             // SurveyQuestionSetSeeder::class,
             // SchemeSeeder::class,
             // InstallerSeeder::class,
-            // MeasureSeeder::class,
+            MeasureSeeder::class,
             JobStatusSeeder::class,
             AccountLevelSeeder::class,
             UserTypeSeeder::class,
             UserSeeder::class,
+            OutwardPostcodeSeeder::class,
         ]);
         // User::factory(10)->create();
 

@@ -1,0 +1,71 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\PropertyInspector;
+use App\Models\PropertyInspectorPostcode;
+
+class PropertyInspectorService
+{
+    public function store($request, $user_id)
+    {
+        $property_inspector = new PropertyInspector();
+
+        $id_badge = (new StoreImage)->store($request, 'id_badge', 'id_badge');
+
+        $property_inspector->user_id = $user_id;
+        $property_inspector->status = $request->status;
+        $property_inspector->can_book_jobs = $request->can_book_jobs;
+        $property_inspector->qai = $request->qai;
+        $property_inspector->qai_rating = $request->qai_rating;
+        $property_inspector->assessor = $request->assessor;
+        $property_inspector->assessor_rating = $request->assessor_rating;
+        $property_inspector->surveyor = $request->surveyor;
+        $property_inspector->surveyor_rating = $request->surveyor_rating;
+        $property_inspector->pi_employer = $request->pi_employer;
+        $property_inspector->photo_expiry = $request->photo_expiry;
+        $property_inspector->id_badge = $id_badge;
+        $property_inspector->id_issued = $request->id_issued;
+        $property_inspector->id_expiry = $request->id_expiry;
+        $property_inspector->id_revision = $request->id_revision;
+        $property_inspector->id_location = $request->id_location;
+        $property_inspector->id_return = $request->id_return;
+        $property_inspector->address1 = $request->address1;
+        $property_inspector->address2 = $request->address2;
+        $property_inspector->address3 = $request->address3;
+        $property_inspector->city = $request->city;
+        $property_inspector->county = $request->county;
+        $property_inspector->postcode = $request->postcode;
+        $property_inspector->charging_scheme_id = $request->charging_scheme_id;
+        $property_inspector->property_visit_fee = $request->property_visit_fee;
+        $property_inspector->property_fee_currency = $request->property_fee_currency;
+        $property_inspector->payment_terms = $request->payment_terms;
+        $property_inspector->vat = $request->vat;
+        $property_inspector->vat_no = $request->vat_no;
+        $property_inspector->registered_id_number = $request->registered_id_number;
+        $property_inspector->audit_jobs = $request->audit_jobs;
+        $property_inspector->hours_spent = $request->hours_spent;
+        $property_inspector->work_sat = $request->work_sat;
+        $property_inspector->work_sun = $request->work_sun;
+
+
+        // Save the data to the database
+        $property_inspector->save();
+
+        self::storePIPostcode($property_inspector->id, $request);
+
+        return $property_inspector->id;
+    }
+
+    public function storePIPostcode($pi_id, $request)
+    {
+        foreach ($request->outward_postcode_id as $postcode) {
+            $property_inspector_postcode = new PropertyInspectorPostcode();
+
+            $property_inspector_postcode->outward_postcode_id = $postcode;
+            $property_inspector_postcode->property_inspector_id = $pi_id;
+
+            $property_inspector_postcode->save();
+        }
+    }
+}

@@ -27,8 +27,8 @@ return new class extends Migration {
             $table->dateTime('first_visit_by');
             $table->dateTime('rework_deadline')->nullable();
             $table->string('invoice_status')->nullable();
-            // $table->foreignId('property_inspector_id')->nullable()->constrained();
-            $table->integer('property_inspector_id')->nullable();
+            $table->foreignId('property_inspector_id')->nullable()->constrained();
+            // $table->integer('property_inspector_id')->nullable();
             $table->dateTime('schedule_date')->nullable();
             $table->dateTime('close_date')->nullable();
             $table->integer('duration')->nullable();

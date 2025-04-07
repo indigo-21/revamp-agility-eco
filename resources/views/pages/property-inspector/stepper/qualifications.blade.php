@@ -18,7 +18,7 @@
 
                 <x-date name="qualification_issue" label="Qualification Issue" />
                 
-                <button type="button" class="btn btn-block btn-outline-primary mt-5" id="addMeasures">
+                <button type="button" class="btn btn-block btn-outline-primary mt-5" id="addQualifications">
                     <i class="fa fa-plus-circle" aria-hidden="true"></i> Add to table
                 </button>
             </div>
@@ -29,30 +29,22 @@
                 <table id="qualificationsTable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>Rendering engine</th>
-                            <th>Browser</th>
-                            <th>Platform(s)</th>
-                            <th>Engine version</th>
-                            <th>CSS grade</th>
+                            <th>Name</th>
+                            <th>Issue Date</th>
+                            <th>Expiry Date</th>
+                            <th>Certificate</th>
+                            <th>Issue</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Trident</td>
-                            <td>Internet
-                                Explorer 4.0
-                            </td>
-                            <td>Win 95+</td>
-                            <td> 4</td>
-                            <td>X</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
     <div class="card-footer d-flex justify-content-end align-items-center">
-        <button class="btn btn-secondary w-25 mx-2 prev">Previous</button>
-        <button class="btn btn-success w-25 mx-2">Finish</button>
+        <button class="btn btn-secondary w-25 mx-2 prev" type="button">Previous</button>
+        <button class="btn btn-success w-25 mx-2" type="button" id="submitButton">Submit</button>
     </div>
 </div>

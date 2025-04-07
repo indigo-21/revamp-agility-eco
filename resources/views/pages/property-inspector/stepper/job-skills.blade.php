@@ -10,46 +10,46 @@
 
                         <x-radio-layout label="Status">
                             <div class="col-md-6">
-                                <x-radio label="Active" name="status" id="active" :checked="true" />
+                                <x-radio label="Active" name="status" id="active" :checked="true" :value="1"/>
                             </div>
                             <div class="col-md-6">
-                                <x-radio label="Inactive" name="inactive" id="audit_no" />
+                                <x-radio label="Inactive" name="status" id="inactive" :value="0"/>
                             </div>
                         </x-radio-layout>
 
                         <x-radio-layout label="Does Property Inspector book their own jobs?">
                             <div class="col-md-6">
-                                <x-radio label="Yes" name="can_book_jobs" id="cbj_yes" :checked="true" />
+                                <x-radio label="Yes" name="can_book_jobs" id="cbj_yes" :checked="true" :value="1"/>
                             </div>
                             <div class="col-md-6">
-                                <x-radio label="No" name="can_book_jobs" id="cbj_no" />
+                                <x-radio label="No" name="can_book_jobs" id="cbj_no" :value="0"/>
                             </div>
                         </x-radio-layout>
 
                         <x-radio-layout label="Can do QAI Jobs">
                             <div class="col-md-6">
-                                <x-radio label="Yes" name="qai" id="qai_yes" :checked="true" />
+                                <x-radio label="Yes" name="qai" id="qai_yes" :checked="true" :value="1"/>
                             </div>
                             <div class="col-md-6">
-                                <x-radio label="No" name="qai" id="qai_no" />
+                                <x-radio label="No" name="qai" id="qai_no" :value="0"/>
                             </div>
                         </x-radio-layout>
 
                         <x-radio-layout label="Can do Assessor Jobs">
                             <div class="col-md-6">
-                                <x-radio label="Yes" name="assessor" id="assessor_yes" :checked="true" />
+                                <x-radio label="Yes" name="assessor" id="assessor_yes" :checked="true" :value="1"/>
                             </div>
                             <div class="col-md-6">
-                                <x-radio label="No" name="assessor" id="assessor_no" />
+                                <x-radio label="No" name="assessor" id="assessor_no" :value="0"/>
                             </div>
                         </x-radio-layout>
 
                         <x-radio-layout label="Can do Surveyor Jobs">
                             <div class="col-md-6">
-                                <x-radio label="Yes" name="surveyor" id="surveyor_yes" :checked="true" />
+                                <x-radio label="Yes" name="surveyor" id="surveyor_yes" :checked="true" :value="1"/>
                             </div>
                             <div class="col-md-6">
-                                <x-radio label="No" name="surveyor" id="surveyor_no" />
+                                <x-radio label="No" name="surveyor" id="surveyor_no" :value="0"/>
                             </div>
                         </x-radio-layout>
 
@@ -59,27 +59,27 @@
             <div class="col-sm-12 col-lg-6">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="form-group">
-                            <label>Employment Basis</label>
-                            <select class="form-control select2" style="width: 100%;" name="employment_status_id">
-                                <option selected="selected" disabled>- Employment Basis -</option>
-                                <option>Alaska</option>
-                            </select>
-                        </div>
+
+                        <x-select label="Employment Basis" name="account_level_id" :multiple="false">
+                            <option selected="selected" disabled value="">- Employement Basis -</option>
+                            @foreach ($employment_basis as $employment)
+                                <option value="{{ $employment->id }}">{{ $employment->name }}</option>
+                            @endforeach
+                        </x-select>
 
                         <x-input name="pi_employer" label="Employer" value="{{ env('EMPLOYER') }}" />
 
-                        <x-input name="qai_rating" label="QAI Rating" />
+                        <x-input name="qai_rating" label="QAI Rating" type="number"/>
 
-                        <x-input name="assessor_rating" label="Assessor Rating" />
+                        <x-input name="assessor_rating" label="Assessor Rating" type="number"/>
 
-                        <x-input name="surveyor_rating" label="Surveyor Rating" />
+                        <x-input name="surveyor_rating" label="Surveyor Rating" type="number"/>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="card-footer d-flex justify-content-end align-items-center">
-        <button class="btn btn-primary next w-25 mx-2">Next</button>
+        <button class="btn btn-primary next w-25 mx-2" type="button">Next</button>
     </div>
 </div>

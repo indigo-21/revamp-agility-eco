@@ -4,7 +4,7 @@
     <label>{{ $label }}</label>
     <div class="input-group">
         <div class="custom-file">
-            <input type="file" class="custom-file-input" id="{{ $name }}">
+            <input type="file" class="custom-file-input" id="{{ $name }}" name="{{ $name }}">
             <label class="custom-file-label" for="{{ $name }}">Choose file</label>
         </div>
         <div class="input-group-append">

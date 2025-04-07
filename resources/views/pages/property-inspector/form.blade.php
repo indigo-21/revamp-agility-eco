@@ -49,6 +49,9 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12">
+                                    <div id="formAlert" class="alert d-none" role="alert"></div>
+                                </div>
+                                <div class="col-12">
                                     <!-- Progress Bar -->
                                     <div class="progress w-100 mb-4">
                                         <div id="progress-bar" class="progress-bar bg-primary" style="width: 14%;">Step 1
@@ -83,12 +86,14 @@
                                 </div>
 
                                 <div class="col-sm-12 col-lg-10">
-                                    @include('pages.property-inspector.stepper.job-skills')
-                                    @include('pages.property-inspector.stepper.photo-and-id')
-                                    @include('pages.property-inspector.stepper.name-and-address')
-                                    @include('pages.property-inspector.stepper.commercial')
-                                    @include('pages.property-inspector.stepper.measures')
-                                    @include('pages.property-inspector.stepper.qualifications')
+                                    <form id="propertyInpectorForm" action="{{ route('property-inspector.store') }}">
+                                        @include('pages.property-inspector.stepper.job-skills')
+                                        @include('pages.property-inspector.stepper.photo-and-id')
+                                        @include('pages.property-inspector.stepper.name-and-address')
+                                        @include('pages.property-inspector.stepper.commercial')
+                                        @include('pages.property-inspector.stepper.measures')
+                                        @include('pages.property-inspector.stepper.qualifications')
+                                    </form>
                                 </div>
                             </div>
                         </div>

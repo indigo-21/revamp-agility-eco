@@ -15,12 +15,13 @@ class AccountLevelSeeder extends Seeder
     {
         $values = [
             'Admin',
+            'Agent',
             'User',
             'Client',
             'Installer',
             'Firm Property Inspector',
-            'Employed',
-            'Freelance',
+            'Employed Property Inspector',
+            'Freelance Property Inspector',
 
         ];
 

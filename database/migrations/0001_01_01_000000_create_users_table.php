@@ -30,7 +30,7 @@ return new class extends Migration {
             $table->string('lastname');
             $table->string('username')->unique();
             $table->string('email')->unique();
-            $table->string('organization')->nullable();
+            $table->string('organisation')->nullable();
             $table->string('photo')->nullable();
             $table->string('mobile');
             $table->string('landline')->nullable();
