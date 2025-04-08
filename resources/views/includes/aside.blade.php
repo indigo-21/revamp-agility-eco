@@ -152,9 +152,9 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./index3.html" class="nav-link">
+                <a href=" {{ route('survey-question-set.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Survey Question Configuration</p>
+                  <p>Survey Question Set</p>
                 </a>
               </li>
               <li class="nav-item">

@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PropertyInspectorController;
 use App\Http\Controllers\ClientConfigurationController;
+use App\Http\Controllers\SurveyQuestionSetController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -20,6 +21,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('property-inspector', PropertyInspectorController::class);
     Route::resource('client-configuration', ClientConfigurationController::class);
+    Route::resource('survey-question-set', SurveyQuestionSetController::class);
+
     
 
 });
