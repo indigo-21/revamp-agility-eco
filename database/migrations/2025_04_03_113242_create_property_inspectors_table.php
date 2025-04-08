@@ -45,7 +45,7 @@ return new class extends Migration
             $table->string('vat_no')->nullable();
             $table->string('registered_id_number')->nullable();
             $table->boolean('audit_jobs')->default(false);
-            $table->decimal('hours_spent', 8, 2)->nullable();
+            $table->integer('hours_spent')->nullable();
             $table->boolean('work_sat')->default(false);
             $table->boolean('work_sun')->default(false);
             $table->timestamps(); // created_at and updated_at

@@ -14,7 +14,7 @@
 
                 </x-select>
 
-                <x-input name="measure_fee_value" label="Measure Fee Value" type="number"/>
+                <x-input name="measure_fee_value" label="Measure Fee Value" type="number" />
 
                 <x-input name="measure_fee_currency" label="Measure Fee Currency" value="GBP" :disabled="true" />
             </div>
@@ -44,6 +44,23 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @if (isset($property_inspector) && $property_inspector->propertyInspectorMeasures)
+                            @foreach ($property_inspector->propertyInspectorMeasures as $pi_measure)
+                                <tr>
+                                    <td>{{ $pi_measure->measure->measure_cat }}</td>
+                                    <td>{{ $pi_measure->fee_value }}</td>
+                                    <td>{{ $pi_measure->fee_currency }}</td>
+                                    <td>{{ $pi_measure->expiry }}</td>
+                                    <td>
+                                        <img src="{{ asset("storage/measure_certificate/$pi_measure->cert") }}"
+                                            width="auto" height="150" />
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm deleteRow">Delete</button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>

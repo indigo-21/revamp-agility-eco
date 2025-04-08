@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('property_inspector_qualifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('property_inspector_id')->contrained();
+            $table->foreignId('property_inspector_id')->constrained();
             $table->string('name')->nullable();
             $table->date('issue_date')->nullable();
             $table->date('expiry_date')->nullable();

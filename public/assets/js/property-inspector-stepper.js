@@ -45,16 +45,27 @@ $(function () {
         let fileInput = $('input[name="measure_certificate"]')[0];
         let file = fileInput.files[0];
         let fileName = file ? file.name : 'No File';
-        let imageTag = file ? `<img src="${URL.createObjectURL(file)}" width="50" height="50">` : 'No File';
+        let imageTag = file ? `<img src="${URL.createObjectURL(file)}" width="auto" height="150">` : 'No File';
+
+        // Create a new file input element and clone the file
+        let clonedFileInput = `<input type="file" class="hidden-file-name-${measureCat}" style="display:none;">`;
 
         measuresTable.row.add([
             measureCat,
             feeValue,
             feeCurrency,
             expiryDate,
-            imageTag + `<input type="hidden" class="hidden-file-name" value="${fileName}">`, // Display image but store filename
+            imageTag + clonedFileInput, // Add the cloned file input
             '<button class="btn btn-danger btn-sm deleteRow">Delete</button>'
         ]).draw();
+
+        // Assign the file to the cloned input
+        let newFileInput = $(`.hidden-file-name-${measureCat}`).last()[0];
+        if (file && newFileInput) {
+            let dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            newFileInput.files = dataTransfer.files;
+        }
 
         // Clear input fields
         $('select[name="measure_id"]').val('').trigger('change');
@@ -70,20 +81,32 @@ $(function () {
         let qualificationName = $('input[name="qualification_name"]').val();
         let issueDate = $('input[name="qualification_issue_date"]').val();
         let expiryDate = $('input[name="qualification_expiry_date"]').val();
+        let issue = $('input[name="qualification_issue"]').val();
+
         let fileInput = $('input[name="qualification_certificate"]')[0];
         let file = fileInput.files[0];
         let fileName = file ? file.name : 'No File';
-        let issue = $('input[name="qualification_issue"]').val();
-        let imageTag = file ? `<img src="${URL.createObjectURL(file)}" width="50" height="50">` : 'No File';
+        let imageTag = file ? `<img src="${URL.createObjectURL(file)}" width="auto" height="150">` : 'No File';
+
+        // Create a new file input element and clone the file
+        let clonedFileInput = `<input type="file" class="hidden-file-name-${issueDate}" style="display:none;">`;
 
         qualificationsTable.row.add([
             qualificationName,
             issueDate,
             expiryDate,
-            imageTag + `<input type="hidden" class="hidden-file-name" value="${fileName}">`, // Display image but store filename
+            imageTag + clonedFileInput, // Display image but store filename
             issue,
             '<button class="btn btn-danger btn-sm deleteRow">Delete</button>'
         ]).draw();
+
+        // Assign the file to the cloned input
+        let newFileInput = $(`.hidden-file-name-${issueDate}`).last()[0];
+        if (file && newFileInput) {
+            let dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            newFileInput.files = dataTransfer.files;
+        }
 
         // Clear input fields
         $('input[name="qualification_name"]').val('');
@@ -167,54 +190,51 @@ $(function () {
     $('#submitButton').on('click', (e) => {
         e.preventDefault();
 
-        let measuresData = [];
-        let qualificationsData = [];
-
-        // Get Measures Table Data
-        $('#measuresTable tbody tr').each(function () {
-            let rowData = $(this).find('td').map(function () {
-                return $(this).text().trim();
-            }).get();
-
-            let fileName = $(this).find('.hidden-file-name').val(); // Get filename from hidden input
-
-            if (rowData.length > 0) {
-                measuresData.push({
-                    measure_cat: rowData[0],
-                    measure_fee_value: rowData[1],
-                    measure_fee_currency: rowData[2],
-                    measure_expiry_date: rowData[3],
-                    measure_certificate: fileName // Store only the filename
-                });
-            }
-        });
-
-        // Get Qualifications Table Data
-        $('#qualificationsTable tbody tr').each(function () {
-            let rowData = $(this).find('td').map(function () {
-                return $(this).text().trim();
-            }).get();
-
-            let fileName = $(this).find('.hidden-file-name').val(); // Get filename from hidden input
-
-            if (rowData.length > 0) {
-                qualificationsData.push({
-                    qualification_name: rowData[0],
-                    qualification_issue_date: rowData[1],
-                    qualification_expiry_date: rowData[2],
-                    qualification_certificate: fileName, // Store only the filename
-                    qualification_issue: rowData[4]
-                });
-            }
-        });
-
-        // Create a FormData object from the form
         let propertyInspectorForm = $('#propertyInpectorForm');
         let formRoute = propertyInspectorForm.attr('action');
         let formData = new FormData(propertyInspectorForm[0]);
 
-        formData.append('measures', JSON.stringify(measuresData));
-        formData.append('qualifications', JSON.stringify(qualificationsData));
+        $('#measuresTable tbody tr').each(function (index) {
+            let rowData = $(this).find('td').map(function () {
+                return $(this).text().trim();
+            }).get();
+
+            // Retrieve the file object from the corresponding file input
+            let fileInput = $(this).find(`input[type="file"].hidden-file-name-${rowData[0]}`)[0];
+            let file = fileInput ? fileInput.files[0] : null;
+
+            if (rowData.length > 0) {
+                formData.append(`measures[${index}][measure_cat]`, rowData[0]);
+                formData.append(`measures[${index}][measure_fee_value]`, rowData[1]);
+                formData.append(`measures[${index}][measure_fee_currency]`, rowData[2]);
+                formData.append(`measures[${index}][measure_expiry_date]`, rowData[3]);
+
+                if (file) {
+                    formData.append(`measures[${index}][measure_certificate]`, file);
+                }
+            }
+        });
+
+        $('#qualificationsTable tbody tr').each(function (index) {
+            let rowData = $(this).find('td').map(function () {
+                return $(this).text().trim();
+            }).get();
+
+            // Retrieve the file object from the corresponding file input
+            let fileInput = $(this).find(`input[type="file"].hidden-file-name-${rowData[1]}`)[0];
+            let file = fileInput ? fileInput.files[0] : null;
+
+            if (rowData.length > 0) {
+                formData.append(`qualifications[${index}][qualification_name]`, rowData[0]);
+                formData.append(`qualifications[${index}][qualification_issue_date]`, rowData[1]);
+                formData.append(`qualifications[${index}][qualification_expiry_date]`, rowData[2]);
+                formData.append(`qualifications[${index}][qualification_issue]`, rowData[4]); // Assuming 4th is issue
+
+                if (file) {
+                    formData.append(`qualifications[${index}][qualification_certificate]`, file);
+                }
+            }
+        });
 
         $.ajaxSetup({
             headers: {
@@ -244,7 +264,7 @@ $(function () {
                 setTimeout(() => {
                     $('#formAlert').addClass('d-none').removeClass('alert alert-success').empty();
                     window.location.href = '/property-inspector';
-                }, 3000);
+                }, 1000);
             },
             error: function (xhr, status, error) {
                 console.error('Form submission failed:', error);

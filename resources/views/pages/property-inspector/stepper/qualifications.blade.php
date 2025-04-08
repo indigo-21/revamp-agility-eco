@@ -17,7 +17,7 @@
                 <x-file name="qualification_certificate" label="Qualification Certificate" />
 
                 <x-date name="qualification_issue" label="Qualification Issue" />
-                
+
                 <button type="button" class="btn btn-block btn-outline-primary mt-5" id="addQualifications">
                     <i class="fa fa-plus-circle" aria-hidden="true"></i> Add to table
                 </button>
@@ -38,6 +38,22 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @if (isset($property_inspector) && $property_inspector->propertyInspectorQualifications)
+                            @foreach ($property_inspector->propertyInspectorQualifications as $qualifications)
+                                <tr>
+                                    <td>{{ $qualifications->qualification_name }}</td>
+                                    <td>{{ $qualifications->issue_date }}</td>
+                                    <td>{{ $qualifications->expiry_date }}</td>
+                                    <td>
+                                        <img src="{{ asset("storage/qualification_certificate/$qualifications->certificate") }}" width="auto" height="150" />
+                                    </td>
+                                    <td>{{ $qualifications->qualification_issue }}</td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm deleteRow">Delete</button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>

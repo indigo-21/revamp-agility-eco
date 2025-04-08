@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Measure;
 use App\Models\PropertyInspector;
+use App\Models\PropertyInspectorMeasure;
 use App\Models\PropertyInspectorPostcode;
+use App\Models\PropertyInspectorQualification;
 
 class PropertyInspectorService
 {
@@ -53,6 +56,8 @@ class PropertyInspectorService
         $property_inspector->save();
 
         self::storePIPostcode($property_inspector->id, $request);
+        self::storePIMeasures($property_inspector->id, $request);
+        self::storePIQualifications($property_inspector->id, $request);
 
         return $property_inspector->id;
     }
@@ -66,6 +71,48 @@ class PropertyInspectorService
             $property_inspector_postcode->property_inspector_id = $pi_id;
 
             $property_inspector_postcode->save();
+        }
+    }
+
+    public function storePIMeasures($pi_id, $request)
+    {
+        foreach ($request->measures as $index => $measure) {
+            $measureData = Measure::where('measure_cat', $measure['measure_cat'])->first();
+
+            // Store the file or do something with it
+            $measure_certificate = (new StoreImage)->store($request, "measures.$index.measure_certificate", 'measure_certificate');
+
+            // Example: Save the record
+            $property_inspector_measure = new PropertyInspectorMeasure;
+            $property_inspector_measure->property_inspector_id = $pi_id;
+            $property_inspector_measure->measure_id = $measureData->id;
+            $property_inspector_measure->fee_value = $measure['measure_fee_value'];
+            $property_inspector_measure->fee_currency = $measure['measure_fee_currency'];
+            $property_inspector_measure->expiry = $measure['measure_expiry_date'];
+            $property_inspector_measure->cert = $measure_certificate ?? null;
+
+            $property_inspector_measure->save();
+        }
+
+    }
+
+    public function storePIQualifications($pi_id, $request)
+    {
+        foreach ($request->qualifications as $index => $qualification) {
+
+            // Store the file or do something with it
+            $qualification_certificate = (new StoreImage)->store($request, "qualifications.$index.qualification_certificate", 'qualification_certificate');
+
+            $property_inspector_qualification = new PropertyInspectorQualification;
+
+            $property_inspector_qualification->property_inspector_id = $pi_id;
+            $property_inspector_qualification->name = $qualification['qualification_name'];
+            $property_inspector_qualification->issue_date = $qualification['qualification_issue_date'];
+            $property_inspector_qualification->expiry_date = $qualification['qualification_expiry_date'];
+            $property_inspector_qualification->certificate = $qualification_certificate ?? null;
+            $property_inspector_qualification->qualification_issue = $qualification['qualification_issue'];
+
+            $property_inspector_qualification->save();
         }
     }
 }

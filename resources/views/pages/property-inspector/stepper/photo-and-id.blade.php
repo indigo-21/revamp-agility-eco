@@ -8,7 +8,8 @@
                 <x-file name="photo" label="Photo" />
             </div>
             <div class="col-12 col-md-6">
-                <x-date name="photo_expiry" label="Photo Expiry Date" />
+                <x-date name="photo_expiry" label="Photo Expiry Date"
+                    value="{{ isset($property_inspector) ? $property_inspector->photo_expiry : '' }}" />
             </div>
         </div>
         <div class="row">
@@ -18,18 +19,28 @@
 
             <div class="col-12 col-md-6">
 
-                <x-date name="id_issued" label="ID Badge Issue Date" />
+                <x-date name="id_issued" label="ID Badge Issue Date"
+                    value="{{ isset($property_inspector) ? $property_inspector->id_issued : '' }}" />
 
-                <x-date name="id_expiry" label="ID Badge Expiry Date" />
+                <x-date name="id_expiry" label="ID Badge Expiry Date"
+                    value="{{ isset($property_inspector) ? $property_inspector->id_expiry : '' }}" />
 
-                <x-date name="id_revision" label="ID Badge Rev" />
+                <x-date name="id_revision" label="ID Badge Rev"
+                    value="{{ isset($property_inspector) ? $property_inspector->id_revision : '' }}" />
 
                 <x-select label="ID Badge Location" name="id_location" :multiple="false">
-                    <option value="With Property Inspector">With Property Inspector</option>
-                    <option value="At {{ env('EMPLOYER') }}">At {{ env('EMPLOYER') }}</option>
+                    <option value="With Property Inspector" 
+                        {{ isset($property_inspector) && $property_inspector->id_location === 'With Property Inspector' ? 'selected' : '' }}>
+                        With Property Inspector
+                    </option>
+                    <option value="At {{ env('EMPLOYER') }}" 
+                        {{ isset($property_inspector) && $property_inspector->id_location === 'At' . env('EMPLOYER') ? 'selected' : '' }}>
+                        At {{ env('EMPLOYER') }}
+                    </option>
                 </x-select>
 
-                <x-date name="id_return" label="Date ID Badge Returned" />
+                <x-date name="id_return" label="Date ID Badge Returned"
+                    value="{{ isset($property_inspector) ? $property_inspector->id_return : '' }}" />
 
             </div>
         </div>

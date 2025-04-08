@@ -18,7 +18,6 @@ class UserSeeder extends Seeder
             [
                 'firstname' => 'James',
                 'lastname' => 'Zarsuelo',
-                'username' => 'james',
                 'email' => 'james.zarsuelo@indigo21.com',
                 'organisation' => 'Agility Eco',
                 'mobile' => '09362252822',
@@ -35,7 +34,6 @@ class UserSeeder extends Seeder
             User::create([
                 'firstname' => $value['firstname'],
                 'lastname' => $value['lastname'],
-                'username' => $value['username'],
                 'email' => $value['email'],
                 'organisation' => $value['organisation'],
                 'mobile' => $value['mobile'],

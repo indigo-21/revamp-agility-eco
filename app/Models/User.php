@@ -45,4 +45,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function propertyInspector()
+    {
+        return $this->hasOne(PropertyInspector::class);
+    }
+    
+    public function accountLevel()
+    {
+        return $this->belongsTo(AccountLevel::class);
+    }
+    
+    public function userType()
+    {
+        return $this->belongsTo(UserType::class);
+    }
 }

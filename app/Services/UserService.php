@@ -16,7 +16,6 @@ class UserService
 
         $user->firstname = $request->firstname;
         $user->lastname = $request->lastname;
-        $user->username = $request->username;
         $user->email = $request->email;
         $user->organisation = $request->organisation;
         $user->photo = $profile_image;

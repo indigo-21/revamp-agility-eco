@@ -28,7 +28,6 @@ return new class extends Migration {
             $table->id();
             $table->string('firstname');
             $table->string('lastname');
-            $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('organisation')->nullable();
             $table->string('photo')->nullable();
