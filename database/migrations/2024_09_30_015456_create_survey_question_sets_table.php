@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('question_revision');
             $table->string('question_set');
+            $table->string('question_set_file');
             $table->timestamps();
             $table->softDeletes();
         });
