@@ -25,7 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('property-inspector', PropertyInspectorController::class);
     Route::resource('client-configuration', ClientConfigurationController::class);
     Route::resource('measure', MeasureController::class);
-    Route::resource('installer-configuration', InstallerConfigurationController::class);
+	Route::resource('installer-configuration', InstallerConfigurationController::class);
     Route::resource('survey-question-set', SurveyQuestionSetController::class);
     Route::resource('scheme', SchemeController::class);
 
