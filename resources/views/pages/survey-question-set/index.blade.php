@@ -57,10 +57,14 @@
                                     @foreach ($surveyQuestionSets as $surveyQuestionSet)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $surveyQuestionSet['question_revision']}}</td>
-                                            <td>{{ $surveyQuestionSet['updated_at']}}</td>
-                                            <td>{{ $surveyQuestionSet['question_set']}}</td>
-                                            <td></td>
+                                            <td>{{ $surveyQuestionSet['question_revision'] }}</td>
+                                            <td>{{ $surveyQuestionSet['updated_at'] }}</td>
+                                            <td>{{ $surveyQuestionSet['question_set'] }}</td>
+                                            <td>
+                                                <a href="{{ route("survey-question-set.show", $surveyQuestionSet) }}" class="btn btn-block btn-primary">
+                                                    <i class="fa fa-eye" aria-hidden="true"></i>&nbsp; View
+                                                </a>
+                                            </td>
                                         </tr>
                                     @endforeach
 
@@ -88,27 +92,26 @@
                         @csrf
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="question-revision">Question Revision</label>
-                                <input type="text" name="question_revision" class="form-control" id="question-revision"
-                                    placeholder="Question Revision">
+                                <x-input name="question_revision" label="Question Revision" type="text" />
                             </div>
                             <div class="form-group">
-                                <label for="survey-question-set">Survey Question Set</label>
-                                <input type="text" name="question_set" class="form-control" id="survey-question-set"
-                                    placeholder="Survey Question Set">
+                                <x-input name="survey-question-set" label="Survey Question Set" type="text" />
                             </div>
                             <div class="form-group">
-                                <label for="select-csv">Select CSV</label>
+                                {{-- <label for="select-csv">Select CSV</label>
                                 <div class="input-group">
                                     <div class="custom-file">
                                         <input type="file" name="question_set_file" class="custom-file-input"
-                                            id="select-csv">
+                                            id="select-csv">                                        
+                                      
                                         <label class="custom-file-label" for="select-csv">Choose file</label>
                                     </div>
                                     <div class="input-group-append">
                                         <span class="input-group-text">Upload</span>
-                                      </div>
-                                </div>
+                                    </div>
+                                </div> --}}
+                                <x-file name="question_set_file" label="Select CSV" />
+                               
                             </div>
                         </div>
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\surveyQuestionImport;
+use App\Models\SurveyQuestion;
 use App\Models\SurveyQuestionSet;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -54,7 +55,13 @@ class SurveyQuestionSetController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // dd($id)
+        $surveyQuestionSets = SurveyQuestion::where('survey_question_set_id',$id)
+        // ->orderBy('created_at', 'desc')
+        ->get();
+        // dd( $surveyQuestionSets);
+        return view('pages.survey-question-set.show',compact('surveyQuestionSets'));
+      
     }
 
     /**
