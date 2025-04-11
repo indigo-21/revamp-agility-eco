@@ -1,0 +1,56 @@
+:root {
+    --primary-color: #e7493a;
+}
+/* .btn {
+    border-radius: 0px;
+} */
+.btn-white {
+    background: #d1d1d1 linear-gradient(180deg, #d1d1d1, #fff) repeat-x;
+    padding: .375rem .75rem;
+    border:1px solid transparent;
+    /* color: var(--primary-color); */
+}
+.btn-white:hover, .btn-white:focus { 
+    background: #d1d1d1 linear-gradient(180deg, #efefef, #e7e7e7) repeat-x !important;
+    /* color: var(--primary-color); */
+    /* border:2px solid #fff; */
+    /* color: #fff; */
+}
+/* ASIDE */
+.brand-link {
+    background-color: var(--primary-color);
+}
+.nav-sidebar .nav-item>.nav-link {
+    font-size: 16px;
+    padding: .7rem .5rem;
+    width: 100% !important;
+    border-radius: 0px;
+}
+.nav-sidebar .menu-is-opening>.nav-link i.right, .nav-sidebar .menu-open>.nav-link i.right {
+    transform: rotate(90deg);
+}
+[class*=sidebar-dark-] .nav-sidebar>.nav-item.menu-open>.nav-link, [class*=sidebar-dark-] .nav-sidebar>.nav-item:hover>.nav-link, [class*=sidebar-dark-] .nav-sidebar>.nav-item>.nav-link:focus {
+    border-left: 5px solid var(--primary-color);
+}
+/* .os-content {
+    padding: 0px !important;
+} */
+ul.nav.nav-treeview {
+    padding-left: 15px;
+}
+ul.nav.nav-treeview li a .nav-icon {
+    width: 0.8rem !important;
+}
+/* NAVIGATION */
+.user-panel img {
+    box-shadow: none !important;
+    width: 2.5rem;
+}
+.user-panel .info {
+    padding: 8px 5px 8px 10px;
+}
+/* PAGES */
+.card-header {
+    background: #e7493a;
+    color: #fff;
+}
