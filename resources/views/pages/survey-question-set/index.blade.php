@@ -32,18 +32,21 @@
                     <div class="card card-default">
                         <div class="card-header">
                             <div class="w-100 d-flex justify-content-between align-items-center">
-
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="right w-100">
-                                <div class="d-flex justify-content-end align-items-center">
-                                    <button type="button" class=" btn btn-outline-primary mb-2" data-toggle="modal"
+                                <div class="left">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-list mr-2"></i>
+                                        List of Survey Questions
+                                    </h3>
+                                </div>
+                                <div class="right">
+                                    <button type="button" class=" btn btn-white mb-2" data-toggle="modal"
                                         data-target="#upload-csv">
-                                        <i class="fa fa-plus-circle" aria-hidden="true"></i> Upload Question Set
+                                        <i class="fa fa-plus-square mr-1" aria-hidden="true"></i> Upload Question Set
                                     </button>
                                 </div>
                             </div>
+                        </div>
+                        <div class="card-body">
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
@@ -61,7 +64,8 @@
                                             <td>{{ $surveyQuestionSet['updated_at'] }}</td>
                                             <td>{{ $surveyQuestionSet['question_set'] }}</td>
                                             <td>
-                                                <a href="{{ route("survey-question-set.show", $surveyQuestionSet) }}" class="btn btn-block btn-primary">
+                                                <a href="{{ route('survey-question-set.show', $surveyQuestionSet) }}"
+                                                    class="btn btn-primary btn-sm btn-block">
                                                     <i class="fa fa-eye" aria-hidden="true"></i>&nbsp; View
                                                 </a>
                                             </td>
@@ -95,23 +99,11 @@
                                 <x-input name="question_revision" label="Question Revision" type="text" />
                             </div>
                             <div class="form-group">
-                                <x-input name="survey-question-set" label="Survey Question Set" type="text" />
+                                <x-input name="question_set" label="Survey Question Set" type="text" />
                             </div>
                             <div class="form-group">
-                                {{-- <label for="select-csv">Select CSV</label>
-                                <div class="input-group">
-                                    <div class="custom-file">
-                                        <input type="file" name="question_set_file" class="custom-file-input"
-                                            id="select-csv">                                        
-                                      
-                                        <label class="custom-file-label" for="select-csv">Choose file</label>
-                                    </div>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">Upload</span>
-                                    </div>
-                                </div> --}}
                                 <x-file name="question_set_file" label="Select CSV" />
-                               
+
                             </div>
                         </div>
 
@@ -129,6 +121,7 @@
 @endsection
 
 @section('importedScripts')
+    <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
     @include('includes.datatables-scripts')
-    <script src="{{ asset('assets/js/property-inspector.js') }}"></script>
+    <script src="{{ asset('assets/js/survey-question-set.js') }}"></script>
 @endsection

@@ -122,7 +122,6 @@ class PropertyInspectorController extends Controller
 
         return redirect()
             ->route('property-inspector.index')
-            ->with('success', 'Property Inspector deleted successfully')
-            ->with('success', 'success');
+            ->with('success', 'Property Inspector deleted successfully');
     }
 }

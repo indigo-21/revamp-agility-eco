@@ -111,7 +111,7 @@
                     <div class="col-md-12">
 
                         <x-select label="Employment Basis" name="account_level_id" :multiple="false">
-                            <option selected="selected" disabled value="">- Employement Basis -</option>
+                            <option selected="selected" disabled value="">- Employment Basis -</option>
                             @foreach ($employment_basis as $employment)
                                 <option value="{{ $employment->id }}" 
                                     {{ isset($property_inspector) && $property_inspector->user->account_level_id === $employment->id ? 'selected' : '' }}>

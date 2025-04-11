@@ -42,8 +42,7 @@
                                     </h3>
                                 </div>
                                 <div class="right">
-                                    <a type="button" class="btn btn-block btn-outline-primary"
-                                        href="{{ route('property-inspector.create') }}">
+                                    <a type="button" class="btn btn-white" href="{{ route('property-inspector.create') }}">
                                         <i class="fa fa-plus-circle" aria-hidden="true"></i> Add Property Inspector
                                     </a>
                                 </div>
@@ -100,20 +99,24 @@
 
                                             </td>
                                             <td>
-                                                <div class="btn-group">
-                                                    <a href="{{ route('property-inspector.show', $property_inspector) }}"
-                                                        class="btn btn-primary btn-sm">View</a>
-                                                    <a href="{{ route('property-inspector.edit', $property_inspector) }}"
-                                                        class="btn btn-warning btn-sm">Edit</a>
-                                                    <form
-                                                        action="{{ route('property-inspector.destroy', $property_inspector) }}"
-                                                        method="POST" class="delete-form">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="button"
-                                                            class="btn btn-danger btn-sm delete-btn">Delete</button>
-                                                    </form>
-                                                </div>
+                                                <form
+                                                    action="{{ route('property-inspector.destroy', $property_inspector) }}"
+                                                    method="POST" class="delete-form">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <div class="btn-group">
+                                                        <a href="{{ route('property-inspector.show', $property_inspector) }}"
+                                                            class="btn btn-primary btn-sm"><i class="fas fa-eye"></i>
+                                                            View</a>
+                                                        <a href="{{ route('property-inspector.edit', $property_inspector) }}"
+                                                            class="btn btn-warning btn-sm">
+                                                            <i class="fas fa-pencil-alt"></i> Edit
+                                                        </a>
+                                                        <button type="button" class="btn btn-danger btn-sm delete-btn">
+                                                            <i class="fas fa-trash"></i> Delete
+                                                        </button>
+                                                    </div>
+                                                </form>
                                             </td>
                                         </tr>
                                     @endforeach

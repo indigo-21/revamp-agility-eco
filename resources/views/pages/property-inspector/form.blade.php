@@ -90,7 +90,7 @@
                                         action="{{ isset($property_inspector) ? route('property-inspector.update', $property_inspector) : route('property-inspector.store') }}"
                                         method="POST">
                                         @csrf
-                                        @if(isset($property_inspector))
+                                        @if (isset($property_inspector))
                                             @method('PUT')
                                         @endif
                                         @include('pages.property-inspector.stepper.job-skills')
@@ -121,7 +121,6 @@
     <script src="{{ asset('plugins/moment/moment.min.js') }}"></script>
     <!-- Tempusdominus Bootstrap 4 -->
     <script src="{{ asset('plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
-    <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
-    <script src="{{ asset('assets/js/property-inspector-stepper.js') }}"></script>
     @include('includes.datatables-scripts')
+    <script src="{{ asset('assets/js/property-inspector-stepper.js') }}"></script>
 @endsection

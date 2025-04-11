@@ -32,13 +32,18 @@
                     <div class="card card-default">
                         <div class="card-header">
                             <div class="w-100 d-flex justify-content-between align-items-center">
-
+                                <div class="left">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-list mr-2"></i>
+                                        List of Questions
+                                    </h3>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body">
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
-                                    <tr>                                       
+                                    <tr>
                                         <th>Question Number</th>
                                         <th>Measure Cat</th>
                                         <th>Inspection Stage</th>
@@ -50,16 +55,16 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($surveyQuestionSets as $surveyQuestion)
-                                    <tr>
-                                        <td>{{ $surveyQuestion['question_number'] }}</td>
-                                        <td>{{ $surveyQuestion['measure_cat'] }}</td>
-                                        <td>{{ $surveyQuestion['inspection_stage'] }}</td>
-                                        <td>{{ $surveyQuestion['question'] }}</td>
-                                        <td>{{ $surveyQuestion['score_monitoring'] }}</td>
-                                        <td>{{ $surveyQuestion['nc_severity'] }}</td>
-                                        <td>{{ $surveyQuestion['measure_type'] }}</td>
-                                        <td>{{ $surveyQuestion['innovation_product'] }}</td>
-                                    </tr>
+                                        <tr>
+                                            <td>{{ $surveyQuestion['question_number'] }}</td>
+                                            <td>{{ $surveyQuestion['measure_cat'] }}</td>
+                                            <td>{{ $surveyQuestion['inspection_stage'] }}</td>
+                                            <td>{{ $surveyQuestion['question'] }}</td>
+                                            <td>{{ $surveyQuestion['score_monitoring'] }}</td>
+                                            <td>{{ $surveyQuestion['nc_severity'] }}</td>
+                                            <td>{{ $surveyQuestion['measure_type'] }}</td>
+                                            <td>{{ $surveyQuestion['innovation_product'] }}</td>
+                                        </tr>
                                     @endforeach
 
                                 </tbody>
@@ -71,7 +76,6 @@
             </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
-    
 @endsection
 
 @section('importedScripts')

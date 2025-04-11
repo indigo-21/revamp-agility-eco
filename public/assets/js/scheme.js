@@ -1,5 +1,7 @@
+
 $(function () {
-    $(".table").DataTable();
+
+    $('.table').DataTable();
 
     var Toast = Swal.mixin({
         toast: true,
@@ -15,8 +17,6 @@ $(function () {
         });
     }
 });
-
-
 
 $(document).on('click', '.delete-btn', function (e) {
     e.preventDefault();

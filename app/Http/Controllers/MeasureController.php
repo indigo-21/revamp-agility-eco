@@ -14,8 +14,8 @@ class MeasureController extends Controller
     public function index()
     {
         $measures = Measure::all();
-       return view('pages.platform-configuration.measure.index')
-       ->with("measures", $measures);
+        return view('pages.platform-configuration.measure.index')
+            ->with("measures", $measures);
     }
 
     /**
@@ -26,7 +26,7 @@ class MeasureController extends Controller
         $measures = Measure::all();
 
         return view("pages.platform-configuration.measure.form")
-        ->with('measures', $measures);
+            ->with('measures', $measures);
     }
 
     /**
@@ -57,7 +57,7 @@ class MeasureController extends Controller
     {
 
         return view("pages.platform-configuration.measure.form")
-        ->with('measure', $measure);
+            ->with('measure', $measure);
     }
 
     /**
@@ -65,7 +65,7 @@ class MeasureController extends Controller
      */
     public function update(Request $request, Measure $measure)
     {
-        $data = $request->except (['_token', '_method']);
+        $data = $request->except(['_token', '_method']);
         $measure->update($data);
 
         return redirect()->route('measure.index')->with('success', 'Measure updated successfully');
@@ -79,5 +79,5 @@ class MeasureController extends Controller
         //
     }
 
-    
+
 }

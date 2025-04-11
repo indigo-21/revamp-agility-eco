@@ -177,7 +177,7 @@
 
                             <div class="card-tools">
                                 <button type="button" class="btn bg-info btn-sm" data-card-widget="collapse">
-                                    <i class="fas fa-minus"></i>
+                                    <i class="fas fa-plus"></i>
                                 </button>
                                 <button type="button" class="btn bg-info btn-sm" data-card-widget="remove">
                                     <i class="fas fa-times"></i>
@@ -194,7 +194,6 @@
                                         <th>Measure Fee Currency</th>
                                         <th>Measure Expiry Date</th>
                                         <th>Measure Certicate</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -208,9 +207,6 @@
                                                 <td>
                                                     <img src="{{ asset("storage/measure_certificate/$pi_measure->cert") }}"
                                                         width="auto" height="150" />
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-danger btn-sm deleteRow">Delete</button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -228,7 +224,7 @@
 
                             <div class="card-tools">
                                 <button type="button" class="btn bg-info btn-sm" data-card-widget="collapse">
-                                    <i class="fas fa-minus"></i>
+                                    <i class="fas fa-plus"></i>
                                 </button>
                                 <button type="button" class="btn bg-info btn-sm" data-card-widget="remove">
                                     <i class="fas fa-times"></i>
@@ -245,7 +241,6 @@
                                         <th>Expiry Date</th>
                                         <th>Certificate</th>
                                         <th>Issue</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -260,9 +255,6 @@
                                                         width="auto" height="150" />
                                                 </td>
                                                 <td>{{ $qualifications->qualification_issue }}</td>
-                                                <td>
-                                                    <button class="btn btn-danger btn-sm deleteRow">Delete</button>
-                                                </td>
                                             </tr>
                                         @endforeach
                                     @endif

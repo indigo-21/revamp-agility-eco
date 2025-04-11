@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\MeasureController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SchemeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PropertyInspectorController;
 use App\Http\Controllers\ClientConfigurationController;
@@ -22,12 +24,12 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('property-inspector', PropertyInspectorController::class);
     Route::resource('client-configuration', ClientConfigurationController::class);
-    Route::resource('measure-configuration', MeasureController::class);
-	Route::resource('installer-configuration', InstallerConfigurationController::class);
+    Route::resource('measure', MeasureController::class);
+    Route::resource('installer-configuration', InstallerConfigurationController::class);
     Route::resource('survey-question-set', SurveyQuestionSetController::class);
+    Route::resource('scheme', SchemeController::class);
 
-    
 
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
