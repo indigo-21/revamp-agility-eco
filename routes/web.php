@@ -6,6 +6,7 @@ use App\Http\Controllers\PropertyInspectorController;
 use App\Http\Controllers\ClientConfigurationController;
 use App\Http\Controllers\SurveyQuestionSetController;
 use App\Http\Controllers\InstallerConfigurationController;
+use App\Http\Controllers\MeasureController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,11 +23,10 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('property-inspector', PropertyInspectorController::class);
     Route::resource('client-configuration', ClientConfigurationController::class);
-    Route::resource('measure-configuration', MeasureController::class);
+    Route::resource('measure', MeasureController::class);
 	Route::resource('installer-configuration', InstallerConfigurationController::class);
     Route::resource('survey-question-set', SurveyQuestionSetController::class);
 
-    
 
 });
 
