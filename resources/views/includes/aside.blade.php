@@ -26,7 +26,7 @@
 					<a href="#" class="nav-link">
 						<i class="nav-icon fas fa-home"></i>
 						<p>
-							Dashbord
+							Dashboard
 						</p>
 					</a>
 				</li>
@@ -121,7 +121,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="./index3.html" class="nav-link">
+							<a href="{{ route('measure.index') }}" class="nav-link">
 								<i class="fa fa-angle-right nav-icon"></i>
 								<p>Measure Configuration</p>
 							</a>
