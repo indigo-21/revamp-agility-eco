@@ -89,7 +89,7 @@ $(function () {
         let imageTag = file ? `<img src="${URL.createObjectURL(file)}" width="auto" height="150">` : 'No File';
 
         // Create a new file input element and clone the file
-        let clonedFileInput = `<input type="file" class="hidden-file-name-${issueDate}" style="display:none;">`;
+        let clonedFileInput = `<input type="file" class="hidden-file-name-${qualificationName.replace(/\s+/g, '')}" style="display:none;">`;
 
         qualificationsTable.row.add([
             qualificationName,
@@ -101,7 +101,7 @@ $(function () {
         ]).draw();
 
         // Assign the file to the cloned input
-        let newFileInput = $(`.hidden-file-name-${issueDate}`).last()[0];
+        let newFileInput = $(`.hidden-file-name-${qualificationName.replace(/\s+/g, '')}`).last()[0];
         if (file && newFileInput) {
             let dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
@@ -192,6 +192,7 @@ $(function () {
 
         let propertyInspectorForm = $('#propertyInpectorForm');
         let formRoute = propertyInspectorForm.attr('action');
+        let formMethod = propertyInspectorForm.attr('method');
         let formData = new FormData(propertyInspectorForm[0]);
 
         $('#measuresTable tbody tr').each(function (index) {
@@ -221,7 +222,7 @@ $(function () {
             }).get();
 
             // Retrieve the file object from the corresponding file input
-            let fileInput = $(this).find(`input[type="file"].hidden-file-name-${rowData[1]}`)[0];
+            let fileInput = $(this).find(`input[type="file"].hidden-file-name-${rowData[0].replace(/\s+/g, '')}`)[0];
             let file = fileInput ? fileInput.files[0] : null;
 
             if (rowData.length > 0) {
@@ -244,7 +245,7 @@ $(function () {
 
         $.ajax({
             url: formRoute,
-            type: 'POST',
+            type: formMethod,
             data: formData,
             contentType: false,
             processData: false,

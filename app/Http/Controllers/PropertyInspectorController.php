@@ -75,9 +75,10 @@ class PropertyInspectorController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(PropertyInspector $propertyInspector)
     {
-        //
+        return view('pages.property-inspector.show')
+            ->with('property_inspector', $propertyInspector);
     }
 
     /**
@@ -103,16 +104,25 @@ class PropertyInspectorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, PropertyInspector $propertyInspector)
     {
-        //
+
+        $user = (new UserService)->store($request, $propertyInspector->user_id);
+
+        (new PropertyInspectorService)->store($request, $user->id, $propertyInspector->id);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(PropertyInspector $propertyInspector)
     {
-        //
+        $propertyInspector->delete();
+        $propertyInspector->user->delete();
+
+        return redirect()
+            ->route('property-inspector.index')
+            ->with('success', 'Property Inspector deleted successfully')
+            ->with('success', 'success');
     }
 }

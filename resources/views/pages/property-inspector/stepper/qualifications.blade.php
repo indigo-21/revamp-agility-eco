@@ -41,11 +41,12 @@
                         @if (isset($property_inspector) && $property_inspector->propertyInspectorQualifications)
                             @foreach ($property_inspector->propertyInspectorQualifications as $qualifications)
                                 <tr>
-                                    <td>{{ $qualifications->qualification_name }}</td>
+                                    <td>{{ $qualifications->name }}</td>
                                     <td>{{ $qualifications->issue_date }}</td>
                                     <td>{{ $qualifications->expiry_date }}</td>
                                     <td>
-                                        <img src="{{ asset("storage/qualification_certificate/$qualifications->certificate") }}" width="auto" height="150" />
+                                        <img src="{{ asset("storage/qualification_certificate/$qualifications->certificate") }}"
+                                            width="auto" height="150" />
                                     </td>
                                     <td>{{ $qualifications->qualification_issue }}</td>
                                     <td>
@@ -61,6 +62,7 @@
     </div>
     <div class="card-footer d-flex justify-content-end align-items-center">
         <button class="btn btn-secondary w-25 mx-2 prev" type="button">Previous</button>
-        <button class="btn btn-success w-25 mx-2" type="button" id="submitButton">Submit</button>
+        <button class="btn btn-success w-25 mx-2" type="button"
+            id="submitButton">{{ isset($property_inspector) ? 'Update' : 'Submit' }}</button>
     </div>
 </div>

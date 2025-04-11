@@ -86,7 +86,13 @@
                                 </div>
 
                                 <div class="col-sm-12 col-lg-10">
-                                    <form id="propertyInpectorForm" action="{{ route('property-inspector.store') }}">
+                                    <form id="propertyInpectorForm"
+                                        action="{{ isset($property_inspector) ? route('property-inspector.update', $property_inspector) : route('property-inspector.store') }}"
+                                        method="POST">
+                                        @csrf
+                                        @if(isset($property_inspector))
+                                            @method('PUT')
+                                        @endif
                                         @include('pages.property-inspector.stepper.job-skills')
                                         @include('pages.property-inspector.stepper.photo-and-id')
                                         @include('pages.property-inspector.stepper.name-and-address')

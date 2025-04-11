@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('importedStyles')
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="{{ asset('plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/toastr/toastr.min.css') }}">
     @include('includes.datatables-links')
 @endsection
 
@@ -98,10 +101,18 @@
                                             </td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <button class="btn btn-primary btn-sm">View</button>
+                                                    <a href="{{ route('property-inspector.show', $property_inspector) }}"
+                                                        class="btn btn-primary btn-sm">View</a>
                                                     <a href="{{ route('property-inspector.edit', $property_inspector) }}"
                                                         class="btn btn-warning btn-sm">Edit</a>
-                                                    <button class="btn btn-danger btn-sm">Delete</button>
+                                                    <form
+                                                        action="{{ route('property-inspector.destroy', $property_inspector) }}"
+                                                        method="POST" class="delete-form">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button"
+                                                            class="btn btn-danger btn-sm delete-btn">Delete</button>
+                                                    </form>
                                                 </div>
                                             </td>
                                         </tr>
@@ -113,11 +124,17 @@
                 </div>
                 <!-- /.row (main row) -->
             </div><!-- /.container-fluid -->
+        </div>
     </section>
     <!-- /.content -->
 @endsection
 
 @section('importedScripts')
+    <script>
+        var toastType = @json(session('success'));
+    </script>
+    <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
     @include('includes.datatables-scripts')
     <script src="{{ asset('assets/js/property-inspector.js') }}"></script>
 @endsection

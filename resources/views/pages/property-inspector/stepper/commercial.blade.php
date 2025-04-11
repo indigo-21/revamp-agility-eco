@@ -26,7 +26,7 @@
                     :disabled="true" />
 
                 <x-input name="payment_terms" label="Payment Terms(days)" type="number"
-                    value="{{ isset($property_inspector) ? $property_inspector->property_visit_fee : '' }}"
+                    value="{{ isset($property_inspector) ? $property_inspector->payment_terms : '' }}"
                     :disabled="true" />
 
                 <x-radio-layout label="VAT Registered">

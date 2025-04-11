@@ -10,13 +10,23 @@ use App\Models\PropertyInspectorQualification;
 
 class PropertyInspectorService
 {
-    public function store($request, $user_id)
+    public function store($request, $user_id, $pi_id = null)
     {
-        $property_inspector = new PropertyInspector();
+
+        if ($pi_id) {
+            $property_inspector = PropertyInspector::find($pi_id);
+        } else {
+            $property_inspector = new PropertyInspector();
+            $property_inspector->user_id = $user_id;
+        }
 
         $id_badge = (new StoreImage)->store($request, 'id_badge', 'id_badge');
 
-        $property_inspector->user_id = $user_id;
+        if ($id_badge) {
+            $property_inspector->id_badge = $id_badge;
+        }
+
+
         $property_inspector->status = $request->status;
         $property_inspector->can_book_jobs = $request->can_book_jobs;
         $property_inspector->qai = $request->qai;
@@ -27,7 +37,6 @@ class PropertyInspectorService
         $property_inspector->surveyor_rating = $request->surveyor_rating;
         $property_inspector->pi_employer = $request->pi_employer;
         $property_inspector->photo_expiry = $request->photo_expiry;
-        $property_inspector->id_badge = $id_badge;
         $property_inspector->id_issued = $request->id_issued;
         $property_inspector->id_expiry = $request->id_expiry;
         $property_inspector->id_revision = $request->id_revision;
@@ -64,55 +73,96 @@ class PropertyInspectorService
 
     public function storePIPostcode($pi_id, $request)
     {
+
+        PropertyInspectorPostcode::whereNotIn('outward_postcode_id', $request->outward_postcode_id)
+            ->where('property_inspector_id', $pi_id)
+            ->delete();
+
         foreach ($request->outward_postcode_id as $postcode) {
-            $property_inspector_postcode = new PropertyInspectorPostcode();
 
-            $property_inspector_postcode->outward_postcode_id = $postcode;
-            $property_inspector_postcode->property_inspector_id = $pi_id;
+            $property_inspector_postcode = PropertyInspectorPostcode::where('outward_postcode_id', $postcode)
+                ->where('property_inspector_id', $pi_id)
+                ->first();
 
-            $property_inspector_postcode->save();
+            if ($property_inspector_postcode) {
+                continue;
+            } else {
+                $property_inspector_postcode = new PropertyInspectorPostcode();
+
+                $property_inspector_postcode->outward_postcode_id = $postcode;
+                $property_inspector_postcode->property_inspector_id = $pi_id;
+
+                $property_inspector_postcode->save();
+            }
         }
     }
 
     public function storePIMeasures($pi_id, $request)
     {
+
+        $measure_request = [];
         foreach ($request->measures as $index => $measure) {
             $measureData = Measure::where('measure_cat', $measure['measure_cat'])->first();
+            $measure_request[] = $measureData->id;
+        }
 
-            // Store the file or do something with it
+        PropertyInspectorMeasure::whereNotIn('measure_id', $measure_request)
+            ->where('property_inspector_id', $pi_id)
+            ->delete();
+
+        foreach ($request->measures as $index => $measure) {
+
+            $measureData = Measure::where('measure_cat', $measure['measure_cat'])->first();
+
             $measure_certificate = (new StoreImage)->store($request, "measures.$index.measure_certificate", 'measure_certificate');
 
-            // Example: Save the record
-            $property_inspector_measure = new PropertyInspectorMeasure;
-            $property_inspector_measure->property_inspector_id = $pi_id;
-            $property_inspector_measure->measure_id = $measureData->id;
-            $property_inspector_measure->fee_value = $measure['measure_fee_value'];
-            $property_inspector_measure->fee_currency = $measure['measure_fee_currency'];
-            $property_inspector_measure->expiry = $measure['measure_expiry_date'];
-            $property_inspector_measure->cert = $measure_certificate ?? null;
+            if ($measure_certificate) {
+                $property_inspector_measure = new PropertyInspectorMeasure;
 
-            $property_inspector_measure->save();
+                $property_inspector_measure->property_inspector_id = $pi_id;
+                $property_inspector_measure->measure_id = $measureData->id;
+                $property_inspector_measure->fee_value = $measure['measure_fee_value'];
+                $property_inspector_measure->fee_currency = $measure['measure_fee_currency'];
+                $property_inspector_measure->expiry = $measure['measure_expiry_date'];
+                $property_inspector_measure->cert = $measure_certificate ?? null;
+
+                $property_inspector_measure->save();
+            }
+
         }
 
     }
 
     public function storePIQualifications($pi_id, $request)
     {
+        $qualification_request = [];
+        foreach ($request->qualifications as $index => $qualification) {
+            $qualification_request[] = $qualification['qualification_name'];
+        }
+
+        PropertyInspectorQualification::whereNotIn('name', $qualification_request)
+            ->where('property_inspector_id', $pi_id)
+            ->delete();
+
         foreach ($request->qualifications as $index => $qualification) {
 
             // Store the file or do something with it
             $qualification_certificate = (new StoreImage)->store($request, "qualifications.$index.qualification_certificate", 'qualification_certificate');
 
-            $property_inspector_qualification = new PropertyInspectorQualification;
 
-            $property_inspector_qualification->property_inspector_id = $pi_id;
-            $property_inspector_qualification->name = $qualification['qualification_name'];
-            $property_inspector_qualification->issue_date = $qualification['qualification_issue_date'];
-            $property_inspector_qualification->expiry_date = $qualification['qualification_expiry_date'];
-            $property_inspector_qualification->certificate = $qualification_certificate ?? null;
-            $property_inspector_qualification->qualification_issue = $qualification['qualification_issue'];
+            if ($qualification_certificate) {
+                $property_inspector_qualification = new PropertyInspectorQualification;
 
-            $property_inspector_qualification->save();
+                $property_inspector_qualification->property_inspector_id = $pi_id;
+                $property_inspector_qualification->name = $qualification['qualification_name'];
+                $property_inspector_qualification->issue_date = $qualification['qualification_issue_date'];
+                $property_inspector_qualification->expiry_date = $qualification['qualification_expiry_date'];
+                $property_inspector_qualification->certificate = $qualification_certificate ?? null;
+                $property_inspector_qualification->qualification_issue = $qualification['qualification_issue'];
+
+                $property_inspector_qualification->save();
+            }
+
         }
     }
 }

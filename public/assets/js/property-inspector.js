@@ -1,6 +1,45 @@
 $(function () {
-    $("#propertyInspectorList").DataTable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-        "buttons": ["csv", "excel", "colvis"]
-    }).buttons().container().appendTo('#propertyInspectorList .col-md-6:eq(0)');
+    $(".table").DataTable();
+
+    var Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+    });
+
+    if (typeof toastType !== 'undefined' && toastType === 'success') {
+        Toast.fire({
+            icon: 'success',
+            title: 'Property Inspector deleted successfully'
+        });
+    }
+
+    $('.swalDefaultSuccess').click(function () {
+        Toast.fire({
+            icon: 'success',
+            title: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr.'
+        })
+    });
+});
+
+
+
+$(document).on('click', '.delete-btn', function (e) {
+    e.preventDefault();
+    const form = $(this).closest('.delete-form');
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.submit();
+        }
+    });
 });

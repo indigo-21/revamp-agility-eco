@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <div class="row ">
+        <div class="row">
             <div class="col-md-12">
                 <table id="measuresTable" class="table table-bordered table-striped">
                     <thead>
