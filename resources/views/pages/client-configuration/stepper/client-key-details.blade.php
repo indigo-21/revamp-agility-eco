@@ -6,134 +6,79 @@
         <div class="row border-bottom">
             <div class="col-sm-12 col-lg-12">
                 <div class="row">
-                    <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label for="clientName">Client Name</label>
-                            <input type="text" class="form-control" id="clientName" name="client_name" placeholder="Enter Client Name" required textpattern="[a-zA-Z\s]">
-                            <div class="invalid-feedback"></div>
-                        </div>
+                    <div class="col-sm-12 col-lg-4">
+                        <x-input type="text" name="client_name" label="Client Name" :required="true" inputformat="[a-zA-Z\s]" />
+                    </div>
+                    <div class="col-sm-12 col-lg-4">
+                        <x-input type="text" name="organisation" label="Organisation" :required="true" inputformat="[a-zA-Z0-9!@#&()\-]" />
+                    </div>
+                    <div class="col-sm-12 col-lg-4">
+                        <x-input type="text" name="client_abbrevation" label="Client Abbrevation" :required="true" inputformat="[a-zA-Z\s]" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label for="clientAbbrevation">Client Abbrevation</label>
-                            <input type="text" class="form-control" id="clientAbbrevation" name="client_abbrevation" placeholder="Enter Client Abbrevation" required textpattern="[a-zA-Z\s]">
-                            <div class="invalid-feedback"></div>
-                        </div>
+                        <x-select label="Client Type" name="client_type_id" :required="true">
+                            <option selected="selected" disabled value="">-Select Client Type-</option>
+                            @foreach ($clientTypes as $clientType )
+                                <option selected="selected" value="{{$clientType->id}}">{{$clientType->name}}</option>
+                            @endforeach
+                        </x-select>   
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label>Client Type</label>
-                            <select class="form-control select2" style="width: 100%;">
-                              <option selected="selected" value="" disabled>-Select Client Type-</option>
-                              <option value="Test">Alaska</option>
-                            </select>
-                            <div class="invalid-feedback"></div>
-                        </div>
+                        <x-input type="text" class="job-types" name="qai_visit_duration" label="QAI Visit Duration (hours)" inputformat="[0-9]" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label for="qaiVisiDuration">QAI Visit Duration (hours)</label>
-                            <input type="text" class="form-control" id="qaiVisiDuration" name="qai_visit_duration" placeholder="Enter Hours" required textpattern="[0-9]">
-                            <div class="invalid-feedback"></div>
-                        </div>
+                        <x-input type="text" class="job-types" name="assessor_visit_duration" label="Assessor Visit Duration (hours)" inputformat="[0-9]" />
                     </div>
+                    <div class="col-sm-12 col-lg-6">
+                        <x-input type="text" class="job-types" name="surveyor_visit_duration" label="Surveyor Visit Duration (hours)" inputformat="[0-9]" />
+                    </div>
+                    
                     <div class="col-sm-12 col-lg-12 row">
                         <div class="col-sm-12 col-lg-6">
-                            <label>Active</label>
-                            <div class="row form-group">
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <div class="custom-control custom-radio">
-                                            <input class="custom-control-input custom-control-input-danger" type="radio" id="customRadio1" name="customRadio1" checked>
-                                            <label for="customRadio1" class="custom-control-label">Yes</label>
-                                        </div>
+                            <div class="form-group">
+                                <label for="">Job Type</label>
+                                <div class="row form-group">
+                                    <div class="col-4">
+                                        <x-checkbox name="qai" label="QAI" />
                                     </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <div class="custom-control custom-radio">
-                                            <input class="custom-control-input custom-control-input-danger" type="radio" id="customRadio2" name="customRadio1">
-                                            <label for="customRadio2" class="custom-control-label">No</label>
-                                        </div>
+                                    <div class="col-4">
+                                        <x-checkbox name="assesor" label="Assessor" />
                                     </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="invalid-feedback"></div>
+                                    <div class="col-4">
+                                        <x-checkbox name="surveyor" label="Surveyor" />
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="invalid-feedback"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-sm-12 col-lg-6">
-                            <label>Can Job Outcome be appealed?</label>
-                            <div class="row form-group">
-                                <div class="col-6">
-                                    <div class="radio-group">
-                                        <div class="custom-control custom-radio">
-                                            <input class="custom-control-input custom-control-input-danger" type="radio" id="customRadio3" name="customRadio2" checked>
-                                            <label for="customRadio3" class="custom-control-label">Yes</label>
-                                        </div>
-                                    </div>
+                            <x-radio-layout label="Can Job Outcome be appealed?">
+                                <div class="col-md-6">
+                                    <x-radio label="Yes" name="can_job_outcome_be_appealed" id="can_job_outcome_be_appealed_yes" :checked="true" />
                                 </div>
-                                <div class="col-6">
-                                    <div class="radio-group">
-                                        <div class="custom-control custom-radio">
-                                            <input class="custom-control-input custom-control-input-danger" type="radio" id="customRadio4" name="customRadio2">
-                                            <label for="customRadio4" class="custom-control-label">No</label>
-                                        </div>
-                                    </div>
+                                <div class="col-md-6">
+                                    <x-radio label="No" name="can_job_outcome_be_appealed" id="can_job_outcome_be_appealed_no" />
                                 </div>
-                                <div class="col-12">
-                                    <div class="invalid-feedback"></div>
-                                </div>
+                            </x-radio-layout>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-lg-4">
+                        <x-radio-layout label="Active">
+                            <div class="col-md-6">
+                                <x-radio label="Yes" name="active" id="active_yes" :checked="true" />
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label for="assessorVisitDuration">Assessor Visit Duration (hours)</label>
-                            <input type="text" class="form-control" id="assessorVisitDuration" name="assessor_visit_duration" placeholder="Enter Hours" required textpattern="[0-9]">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label for="surveyorVisitDuration">Surveyor Visit Duration (hours)</label>
-                            <input type="text" class="form-control" id="surveyorVisitDuration" name="surveyor_visit_duration" placeholder="Enter Hours" required textpattern="[0-9]">
-                            <div class="invalid-feedback"></div>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label for="dateLastActivated">Date Last Activated</label>
-                            <input type="text" class="form-control" id="dateLastActivated" name="date_last_activated" disabled>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label for="">Job Type</label>
-                            <div class="row form-group">
-                                <div class="col-4">
-                                    <div class="custom-control custom-checkbox">
-                                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckbox1">
-                                        <label for="customCheckbox1" class="custom-control-label">QAI</label>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="custom-control custom-checkbox">
-                                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckbox2">
-                                        <label for="customCheckbox2" class="custom-control-label">Assessor</label>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="custom-control custom-checkbox">
-                                        <input class="custom-control-input custom-control-input-danger" type="checkbox" id="customCheckbox3">
-                                        <label for="customCheckbox3" class="custom-control-label">Surveyor</label>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="invalid-feedback"></div>
-                                </div>
+                            <div class="col-md-6">
+                                <x-radio label="No" name="active" id="active_no" />
                             </div>
-                        </div>
+                        </x-radio-layout>
+                    </div>
+                    <div class="col-sm-12 col-lg-4">
+                        <x-input type="text" name="date_last_activated" label="Date Last Activated" value="" :disabled="true" />
+                    </div>
+                    <div class="col-sm-12 col-lg-4">
+                        <x-input type="text" name="date_last_deactivated" label="Date Last Deactivated" :disabled="true" />
                     </div>
                 </div>
             </div>
@@ -145,68 +90,30 @@
                         </div>
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label for="exceptionsEmail">Exceptions Email</label>
-                            <input type="email" class="form-control" id="exceptionsEmail" name="exceptions_email" placeholder="Enter Email" required>
-                            <div class="invalid-feedback"></div>
-                        </div>
+                        <x-input type="email" name="exceptions_email" label="Exceptions Email" :required="true" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label for="phoneNumber">Phone Number</label>
-                            <input type="text" class="form-control" id="phoneNumber" name="phone_number" placeholder="Enter Phone Number" required textpattern="[0-9]">
-                            <div class="invalid-feedback"></div>
-                        </div>
+                        <x-input type="text" name="phone_number" label="Phone Number" :required="true" inputformat="[0-9]" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label for="addressOne">Address 1</label>
-                            <input type="text" class="form-control" id="addressOne" name="anddress_one" placeholder="Enter Address" required textpattern="[a-zA-Z\s]">
-                            <div class="invalid-feedback"></div>
-                        </div>
+                        <x-input type="text" name="address1" label="Address 1" inputformat="[a-zA-Z0-9!@#&()\-]"/>
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label for="addressTwo">Address 2</label>
-                            <input type="text" class="form-control" id="addressTwo" name="anddress_two" placeholder="Enter Address" required textpattern="[a-zA-Z\s]">
-                            <div class="invalid-feedback"></div>
-                        </div>
+                        <x-input type="text" name="address2" label="Address 2" inputformat="[a-zA-Z0-9!@#&()\-]"/>
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label for="addressThree">Address 3</label>
-                            <input type="text" class="form-control" id="addressThree" name="anddress_three" placeholder="Enter Address" required textpattern="[a-zA-Z\s]">
-                            <div class="invalid-feedback"></div>
-                        </div>
+                        <x-input type="text" name="address3" label="Address 3" inputformat="[a-zA-Z0-9!@#&()\-]"/>
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label for="city">City</label>
-                            <input type="text" class="form-control" id="city" name="city" placeholder="Enter City" required textpattern="[a-zA-Z\s]">
-                            <div class="invalid-feedback"></div>
-                        </div>
+                        <x-input type="text" name="city" label="City" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label for="country">Country</label>
-                            <input type="text" class="form-control" id="country" name="country" placeholder="Enter Country" required textpattern="[a-zA-Z\s]">
-                            <div class="invalid-feedback"></div>
-                        </div>
+                        <x-input type="text" name="country" label="Country" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <div class="form-group">
-                            <label for="postcode">Postcode</label>
-                            <input type="text" class="form-control" id="postcode" name="postcode" placeholder="Enter Postcode" required textpattern="[a-zA-Z0-9\s]">
-                            <div class="invalid-feedback"></div>
-                        </div>
+                        <x-input type="text" name="postcode" label="Postcode" inputformat="[a-zA-Z0-9\s]"/>
                     </div>
-                    <div class="col-sm-12 col-lg-12">
-                        <div class="form-group">
-                            <label for="dateLastDeactivated">Date Last Deactivated</label>
-                            <input type="text" class="form-control" id="dateLastDeactivated" name="date_last_deactivated" disabled>
-                            <div class="invalid-feedback"></div>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -215,15 +122,12 @@
                 <h3 >Financial Information</h3>
             </div>
             <div class="col-sm-12 col-lg-6">
-                <div class="form-group">
-                    <label>Charging Scheme</label>
-                    <select class="form-control select2" style="width: 100%;" required>
-                      <option selected="selected" disabled>-Select Charging Scheme-</option>
-                      <option>Measure</option>
-                      <option>Property</option>
-                    </select>
-                    <div class="invalid-feedback"></div>
-                  </div>
+                <x-select label="Charging Scheme" name="charging_scheme" :required="true">
+                    <option selected="selected" disabled value="">-Select Charging Scheme-</option>
+                    @foreach ($chargingSchemes as $chargingScheme):
+                        <option value="{{$chargingScheme->id}}">{{$chargingScheme->name}}</option>
+                    @endforeach
+                </x-select>   
             </div>
             <div class="col-sm-12 col-lg-6">
                 <div class="form-group">
@@ -233,22 +137,14 @@
                 </div>
             </div>
             <div class="col-sm-12 col-lg-6">
-                <div class="form-group">
-                    <label for="chargeByPropertyRate">Charge by Property Rate</label>
-                    <input type="text" class="form-control" id="chargeByPropertyRate" name="charge_by_property_rate" placeholder="Enter Property Rate" required textpattern="[0-9\s]">
-                    <div class="invalid-feedback"></div>
-                </div>
+                <x-input type="text" name="charge_by_property_rate" label="Charge by Property Rate" :required="true" inputformat="[0-9.]" />
             </div>
             <div class="col-sm-12 col-lg-6">
-                <div class="form-group">
-                    <label for="currency">Currency</label>
-                    <input type="text" class="form-control" id="currency" name="currency" value="GBP" disabled>
-                    <div class="invalid-feedback"></div>
-                </div>
+                <x-input type="text" name="currency" label="Currency" :required="true" :disabled="true" value="GBP" />
             </div>
         </div>
     </div>
     <div class="card-footer d-flex justify-content-end align-items-center">
-        <button class="btn btn-primary next w-25 mx-2" id="clientKeyDetails" formid="clientKeyDetailsForm">Next</button>
+        <button type="button" class="btn btn-primary next w-25 mx-2" id="clientKeyDetails" formid="clientKeyDetailsForm">Next</button>
     </div>
 </div>

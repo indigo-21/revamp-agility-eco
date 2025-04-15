@@ -3,30 +3,26 @@
         <h3 class="card-title">Client Measures</h3>
     </div>
     <div class="card-body">
-        <div class="row border-bottom pb-3">
-            <div class="col-sm-12 col-lg-6">
-                <div class="form-group">
-                    <label>Measure CAT</label>
-                    <select class="form-control select2" style="width: 100%;">
-                        <option selected="selected" disabled>-Select Measure-</option>
-                        <option>Alaska</option>
-                    </select>    
-                </div>  
+        <div class="row border-bottom pb-3" id="clientMeasuresForm">
+            <div class="col-sm-12 col-lg-3">
+                <x-select label="Measure CAT" name="measure_cat" :required="true">
+                        <option selected="selected" disabled value="">-Select Measure-</option>
+                        @foreach ($measureCategories as $measureCategory )
+                            <option value="{{$measureCategory->id}}">{{$measureCategory->measure_cat}}</option>
+                        @endforeach
+                </x-select>  
             </div>
-            <div class="col-sm-6 col-lg-3">
+            <div class="col-sm-6 col-lg-6">
                 <div class="form-group">
-                    <label for="measureFeeValue">Measure Fee Value</label>
-                    <input type="text" class="form-control" id="measureFeeValue" name="measure_fee_value" placeholder="Enter Measure Fee Value">
+                    <x-input type="text" name="measure_fee_value" label="Measure Fee Value" :required="true" inputformat="[a-zA-Z\s]" />
                 </div>
             </div>
             <div class="col-sm-6 col-lg-3">
-                <div class="form-group">
-                    <label for="measureFeeCurrency">Measure Fee Currency</label>
-                    <input type="text" class="form-control" id="measureFeeCurrency" name="measure_fee_value" value="GBP" disabled>
-                </div>
+                    <x-input type="text" name="measure_fee_currency" label="Measure Fee Currency" :disabled="true" value="GBP"/>
+            
             </div>
             <div class="col-sm-12 col-lg-6 offset-lg-3 text-center">
-                <button class="btn btn-success w-50 mx-2">Add</button>
+                <button type="button" class="btn btn-success w-50 mx-2" id="clientMeasuresBtn" formid="clientMeasuresForm">Add</button>
             </div>
         </div>
         <div class="row mt-3">
@@ -41,19 +37,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Measure</td>
-                            <td>Charge Value</td>
-                            <td>Currency</td>
-                            <td>Action</td>
-                        </tr>
+                    
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
     <div class="card-footer d-flex justify-content-end align-items-center">
-        <button class="btn btn-secondary prev w-25 mx-2">Previous</button>
-        <button class="btn btn-primary next w-25 mx-2">Next</button>
+        <button type="button" class="btn btn-secondary prev w-25 mx-2">Previous</button>
+        <button type="button" class="btn btn-primary next w-25 mx-2" tableid="clientMeasureTable">Next</button>
     </div>
 </div>

@@ -2,6 +2,8 @@
 
 @section('importedStyles')
     @include('includes.datatables-links')
+    <link rel="stylesheet" href="{{asset('plugins/select2/css/select2.min.css')}}">
+    <link rel="stylesheet" href="{{asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
     <style>
         .vertical-center {
             vertical-align: middle !important;
@@ -41,10 +43,10 @@
                                 </div>
                                 <div class="right w-50">
                                     <div class="d-flex justify-content-end align-items-center">
-                                        <button type="button" class="w-25 btn btn-outline-primary">
+                                        <button type="button" class="w-25 btn btn-white">
                                             <i class="fa fa-plus-circle" aria-hidden="true"></i> Filter
                                         </button>
-                                        <button type="button" class="w-25 btn btn-outline-danger">
+                                        <button type="button" class="w-25 btn btn-white">
                                             <i class="fa fa-plus-circle" aria-hidden="true"></i> Reset
                                         </button>
                                     </div>
@@ -54,44 +56,36 @@
                         <div class="card-body">
                             <div class="row">
                                     <div class="col-sm-12 col-lg-3">
-                                        <div class="form-group">
-                                            <label for="clientStatus">Client Status</label>
-                                            <select class="custom-select rounded-0" id="clientStatus">
-                                              <option>-Select Client Status-</option>
-                                              <option>Active</option>
-                                              <option>Inactive</option>
-                                            </select>
-                                          </div>
+                                        <x-select label="Client Status" name="client_status">
+                                            <option selected="selected" disabled value="">-Client Status-</option>
+                                            <option value="">-Select Client Status-</option>
+                                            <option value="1">Active</option>
+                                            <option value="0">Inactive</option>
+                                        </x-select> 
                                     </div>
                                     <div class="col-sm-12 col-lg-3">
-                                        <div class="form-group">
-                                            <label for="clientName">Client Name</label>
-                                            <select class="custom-select rounded-0" id="clientName">
-                                              <option>-Select Client Name-</option>
-                                              <option>Active</option>
-                                              <option>Inactive</option>
-                                            </select>
-                                          </div>
+                                        <x-select label="Client Name" name="client_name">
+                                            <option selected="selected" disabled value="">-Client Name-</option>
+                                            @foreach ($clients as $client)
+                                                <option value="{{$client->client_user_id}}">{{$client->client_name}}</option>
+                                            @endforeach
+                                        </x-select> 
                                     </div>
                                     <div class="col-sm-12 col-lg-3">
-                                        <div class="form-group">
-                                            <label for="clientType">Client Type</label>
-                                            <select class="custom-select rounded-0" id="clientType">
-                                              <option>-Select Client Type-</option>
-                                              <option>Active</option>
-                                              <option>Inactive</option>
-                                            </select>
-                                          </div>
+                                        <x-select label="Client Type" name="client_type">
+                                            <option selected="selected" disabled value="">-Client Type-</option>
+                                            @foreach ($clients as $client)
+                                                <option value="{{$client->client_type_id}}">{{$client->client_type}}</option>
+                                            @endforeach
+                                        </x-select> 
                                     </div>
                                     <div class="col-sm-12 col-lg-3">
-                                        <div class="form-group">
-                                            <label for="jobType">Job Type</label>
-                                            <select class="custom-select rounded-0" id="jobType">
-                                              <option>-Select Job Type-</option>
-                                              <option>Active</option>
-                                              <option>Inactive</option>
-                                            </select>
-                                          </div>
+                                        <x-select label="Job Type" name="job_type">
+                                            <option selected="selected" disabled value="">-Job Type-</option>
+                                            @foreach ($jobTypes as $jobType)
+                                                <option value="{{$jobType->id}}">{{$jobType->type}}</option>
+                                            @endforeach
+                                        </x-select> 
                                     </div>
                             </div>
                         </div>
@@ -111,7 +105,7 @@
                                     </h3>
                                 </div>
                                 <div class="right">
-                                    <a type="button" class="btn btn-block btn-outline-primary" href="{{route('client-configuration.create')}}">
+                                    <a type="button" class="btn btn-block btn-white" href="{{route('client-configuration.create')}}">
                                         <i class="fa fa-plus-circle" aria-hidden="true"></i> Add Client
                                     </a>
                                 </div>
@@ -132,24 +126,32 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>
-                                            <strong>Client Name</strong><br>
-                                            <small>Client Email</small><br>
-                                            <small>Client Landline</small><br>
-                                            <small>Client Address</small><br>
-                                        </td>
-                                        <td>Client TLA</td>
-                                        <td>Client Type</td>
-                                        <td>Job Type</td>
-                                        <td>Status</td>
-                                        <td>
-                                            <button type="button" class="btn btn-block btn-primary">
-                                                <i class="fa fa-eye" aria-hidden="true"></i>&nbsp; View
-                                            </button>
-                                        </td>
-                                    </tr>
+                                    @foreach ($clients as $client)
+                                        <tr>
+                                            <td>{{ $loop->index + 1 }}</td>
+                                            <td>
+                                                <strong>{{$client->client_name}}</strong><br>
+                                                <small>{{$client->client_email}}</small><br>
+                                                <small>{{$client->client_mobile}}</small><br>
+                                                <small>{{$client->client_address1}} {{$client->client_address2}} {{$client->client_address3}} {{$client->client_city}} {{$client->client_country}} {{$client->client_postcode}}</small><br>
+                                            </td>
+                                            <td>{{$client->client_tla}}</td>
+                                            <td>{{$client->client_type}}</td>
+                                            <td>Job Type</td>
+                                            <td>
+                                                @if ($client->is_active == 1)
+                                                    Active
+                                                @else
+                                                    Inactive
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-block btn-primary">
+                                                    <i class="fa fa-eye" aria-hidden="true"></i>&nbsp; View
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -163,5 +165,7 @@
 
 @section('importedScripts')
     @include('includes.datatables-scripts')
+    <!-- Select2 -->
+    <script src="{{asset('plugins/select2/js/select2.full.min.js')}}"></script>
     <script src="{{ asset('assets/js/client-configuration.js') }}"></script>
 @endsection

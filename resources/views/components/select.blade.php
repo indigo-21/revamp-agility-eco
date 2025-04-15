@@ -1,10 +1,11 @@
-@props(['label', 'name', 'multiple'])
+@props(['label', 'name', 'required'=> false, 'multiple' => false])
 
 <div class="form-group">
     <label>{{ $label }}</label>
-    <select class="form-control select2" name="{{ $name }}" {{ $multiple ? 'multiple' : '' }}>
+    <select class="form-control select2 w-100" name="{{ $name }}" {{ $multiple ? 'multiple' : '' }} @required($required)>
         {{ $slot }}
     </select>
+    <div class="invalid-feedback"></div>
 </div>
 {{-- 
 <div class="form-group">
