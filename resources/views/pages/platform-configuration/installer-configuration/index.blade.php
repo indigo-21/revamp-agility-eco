@@ -47,9 +47,9 @@
                                         href="{{route('installer-configuration.create')}}">
                                         <i class="fa fa-plus-square mr-1" aria-hidden="true"></i> Create Installer
                                     </a>
-                                    <a type="button" class="btn bg-gradient-warning" href="">
+                                    {{-- <a type="button" class="btn bg-gradient-warning" href="">
                                         <i class="fa fa-upload mr-1" aria-hidden="true"></i> Upload CSV
-                                    </a>
+                                    </a> --}}
                                 </div>
                             </div>
                         </div>
@@ -68,9 +68,9 @@
                                 <tbody>
                                     @foreach ($installers as $installer)
                                         <tr>
-                                            <td>{{ $installer->name }}</td>
-                                            <td>{{ $installer->email }}</td>
-                                            <td>{{ $installer->contact_number }}</td>
+                                            <td>{{ $installer->user->firstname }}</td>
+                                            <td>{{ $installer->user->email }}</td>
+                                            <td>{{ $installer->user->mobile }}</td>
                                             <td>
                                                 <div>
                                                     <button type="button" class="btn bg-gradient-primary">

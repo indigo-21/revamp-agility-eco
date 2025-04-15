@@ -77,8 +77,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- /.row (main row) -->
-            </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.row (main row) -->
+        </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
 

@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('installers', function (Blueprint $table) {
+        Schema::create('property_inspector_job_types', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('property_inspector_id')->constrained();
+            $table->foreignId('job_type_id')->constrained();
+            $table->integer('rating')->default(0)->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('installers');
+        Schema::dropIfExists('property_inspector_job_types');
     }
 };

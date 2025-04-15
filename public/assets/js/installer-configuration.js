@@ -40,13 +40,13 @@ $("#submitBtn").on("click", function(e) {
 $("#addClient").on("click", function() {
     let clientData = {
         dataId: Math.floor(Math.random() * 100) + 1,
-        suffic: $('#client').val(),
+        suffix: $('#client').val(),
         client: $('#client option:selected').text(),
         tmln:   $("#tmln").val(),
     };
 
     clientTable.row.add([
-        clientData.suffic,
+        clientData.suffix,
         clientData.client,
         clientData.tmln,
         ` <button type="button" class="btn bg-gradient-danger deleteClient" data-id="${clientData.dataId}">

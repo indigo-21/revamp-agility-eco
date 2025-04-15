@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AccountLevel;
 use App\Models\ChargingScheme;
+use App\Models\JobType;
 use App\Models\Measure;
 use App\Models\OutwardPostcode;
 use App\Models\PropertyInspector;
@@ -23,7 +24,7 @@ class PropertyInspectorController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('pages.property-inspector.index')
+        return view('pages.platform-configuration.property-inspector.index')
             ->with('property_inspectors', $property_inspectors);
     }
 
@@ -37,12 +38,14 @@ class PropertyInspectorController extends Controller
         $measures = Measure::all();
         $outward_postcodes = OutwardPostcode::all();
         $charging_schemes = ChargingScheme::all();
+        $job_types = JobType::all();
 
-        return view('pages.property-inspector.form')
+        return view('pages.platform-configuration.property-inspector.form')
             ->with('employment_basis', $employment_basis)
             ->with('measures', $measures)
             ->with('outward_postcodes', $outward_postcodes)
-            ->with('charging_schemes', $charging_schemes);
+            ->with('charging_schemes', $charging_schemes)
+            ->with('job_types', $job_types);
     }
 
     /**
@@ -77,7 +80,7 @@ class PropertyInspectorController extends Controller
      */
     public function show(PropertyInspector $propertyInspector)
     {
-        return view('pages.property-inspector.show')
+        return view('pages.platform-configuration.property-inspector.show')
             ->with('property_inspector', $propertyInspector);
     }
 
@@ -92,13 +95,16 @@ class PropertyInspectorController extends Controller
         $measures = Measure::all();
         $outward_postcodes = OutwardPostcode::all();
         $charging_schemes = ChargingScheme::all();
+        $job_types = JobType::all();
 
-        return view('pages.property-inspector.form')
+
+        return view('pages.platform-configuration.property-inspector.form')
             ->with('employment_basis', $employment_basis)
             ->with('measures', $measures)
             ->with('outward_postcodes', $outward_postcodes)
             ->with('charging_schemes', $charging_schemes)
-            ->with('property_inspector', $propertyInspector);
+            ->with('property_inspector', $propertyInspector)
+            ->with('job_types', $job_types);
     }
 
     /**
@@ -110,6 +116,12 @@ class PropertyInspectorController extends Controller
         $user = (new UserService)->store($request, $propertyInspector->user_id);
 
         (new PropertyInspectorService)->store($request, $user->id, $propertyInspector->id);
+
+        // Return a success message
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Property Inspector created successfully',
+        ]);
     }
 
     /**

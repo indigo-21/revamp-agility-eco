@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\JobType;
 use App\Models\Measure;
 use App\Models\PropertyInspector;
+use App\Models\PropertyInspectorJobType;
 use App\Models\PropertyInspectorMeasure;
 use App\Models\PropertyInspectorPostcode;
 use App\Models\PropertyInspectorQualification;
@@ -26,15 +28,8 @@ class PropertyInspectorService
             $property_inspector->id_badge = $id_badge;
         }
 
-
         $property_inspector->status = $request->status;
         $property_inspector->can_book_jobs = $request->can_book_jobs;
-        $property_inspector->qai = $request->qai;
-        $property_inspector->qai_rating = $request->qai_rating;
-        $property_inspector->assessor = $request->assessor;
-        $property_inspector->assessor_rating = $request->assessor_rating;
-        $property_inspector->surveyor = $request->surveyor;
-        $property_inspector->surveyor_rating = $request->surveyor_rating;
         $property_inspector->pi_employer = $request->pi_employer;
         $property_inspector->photo_expiry = $request->photo_expiry;
         $property_inspector->id_issued = $request->id_issued;
@@ -65,6 +60,7 @@ class PropertyInspectorService
         $property_inspector->save();
 
         self::storePIPostcode($property_inspector->id, $request);
+        self::storePIJobType(1, $request);
         self::storePIMeasures($property_inspector->id, $request);
         self::storePIQualifications($property_inspector->id, $request);
 
@@ -94,6 +90,37 @@ class PropertyInspectorService
 
                 $property_inspector_postcode->save();
             }
+        }
+    }
+
+    public function storePIJobType($pi_id, $request)
+    {
+
+        $job_types = JobType::all();
+
+        foreach ($job_types as $job_type) {
+
+            if ($request[$job_type->type] == 1) {
+
+                $exists = PropertyInspectorJobType::where('job_type_id', $job_type->id)
+                    ->where('property_inspector_id', $pi_id)
+                    ->exists();
+
+                if (!$exists) {
+                    $property_inspector_job_type = new PropertyInspectorJobType;
+
+                    $property_inspector_job_type->property_inspector_id = $pi_id;
+                    $property_inspector_job_type->job_type_id = $job_type->id;
+                    $property_inspector_job_type->rating = $request["{$job_type->type}_rating"];
+
+                    $property_inspector_job_type->save();
+                }
+            } else {
+                $property_inspector_job_type = PropertyInspectorJobType::where('job_type_id', $job_type->id)
+                    ->where('property_inspector_id', $pi_id)
+                    ->delete();
+            }
+
         }
     }
 

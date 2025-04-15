@@ -70,11 +70,14 @@
                                         </x-select>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="form-group">
+                                        <x-textarea name="description" label="Description" rows="5"
+                                            value="{{ isset($scheme) ? $scheme->description : '' }}" />
+
+                                        {{-- <div class="form-group">
                                             <label>Textarea</label>
                                             <textarea class="form-control" rows="3" placeholder="Enter ..." data-qb-tmp-id="lt-970335" spellcheck="false"
                                                 data-gramm="false" name="description">{{ isset($scheme) ? $scheme->description : '' }}</textarea>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>

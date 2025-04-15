@@ -52,67 +52,42 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <!-- <div class="form-group">
-                                            <label for="name">Name of Installer</label>
-                                            <input type="text" name="name" class="form-control" id="name"
-                                                placeholder="Enter Installer Name" value="">
-                                        </div> -->
-                                        <x-input name="name" label="Name of Installer" />
+                                        <x-input name="firstname" label="Name of Installer" />
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="email">Email</label>
-                                                    <input type="email" name="email" class="form-control" id="email"
-                                                        placeholder="Enter Email">
-                                                </div>
+                                                <x-input name="email" label="Email" type="email" />
                                             </div>
+
                                             <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="contact_number">Contact Number</label>
-                                                    <input type="text" name="contact_number" class="form-control"
-                                                        id="contact_number" placeholder="Enter Contact Number">
-                                                </div>
+
+                                                <x-input name="mobile" label="Contact Number" type="number" />
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="user-profile">User Profile</label>
-                                                    <select name="user_profile" id="user-profile" class="select2" style="width: 100%;"
-                                                        disabled>
-                                                        <option value="{{ $userType->id }}" selected>{{ $userType->name }}
-                                                        </option>
-                                                    </select>
-                                                </div>
+                                                <x-select label="User Profile" name="user_type_id" :multiple="false">
+                                                    <option value="{{ $userType->id }}" selected>{{ $userType->name }}
+                                                    </option>
+                                                </x-select>
                                             </div>
                                             <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="organisation">Organisation</label>
-                                                    <input type="text" name="organisation" class="form-control"
-                                                        id="organisation" placeholder="Enter Organisation">
-                                                </div>
+                                                <x-input name="organisation" label="Organisation" />
+
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="row">
                                             <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="client">Client</label>
-                                                    <select name="client" id="client" class="select2" style="width: 100%;">
-                                                        <option value="">- SELECT CLIENT -</option>
-                                                        @foreach ($clients as $client)
-                                                            <option value="{{ $client->id }}">{{ $client->name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                                <x-select label="Client" name="client" :multiple="false">
+                                                    @foreach ($clients as $client)
+                                                        <option value="{{ $client->id }}">{{ $client->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </x-select>
                                             </div>
                                             <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="tmln">tmln</label>
-                                                    <input type="text" name="tmln" class="form-control" id="tmln"
-                                                        placeholder="Enter tmln">
-                                                </div>
+                                                <x-input name="tmln" label="TMLN" />
                                             </div>
                                             <div class="col-md-4 d-flex align-items-end justify-content-center">
                                                 <div class="form-group w-100">
@@ -126,7 +101,7 @@
                                                 <table id="installerClientTable" class="table table-bordered table-striped">
                                                     <thead>
                                                         <tr>
-                                                            <th>Suffic</th>
+                                                            <th>Suffix</th>
                                                             <th>Client</th>
                                                             <th>TMLN</th>
                                                             <th>Action</th>
@@ -141,7 +116,8 @@
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <button type="button" class="btn btn-primary d-block m-auto w-100" id="submitBtn">Submit</button>
+                                <button type="button" class="btn btn-primary d-block m-auto w-100"
+                                    id="submitBtn">Submit</button>
                             </div>
                         </form>
                     </div>

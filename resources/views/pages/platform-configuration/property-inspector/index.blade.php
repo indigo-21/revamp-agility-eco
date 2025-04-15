@@ -38,7 +38,7 @@
                                 <div class="left">
                                     <h3 class="card-title">
                                         <i class="fas fa-exclamation-triangle"></i>
-                                        List of Property Inspector
+                                        List of Property Inspector {{session('status')}}
                                     </h3>
                                 </div>
                                 <div class="right">
@@ -134,7 +134,7 @@
 
 @section('importedScripts')
     <script>
-        var toastType = @json(session('success'));
+        var toastType = @json(session('status'));
     </script>
     <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>

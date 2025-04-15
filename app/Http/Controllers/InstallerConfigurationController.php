@@ -8,6 +8,7 @@ use App\Models\InstallerClient;
 use App\Models\User;
 use App\Models\UserType;
 use App\Models\Client;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class InstallerConfigurationController extends Controller
@@ -40,10 +41,12 @@ class InstallerConfigurationController extends Controller
      */
     public function store(Request $request)
     {
+        $request->account_level_id = 5; //Installer
+
+        $user = (new UserService)->store($request);
+
         $installer = new Installer();
-        $installer->name = $request->name;
-        $installer->email = $request->email;
-        $installer->contact_number = $request->contact_number;
+        $installer->user_id = $user->id;
         $installer->save();
 
         $installerClients = json_decode($request->input('clientsArray'), true);
@@ -51,7 +54,7 @@ class InstallerConfigurationController extends Controller
         foreach ($installerClients as $installerClient) {
             $client = new InstallerClient();
             $client->installer_id = $installer->id;
-            $client->client_id = $installerClient['suffic'];
+            $client->client_id = $installerClient['suffix'];
             $client->tmln = $installerClient['tmln'];
             $client->save();
         }

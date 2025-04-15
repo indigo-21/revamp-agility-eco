@@ -38,7 +38,8 @@ class MeasureController extends Controller
 
         $measure->save();
 
-        return redirect()->route('measure.index')->with('success', 'Measure created successfully');
+        return redirect()->route('measure.index')
+            ->with('success', 'Measure created successfully');
 
     }
 
@@ -65,10 +66,10 @@ class MeasureController extends Controller
      */
     public function update(Request $request, Measure $measure)
     {
-        $data = $request->except(['_token', '_method']);
-        $measure->update($data);
+        $measure->update($request->all());
 
-        return redirect()->route('measure.index')->with('success', 'Measure updated successfully');
+        return redirect()->route('measure.index')
+            ->with('success', 'Measure updated successfully');
     }
 
     /**

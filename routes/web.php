@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\JobController;
 use App\Http\Controllers\MeasureController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SchemeController;
@@ -22,6 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::resource('job', JobController::class);
     Route::resource('property-inspector', PropertyInspectorController::class);
     Route::resource('client-configuration', ClientConfigurationController::class);
     Route::resource('measure', MeasureController::class);

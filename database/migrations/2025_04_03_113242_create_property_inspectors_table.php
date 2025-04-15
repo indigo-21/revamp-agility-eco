@@ -17,12 +17,12 @@ return new class extends Migration
             $table->boolean('status')->default(false);
             $table->date('deactivate_date')->nullable();
             $table->boolean('can_book_jobs')->default(false);
-            $table->boolean('qai')->default(false);
-            $table->integer('qai_rating')->nullable();
-            $table->boolean('assessor')->default(false);
-            $table->integer('assessor_rating')->nullable();
-            $table->boolean('surveyor')->default(false);
-            $table->integer('surveyor_rating')->nullable();
+            // $table->boolean('qai')->default(false);
+            // $table->integer('qai_rating')->nullable();
+            // $table->boolean('assessor')->default(false);
+            // $table->integer('assessor_rating')->nullable();
+            // $table->boolean('surveyor')->default(false);
+            // $table->integer('surveyor_rating')->nullable();
             $table->string('pi_employer')->nullable();
             $table->date('photo_expiry')->nullable();
             $table->string('id_badge')->nullable();

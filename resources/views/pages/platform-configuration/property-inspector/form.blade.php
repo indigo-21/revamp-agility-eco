@@ -93,12 +93,12 @@
                                         @if (isset($property_inspector))
                                             @method('PUT')
                                         @endif
-                                        @include('pages.property-inspector.stepper.job-skills')
-                                        @include('pages.property-inspector.stepper.photo-and-id')
-                                        @include('pages.property-inspector.stepper.name-and-address')
-                                        @include('pages.property-inspector.stepper.commercial')
-                                        @include('pages.property-inspector.stepper.measures')
-                                        @include('pages.property-inspector.stepper.qualifications')
+                                        @include('pages.platform-configuration.property-inspector.stepper.job-skills')
+                                        @include('pages.platform-configuration.property-inspector.stepper.photo-and-id')
+                                        @include('pages.platform-configuration.property-inspector.stepper.name-and-address')
+                                        @include('pages.platform-configuration.property-inspector.stepper.commercial')
+                                        @include('pages.platform-configuration.property-inspector.stepper.measures')
+                                        @include('pages.platform-configuration.property-inspector.stepper.qualifications')
                                     </form>
                                 </div>
                             </div>

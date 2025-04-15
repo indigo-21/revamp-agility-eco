@@ -16,6 +16,10 @@ class PropertyInspector extends Model
     {
         return $this->hasMany(PropertyInspectorPostcode::class);
     }
+    public function propertyInspectorJobTypes()
+    {
+        return $this->hasMany(PropertyInspectorJobType::class);
+    }
     public function propertyInspectorMeasures()
     {
         return $this->hasMany(PropertyInspectorMeasure::class);

@@ -18,7 +18,7 @@ class SurveyQuestionSetController extends Controller
     public function index()
     {
         $surveyQuestionSets = SurveyQuestionSet::all();
-        return view('pages.survey-question-set.index', compact('surveyQuestionSets'));
+        return view('pages.platform-configuration.survey-question-set.index', compact('surveyQuestionSets'));
     }
 
     /**
@@ -60,7 +60,7 @@ class SurveyQuestionSetController extends Controller
         // ->orderBy('created_at', 'desc')
         ->get();
         // dd( $surveyQuestionSets);
-        return view('pages.survey-question-set.show',compact('surveyQuestionSets'));
+        return view('pages.platform-configuration.survey-question-set.show',compact('surveyQuestionSets'));
       
     }
 
