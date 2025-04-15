@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('job', JobController::class);
     Route::resource('property-inspector', PropertyInspectorController::class);
     Route::resource('client-configuration', ClientConfigurationController::class);
+    Route::post('client-configuration/validateEmail', [ClientConfigurationController::class, 'validateEmail'])->name('validateEmail');
     Route::resource('measure', MeasureController::class);
 	Route::resource('installer-configuration', InstallerConfigurationController::class);
     Route::resource('survey-question-set', SurveyQuestionSetController::class);
