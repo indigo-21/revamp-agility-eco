@@ -9,6 +9,7 @@ class UserService
 {
     public function store($request, $user_id = null)
     {
+       
         if ($user_id) {
             $user = User::find($user_id);
         } else {
@@ -17,10 +18,12 @@ class UserService
             $user->user_type_id = $request->user_type_id;
         }
 
-        $profile_image = (new StoreImage)->store($request, 'photo', 'profile_images');
+        if($request instanceof \Illuminate\Http\Request){
+            $profile_image = (new StoreImage)->store($request, 'photo', 'profile_images');
 
-        if ($profile_image) {
-            $user->photo = $profile_image;
+            if ($profile_image) {
+                $user->photo = $profile_image;
+            }
         }
 
         $user->firstname = $request->firstname;

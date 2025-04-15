@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('client_job_types', function (Blueprint $table) {
+        Schema::create('client_installers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('client_id')->constrained();
-            $table->foreignId('job_type_id')->constrained();
-            $table->integer('visit_duration')->unsigned()->nullable();
+            $table->foreignId('client_id')->constrained()->onDelete('cascade');
+            $table->foreignId('installer_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('client_job_types');
+        Schema::dropIfExists('client_installers');
     }
 };

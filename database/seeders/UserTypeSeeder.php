@@ -18,6 +18,7 @@ class UserTypeSeeder extends Seeder
             'Third-Party',
             'Installer',
             'Property Inspector',
+            'Client'
         );
 
         foreach ($values as $value) {
