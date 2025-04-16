@@ -1,3 +1,33 @@
+@php
+        $qai                         = "";
+        $surveyor                    = "";
+        $assessor                    = "";
+        $qai_checkbox                = false;
+        $surveyor_checkbox           = false;
+        $assessor_checkbox           = false;
+        $can_job_outcome_be_appealed = false;
+        $is_active                   = false;
+
+        if (isset($client)) {
+            $can_job_outcome_be_appealed = $client_key_details->can_job_outcome_appealed;
+            $is_active                   = $client_key_details->is_active;
+
+            if (count($client_job_types) > 0) {
+                $qai_found      = collect($client_job_types)->firstWhere('job_type_id', 1);
+                $surveyor_found = collect($client_job_types)->firstWhere('job_type_id', 2);
+                $assessor_found = collect($client_job_types)->firstWhere('job_type_id', 3);
+
+                $qai               = $qai_found ? $qai_found['visit_duration'] : '';
+                $surveyor          = $surveyor_found ? $surveyor_found['visit_duration'] : '';
+                $assessor          = $assessor_found ? $assessor_found['visit_duration'] : '';
+                $qai_checkbox      = $qai != "" ? true : false;
+                $surveyor_checkbox = $surveyor != "" ? true : false;
+                $assessor_checkbox = $qai_checkbox != "" ? true : false;
+            }
+        
+            
+        }
+@endphp
 <div id="step1" class="card card-primary card-outline step active-step">
     <div class="card-header">
         <h3 class="card-title">Client Key Details</h3>
@@ -6,79 +36,83 @@
         <div class="row border-bottom">
             <div class="col-sm-12 col-lg-12">
                 <div class="row">
-                    <div class="col-sm-12 col-lg-4">
-                        <x-input type="text" name="client_name" label="Client Name" :required="true" inputformat="[a-zA-Z\s]" />
+                    <div class="col-sm-12 col-lg-6">
+                        <x-radio-layout label="Active">
+                            <div class="col-md-6">
+                                <x-radio label="Yes" name="active" id="active_yes" :checked="$is_active" />
+                            </div>
+                            <div class="col-md-6">
+                                <x-radio label="No" name="active" id="active_no" :checked="!$is_active"/>
+                            </div>
+                        </x-radio-layout>
                     </div>
-                    <div class="col-sm-12 col-lg-4">
-                        <x-input type="text" name="organisation" label="Organisation" :required="true" inputformat="[a-zA-Z0-9!@#&()\-]" />
+                    <div class="col-sm-12 col-lg-6">
+                        <x-radio-layout label="Can Job Outcome be appealed?">
+                            <div class="col-md-6">
+                                <x-radio label="Yes" name="can_job_outcome_be_appealed" id="can_job_outcome_be_appealed_yes" :checked="$can_job_outcome_be_appealed" />
+                            </div>
+                            <div class="col-md-6">
+                                <x-radio label="No" name="can_job_outcome_be_appealed" id="can_job_outcome_be_appealed_no" :checked="!$can_job_outcome_be_appealed"/>
+                            </div>
+                        </x-radio-layout>
                     </div>
-                    <div class="col-sm-12 col-lg-4">
-                        <x-input type="text" name="client_abbrevation" label="Client Abbrevation" :required="true" inputformat="[a-zA-Z\s]" />
+                    <div class="col-sm-12 col-lg-6">
+                        <x-input type="text" name="date_last_activated" label="Date Last Activated" value="{{ isset($client) ? $client->date_last_activated : '' }}" :disabled="true" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
                         <x-select label="Client Type" name="client_type_id" :required="true">
                             <option selected="selected" disabled value="">-Select Client Type-</option>
                             @foreach ($clientTypes as $clientType )
-                                <option selected="selected" value="{{$clientType->id}}">{{$clientType->name}}</option>
+                                <option {{isset($client) && $client->client_type_id == $clientType->id ? 'selected'  : ''}}  value="{{$clientType->id}}">{{$clientType->name}}</option>
                             @endforeach
                         </x-select>   
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" class="job-types" name="qai_visit_duration" label="QAI Visit Duration (hours)" inputformat="[0-9]" />
+                        <x-input type="text" name="date_last_deactivated" label="Date Last Deactivated" value="{{isset($client) ? $client->date_last_deactivated : ''}}" :disabled="true" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" class="job-types" name="assessor_visit_duration" label="Assessor Visit Duration (hours)" inputformat="[0-9]" />
+                        <x-input type="text" name="organisation" label="Organisation" :required="true" value="{{isset($client) ? $client->user->organisation : ''}}" inputformat="[a-zA-Z0-9!@#&()\-.\s]" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" class="job-types" name="surveyor_visit_duration" label="Surveyor Visit Duration (hours)" inputformat="[0-9]" />
+                        <x-input type="text" name="client_name" label="Client Name" :required="true" value="{{isset($client) ? $client->user->firstname : ''}}" inputformat="[a-zA-Z0-9!@#&()\-.\s]" />
                     </div>
                     
-                    <div class="col-sm-12 col-lg-12 row">
-                        <div class="col-sm-12 col-lg-6">
-                            <div class="form-group">
-                                <label for="">Job Type</label>
-                                <div class="row form-group">
-                                    <div class="col-4">
-                                        <x-checkbox name="qai" label="QAI" />
-                                    </div>
-                                    <div class="col-4">
-                                        <x-checkbox name="assesor" label="Assessor" />
-                                    </div>
-                                    <div class="col-4">
-                                        <x-checkbox name="surveyor" label="Surveyor" />
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="invalid-feedback"></div>
-                                    </div>
+                    <div class="col-sm-12 col-lg-6">
+                        <x-input type="text" name="client_abbrevation" label="Client Abbrevation" :required="true" value="{{isset($client) ? $client->client_abbrevation : ''}}" inputformat="[a-zA-Z0-9!@#&()\-.\s]" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-lg-12">
+                <div class="row">
+                    <div class="col-12 my-4 py-2">
+                        <h3>Client Job Types</h3>
+                    </div>
+
+                    <div class="col-sm-12 col-lg-6">
+                        <x-input type="text" class="job-types" name="qai_visit_duration" label="QAI Visit Duration (hours)" value="{{$qai}}" inputformat="[0-9]" />
+                    </div>
+                    <div class="col-sm-12 col-lg-6">
+                        <x-input type="text" class="job-types" name="assessor_visit_duration" label="Assessor Visit Duration (hours)" value="{{$assessor}}" inputformat="[0-9]" />
+                    </div>
+                    <div class="col-sm-12 col-lg-6">
+                        <x-input type="text" class="job-types" name="surveyor_visit_duration" label="Surveyor Visit Duration (hours)" value="{{$surveyor}}" inputformat="[0-9]" />
+                    </div>
+                    <div class="col-sm-12 col-lg-6">
+                        <div class="form-group">
+                            <label for="">Job Type</label>
+                            <div class="row">
+                                <div class="col-4">
+                                    <x-checkbox name="qai" label="QAI" ischeck="{{$qai_checkbox}}"/>
+                                </div>
+                                <div class="col-4">
+                                    <x-checkbox name="assessor" label="Assessor" ischeck="{{$surveyor_checkbox}}"/>
+                                </div>
+                                <div class="col-4">
+                                    <x-checkbox name="surveyor" label="Surveyor" ischeck="{{$assessor_checkbox}}"/>
                                 </div>
                             </div>
+                            <div class="invalid-feedback"></div>
                         </div>
-                        <div class="col-sm-12 col-lg-6">
-                            <x-radio-layout label="Can Job Outcome be appealed?">
-                                <div class="col-md-6">
-                                    <x-radio label="Yes" name="can_job_outcome_be_appealed" id="can_job_outcome_be_appealed_yes" :checked="true" />
-                                </div>
-                                <div class="col-md-6">
-                                    <x-radio label="No" name="can_job_outcome_be_appealed" id="can_job_outcome_be_appealed_no" />
-                                </div>
-                            </x-radio-layout>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-lg-4">
-                        <x-radio-layout label="Active">
-                            <div class="col-md-6">
-                                <x-radio label="Yes" name="active" id="active_yes" :checked="true" />
-                            </div>
-                            <div class="col-md-6">
-                                <x-radio label="No" name="active" id="active_no" />
-                            </div>
-                        </x-radio-layout>
-                    </div>
-                    <div class="col-sm-12 col-lg-4">
-                        <x-input type="text" name="date_last_activated" label="Date Last Activated" value="" :disabled="true" />
-                    </div>
-                    <div class="col-sm-12 col-lg-4">
-                        <x-input type="text" name="date_last_deactivated" label="Date Last Deactivated" :disabled="true" />
                     </div>
                 </div>
             </div>
@@ -96,19 +130,19 @@
                         <x-input type="text" name="phone_number" label="Phone Number" :required="true" inputformat="[0-9]" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" name="address1" label="Address 1" inputformat="[a-zA-Z0-9!@#&()\-]"/>
+                        <x-input type="text" name="address1" label="Address 1" inputformat="[a-zA-Z0-9!@#&()\-.\s]"/>
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" name="address2" label="Address 2" inputformat="[a-zA-Z0-9!@#&()\-]"/>
+                        <x-input type="text" name="address2" label="Address 2" inputformat="[a-zA-Z0-9!@#&()\-.\s]"/>
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" name="address3" label="Address 3" inputformat="[a-zA-Z0-9!@#&()\-]"/>
+                        <x-input type="text" name="address3" label="Address 3" inputformat="[a-zA-Z0-9!@#&()\-.\s]"/>
                     </div>
                     <div class="col-sm-12 col-lg-6">
                         <x-input type="text" name="city" label="City" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" name="country" label="Country" />
+                        <x-input type="text" name="country" label="County" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
                         <x-input type="text" name="postcode" label="Postcode" inputformat="[a-zA-Z0-9\s]"/>

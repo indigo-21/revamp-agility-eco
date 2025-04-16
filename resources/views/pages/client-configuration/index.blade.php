@@ -145,10 +145,10 @@
                                                     Inactive
                                                 @endif
                                             </td>
-                                            <td>
-                                                <button type="button" class="btn btn-block btn-primary">
+                                            <td>      
+                                                <a type="button" href="{{ route('client-configuration.show', $client->client_id) }}" class="btn btn-block btn-primary">
                                                     <i class="fa fa-eye" aria-hidden="true"></i>&nbsp; View
-                                                </button>
+                                                </a>
                                             </td>
                                         </tr>
                                     @endforeach

@@ -14,7 +14,7 @@
             </div>
             <div class="col-sm-6 col-lg-6">
                 <div class="form-group">
-                    <x-input type="text" name="measure_fee_value" label="Measure Fee Value" :required="true" inputformat="[a-zA-Z\s]" />
+                    <x-input type="text" name="measure_fee_value" label="Measure Fee Value" :required="true" inputformat="[0-9]" />
                 </div>
             </div>
             <div class="col-sm-6 col-lg-3">

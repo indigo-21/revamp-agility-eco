@@ -12,6 +12,10 @@ class Client extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
     public function clientJobType(): HasMany {
         return $this->hasMany(ClientJobType::class);
     }
@@ -46,6 +50,7 @@ class Client extends Model
         
         return $result_data->get();
     }
+
 
     
 }

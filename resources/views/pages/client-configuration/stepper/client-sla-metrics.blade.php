@@ -11,27 +11,27 @@
             </div>
             <div class="col-sm-12 col-lg-6">
                 <div class="form-group">
-                    <x-input type="text" name="maximum_booking_attemps" label="Maximum Booking Attemtps"  inputformat="[a-zA-Z\s]" />
+                    <x-input type="text" name="maximum_booking_attemps" label="Maximum Booking Attemtps"  inputformat="[0-9]" />
                 </div>
             </div>
             <div class="col-sm-12 col-lg-6">
                 <div class="form-group">
-                    <x-input type="text" name="maximum_remediation_attemps" label="Maximum Remediation Attemtps"  inputformat="[a-zA-Z\s]" />
+                    <x-input type="text" name="maximum_remediation_attemps" label="Maximum Remediation Attemtps"  inputformat="[0-9]" />
                 </div>
             </div>
             <div class="col-sm-12 col-lg-4">
                 <div class="form-group">
-                    <x-input type="text" name="maximum_no_show" label="Maximum No Show"  inputformat="[a-zA-Z\s]" />
+                    <x-input type="text" name="maximum_no_show" label="Maximum No Show"  inputformat="[0-9]" />
                 </div>
             </div>
             <div class="col-sm-12 col-lg-4">
                 <div class="form-group">
-                    <x-input type="text" name="maximum_number_appeals" label="Maximum Number of Appeals"  inputformat="[a-zA-Z\s]" />
+                    <x-input type="text" name="maximum_number_appeals" label="Maximum Number of Appeals"  inputformat="[0-9]" />
                 </div>
             </div>
             <div class="col-sm-12 col-lg-4">
                 <div class="form-group">
-                    <x-input type="text" name="job_deadline" label="Job deadline"  inputformat="[a-zA-Z\s]" />
+                    <x-input type="text" name="job_deadline" label="Job deadline"  inputformat="[0-9]" />
                 </div>
             </div>
             <div class="col-sm-12 col-lg-6">

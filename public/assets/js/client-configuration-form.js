@@ -1,4 +1,5 @@
 $(function () {
+    const dateNow  = moment().format("YYYY-MM-DD HH:mm:ss");
     const formData = {};
     //Initialize Elements Plugin
         $('.duallistbox').bootstrapDualListbox()
@@ -124,7 +125,7 @@ $(function () {
                 checkboxId = "qai";
                 break;
             case "assessor_visit_duration":
-                checkboxId = "assesor";
+                checkboxId = "assessor";
                 break;
             default: 
                 // surveyor_visit_duration
@@ -138,6 +139,23 @@ $(function () {
         }
         
     });
+
+    $(document).on("click","[name=active]", function(){
+        let isActive = $(this).attr("id") == "active_yes";
+        let inputId  = isActive ? "date_last_activated" :"date_last_deactivated";
+        $(`#${inputId}`).val(dateNow);
+    });
+
+    $(document).on("change","[name=charging_scheme]", function(){
+        let thisVal = $(this).val();
+        $("[name=payment_terms]").attr("required",false);
+        $("[name=charge_by_property_rate]").attr("required",false);
+        if(thisVal == 1){
+            $("[name=payment_terms]").attr("required",true);
+            $("[name=charge_by_property_rate]").attr("required",true);
+        }
+    });
+
 
 
     // Initialize Function 

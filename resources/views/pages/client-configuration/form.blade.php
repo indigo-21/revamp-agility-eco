@@ -41,7 +41,14 @@
                         <div class="card-header">
                             <div class="w-100 d-flex justify-content-between align-items-center">
                                 <div class="left w-50">
-                                    <h3>Creating New Client</h3>
+                                    <h3>
+                                        @if (isset($client))
+                                            Update 
+                                        @else
+                                            Creating New
+                                        @endif
+                                        Client
+                                    </h3>
                                 </div>
                             </div>
                         </div>

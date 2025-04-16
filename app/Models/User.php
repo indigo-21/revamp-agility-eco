@@ -47,6 +47,10 @@ class User extends Authenticatable
         ];
     }
 
+    public function clients(){
+        return $this->hasOne(Client::class);
+    }
+
     public function propertyInspector()
     {
         return $this->hasOne(PropertyInspector::class);

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ClientConfiguration;
 use App\Models\Client;
 use App\Models\ClientKeyDetail;
+use App\Models\ClientJobType;
 use App\Models\ClientSlaMetric;
 use App\Models\ClientInstaller;
 use App\Models\ClientType;
@@ -130,7 +131,7 @@ class ClientConfigurationController extends Controller
 
         $clientKeyDetailsRequest = $request["clientKeyDetailsForm"];
         $clientSlaMetricsRequest = $request["clientSlaMetricsForm"];
-        $clientInstallerRequest  = $request["clientInstallerForm"];
+        $clientInstallerRequest  = $request["clientInstallerForm"]["client_installers"];
         // STORING USERs TABLE
         $userData = (object)[
             "firstname"         => $clientKeyDetailsRequest["client_name"],
@@ -168,7 +169,7 @@ class ClientConfigurationController extends Controller
                                             "is_active"                 => $clientKeyDetailsRequest["active"] ? 1 : 0,
                                             "can_job_outcome_appealed"  => $clientKeyDetailsRequest["can_job_outcome_be_appealed"] ? 1 : 0,
                                             "is_qai"                    => $clientKeyDetailsRequest["qai"] ? 1 : 0,
-                                            "is_assessor"               => $clientKeyDetailsRequest["assesor"] ? 1 : 0,
+                                            "is_assessor"               => $clientKeyDetailsRequest["assessor"] ? 1 : 0,
                                             "is_surveyor"               => $clientKeyDetailsRequest["surveyor"] ? 1 : 0,
                                             "assessor_visit_duration"   => $clientKeyDetailsRequest["surveyor"] ? 1 : 0,
                                             "qai_visit_duration"        => $clientKeyDetailsRequest["surveyor"] ? 1 : 0,
@@ -223,16 +224,27 @@ class ClientConfigurationController extends Controller
         // Return a success message
         return response()->json([
             'status' => 'success',
-            'message' => 'Property Inspector created successfully',
+            'message' => 'Client Configuration created successfully',
         ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(ClientConfiguration $clientConfiguration)
+    public function show($client_id)
     {
-        //
+        $data = [
+            "client"                => Client::find($client_id),
+            "client_key_details"    => ClientKeyDetail::where("client_id", $client_id)->first(),
+            "client_job_types"      => ClientJobType::where("client_id", $client_id)->get(),
+            "client_sla_metrics"    => ClientSlaMetric::where("client_id", $client_id)->get(),
+            "client_installers"     => ClientInstaller::where("client_id", $client_id)->get(),
+            "clientTypes"           => ClientType::all(),
+            "chargingSchemes"       => ChargingScheme::all(),
+            "measureCategories"     => Measure::all(),
+            "installers"            => Installer::all(),
+        ];
+        return view('pages.client-configuration.form', $data);
     }
 
     /**
@@ -379,8 +391,8 @@ class ClientConfigurationController extends Controller
             }
             $result = DB::table('client_installers')->insert($client_installer_data);
         }
-
-        return $result;
+        
+        // return $result;
     }
     
     public function validateEmail(Request $request){
