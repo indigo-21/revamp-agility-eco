@@ -28,7 +28,7 @@ class PropertyInspectorService
             $property_inspector->id_badge = $id_badge;
         }
 
-        $property_inspector->status = $request->status;
+        $property_inspector->is_active = $request->is_active;
         $property_inspector->can_book_jobs = $request->can_book_jobs;
         $property_inspector->pi_employer = $request->pi_employer;
         $property_inspector->photo_expiry = $request->photo_expiry;
@@ -60,7 +60,7 @@ class PropertyInspectorService
         $property_inspector->save();
 
         self::storePIPostcode($property_inspector->id, $request);
-        self::storePIJobType(1, $request);
+        self::storePIJobType($property_inspector->id, $request);
         self::storePIMeasures($property_inspector->id, $request);
         self::storePIQualifications($property_inspector->id, $request);
 
@@ -111,6 +111,14 @@ class PropertyInspectorService
 
                     $property_inspector_job_type->property_inspector_id = $pi_id;
                     $property_inspector_job_type->job_type_id = $job_type->id;
+                    $property_inspector_job_type->rating = $request["{$job_type->type}_rating"];
+
+                    $property_inspector_job_type->save();
+                } else {
+                    $property_inspector_job_type = PropertyInspectorJobType::where('job_type_id', $job_type->id)
+                        ->where('property_inspector_id', $pi_id)
+                        ->first();
+
                     $property_inspector_job_type->rating = $request["{$job_type->type}_rating"];
 
                     $property_inspector_job_type->save();

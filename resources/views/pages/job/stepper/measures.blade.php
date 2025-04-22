@@ -7,7 +7,7 @@
             <div class="col-12">
                 <div class="row">
                     <div class="col-md-6">
-                        <x-input name="umr" label="UMR" type="number" value="" />
+                        <x-input name="umr" label="UMR" type="text" value="" />
 
                         <x-select label="Measure CAT" name="measure_id" :multiple="false">
                             <option value="" selected="selected" disabled>- Select Measure -</option>

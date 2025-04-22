@@ -34,7 +34,7 @@ return new class extends Migration {
             $table->integer('duration')->nullable();
             $table->longText('notes')->nullable();
             $table->longText('lodged_by_tmln')->nullable();
-            $table->integer('lodged_by_name')->nullable();
+            $table->string('lodged_by_name')->nullable();
             $table->foreignId('installer_id')->nullable()->constrained();
             $table->string('sub_installer_tmln')->nullable();
             $table->foreignId('scheme_id')->nullable()->constrained();

@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
+use App\Models\ClientJobType;
 use App\Models\Customer;
 use App\Models\Installer;
+use App\Models\Job;
 use App\Models\Measure;
 use App\Models\Scheme;
+use App\Services\JobService;
 use Illuminate\Http\Request;
 
 class JobController extends Controller
@@ -15,7 +19,11 @@ class JobController extends Controller
      */
     public function index()
     {
-        return view('pages.job.index');
+        $jobs = Job::with(['property', 'customer', 'jobMeasure', 'installer', 'jobType', 'scheme', 'jobStatus'])
+            ->get();
+
+        return view('pages.job.index')
+            ->with('jobs', $jobs);
     }
 
     /**
@@ -27,12 +35,16 @@ class JobController extends Controller
         $customers = Customer::all();
         $schemes = Scheme::all();
         $measures = Measure::all();
+        $clients = Client::whereHas('clientKeyDetails', function ($query) {
+            $query->where('is_active', 1);
+        })->with('clientKeyDetails')->get();
 
         return view('pages.job.form')
             ->with('installers', $installers)
             ->with('customers', $customers)
             ->with('schemes', $schemes)
-            ->with('measures', $measures);
+            ->with('measures', $measures)
+            ->with('clients', $clients);
     }
 
     /**
@@ -40,7 +52,10 @@ class JobController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $job = (new JobService())->store($request);
+
+        return response()->json($job);
+        // return response()->json($request);
     }
 
     /**
@@ -73,5 +88,16 @@ class JobController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+
+
+    public function searchClient(Request $request)
+    {
+        $client_job_types = Client::where('id', $request->client_id)
+            ->with(['clientJobType', 'clientJobType.jobType'])
+            ->get();
+
+        return response()->json($client_job_types);
     }
 }

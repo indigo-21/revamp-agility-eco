@@ -87,7 +87,7 @@
 
                                 <div class="col-sm-12 col-lg-10">
                                     <form id="propertyInpectorForm"
-                                        action="{{ isset($property_inspector) ? route('property-inspector.update', $property_inspector) : route('property-inspector.store') }}"
+                                        action="{{ isset($property_inspector) ? route('property-inspector.update', $property_inspector->id) : route('property-inspector.store') }}"
                                         method="POST">
                                         @csrf
                                         @if (isset($property_inspector))

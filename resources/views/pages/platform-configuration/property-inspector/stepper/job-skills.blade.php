@@ -8,18 +8,18 @@
                 <div class="row">
                     <div class="col-12">
 
-                        <x-radio-layout label="Status">
+                        <x-radio-layout label="Active / Inactive">
                             <div class="col-md-6">
-                                <x-radio label="Active" name="status" id="active" :checked="isset($property_inspector)
-                                    ? ($property_inspector->status == 1
+                                <x-radio label="Active" name="is_active" id="active" :checked="isset($property_inspector)
+                                    ? ($property_inspector->is_active == 1
                                         ? true
                                         : false)
                                     : true"
                                     :value="1" />
                             </div>
                             <div class="col-md-6">
-                                <x-radio label="Inactive" name="status" id="inactive" :checked="isset($property_inspector)
-                                    ? ($property_inspector->status == 0
+                                <x-radio label="Inactive" name="is_active" id="inactive" :checked="isset($property_inspector)
+                                    ? ($property_inspector->is_active == 0
                                         ? true
                                         : false)
                                     : false"

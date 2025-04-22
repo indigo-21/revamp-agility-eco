@@ -47,20 +47,27 @@
                             </div>
                         </div>
                         <!-- /.card-header -->
-                        <form id="installerForm" action="{{ route('installer-configuration.store') }}">
+                        <form method="POST"
+                            action="{{ isset($installer) ? route('installer-configuration.update', $installer->id) : route('installer-configuration.store') }}">
+                            @if (isset($installer))
+                                @method('PUT')
+                            @endif
                             @csrf
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <x-input name="firstname" label="Name of Installer" />
+                                    <div class="col-md-12">
+                                        <x-input name="firstname" label="Name of Installer"
+                                            value="{{ isset($installer) ? $installer->user->firstname : '' }}" />
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <x-input name="email" label="Email" type="email" />
+                                                <x-input name="email" label="Email" type="email"
+                                                    value="{{ isset($installer) ? $installer->user->email : '' }}" />
                                             </div>
 
                                             <div class="col-md-6">
 
-                                                <x-input name="mobile" label="Contact Number" type="number" />
+                                                <x-input name="mobile" label="Contact Number" type="number"
+                                                    value="{{ isset($installer) ? $installer->user->mobile : '' }}" />
                                             </div>
                                         </div>
                                         <div class="row">
@@ -71,12 +78,13 @@
                                                 </x-select>
                                             </div>
                                             <div class="col-md-6">
-                                                <x-input name="organisation" label="Organisation" />
+                                                <x-input name="organisation" label="Organisation"
+                                                    value="{{ isset($installer) ? $installer->user->organisation : '' }}" />
 
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    {{-- <div class="col-md-6">
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <x-select label="Client" name="client" :multiple="false">
@@ -112,12 +120,12 @@
                                                 </table>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <button type="button" class="btn btn-primary d-block m-auto w-100"
-                                    id="submitBtn">Submit</button>
+                                <button type="submit"
+                                    class="btn btn-primary ">{{ isset($installer) ? 'Update' : 'Submit' }}</button>
                             </div>
                         </form>
                     </div>

@@ -28,9 +28,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('client-configuration', ClientConfigurationController::class);
     Route::post('client-configuration/validateEmail', [ClientConfigurationController::class, 'validateEmail'])->name('validateEmail');
     Route::resource('measure', MeasureController::class);
-	Route::resource('installer-configuration', InstallerConfigurationController::class);
+    Route::resource('installer-configuration', InstallerConfigurationController::class);
     Route::resource('survey-question-set', SurveyQuestionSetController::class);
     Route::resource('scheme', SchemeController::class);
+
+    Route::get('client/search-job-types', [JobController::class, 'searchClient']);
 
 
 });

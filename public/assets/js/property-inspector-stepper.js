@@ -263,7 +263,7 @@ $(function () {
                 setTimeout(() => {
                     $('#formAlert').addClass('d-none').removeClass('alert alert-success').empty();
                     window.location.href = '/property-inspector';
-                }, 1000);
+                }, 1500);
             },
             error: function (xhr, status, error) {
                 console.error('Form submission failed:', error);

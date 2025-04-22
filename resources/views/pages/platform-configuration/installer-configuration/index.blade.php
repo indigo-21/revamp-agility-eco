@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('importedStyles')
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="{{ asset('plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/toastr/toastr.min.css') }}">
     @include('includes.datatables-links')
     <style>
         .vertical-center {
@@ -44,7 +47,7 @@
                                 </div>
                                 <div class="right">
                                     <a type="button" class="btn btn-white"
-                                        href="{{route('installer-configuration.create')}}">
+                                        href="{{ route('installer-configuration.create') }}">
                                         <i class="fa fa-plus-square mr-1" aria-hidden="true"></i> Create Installer
                                     </a>
                                     {{-- <a type="button" class="btn bg-gradient-warning" href="">
@@ -72,15 +75,22 @@
                                             <td>{{ $installer->user->email }}</td>
                                             <td>{{ $installer->user->mobile }}</td>
                                             <td>
-                                                <div>
-                                                    <button type="button" class="btn bg-gradient-primary">
-                                                        <i class="fa fa-pencil-alt" aria-hidden="true"></i>&nbsp; Edit
-                                                    </button>
-                                                    <button type="button" class="btn bg-gradient-danger">
-                                                        <i class="fa fa-trash-alt" aria-hidden="true"></i>&nbsp; Remove
-                                                    </button>
-                                                </div>
-
+                                                <form
+                                                    action="{{ route('installer-configuration.destroy', $installer->id) }}"
+                                                    method="POST" class="delete-form">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <div class="btn btn-group">
+                                                        <a href="{{ route('installer-configuration.edit', $installer->id) }}"
+                                                            class="btn bg-gradient-primary btn-sm">
+                                                            <i class="fa fa-pencil-alt" aria-hidden="true"></i> Edit
+                                                        </a>
+                                                        <button type="button"
+                                                            class="btn bg-gradient-danger btn-sm delete-btn">
+                                                            <i class="fa fa-trash-alt" aria-hidden="true"></i> Remove
+                                                        </button>
+                                                    </div>
+                                                </form>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -95,6 +105,12 @@
     <!-- /.content -->
 @endsection
 @section('importedScripts')
+    <script>
+        var toastType = @json(session('status'));
+        let toastMessage = @json(session('message'));
+    </script>
+    <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
     @include('includes.datatables-scripts')
     <script src="{{ asset('assets/js/installer-configuration.js') }}"></script>
 @endsection

@@ -28,4 +28,8 @@ class PropertyInspector extends Model
     {
         return $this->hasMany(PropertyInspectorQualification::class);
     }
+    public function job()
+    {
+        return $this->hasMany(Job::class);
+    }
 }

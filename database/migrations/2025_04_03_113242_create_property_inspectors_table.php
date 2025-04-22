@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('property_inspectors', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->boolean('status')->default(false);
+            $table->boolean('is_active')->default(true);
             $table->date('deactivate_date')->nullable();
             $table->boolean('can_book_jobs')->default(false);
             // $table->boolean('qai')->default(false);

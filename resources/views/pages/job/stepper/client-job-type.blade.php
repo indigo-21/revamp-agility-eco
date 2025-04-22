@@ -7,6 +7,9 @@
             <div class="col-sm-12 col-lg-6">
                 <x-select label="Client" name="client_id" :multiple="false">
                     <option value="" selected="selected" disabled>- Select Client -</option>
+                    @foreach ($clients as $client)
+                        <option value="{{ $client->id }}">{{ $client->user->firstname }}</option>
+                    @endforeach
                 </x-select>
             </div>
             <div class="col-sm-12 col-lg-6">

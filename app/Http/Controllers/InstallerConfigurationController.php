@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Installer;
-use App\Models\InstallerClient;
-use App\Models\User;
 use App\Models\UserType;
-use App\Models\Client;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 
@@ -19,6 +16,7 @@ class InstallerConfigurationController extends Controller
     public function index()
     {
         $installers = Installer::all();
+
         return view("pages.platform-configuration.installer-configuration.index")
             ->with("installers", $installers);
     }
@@ -29,11 +27,9 @@ class InstallerConfigurationController extends Controller
     public function create()
     {
         $userType = UserType::find(3);
-        $clients = Client::all();
 
         return view("pages.platform-configuration.installer-configuration.form")
-            ->with("userType", $userType)
-            ->with("clients", $clients);
+            ->with("userType", $userType);
     }
 
     /**
@@ -49,20 +45,22 @@ class InstallerConfigurationController extends Controller
         $installer->user_id = $user->id;
         $installer->save();
 
-        $installerClients = json_decode($request->input('clientsArray'), true);
+        // $installerClients = json_decode($request->input('clientsArray'), true);
 
-        foreach ($installerClients as $installerClient) {
-            $client = new InstallerClient();
-            $client->installer_id = $installer->id;
-            $client->client_id = $installerClient['suffix'];
-            $client->tmln = $installerClient['tmln'];
-            $client->save();
-        }
+        // foreach ($installerClients as $installerClient) {
+        //     $client = new InstallerClient();
+        //     $client->installer_id = $installer->id;
+        //     $client->client_id = $installerClient['suffix'];
+        //     $client->tmln = $installerClient['tmln'];
+        //     $client->save();
+        // }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Data processed successfully',
-        ]);
+        // return response()->json([
+        //     'status' => 'success',
+        //     'message' => 'Data processed successfully',
+        // ]);
+
+        return redirect()->route('installer-configuration.index');
     }
 
     /**
@@ -78,7 +76,12 @@ class InstallerConfigurationController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $installer = Installer::find($id);
+        $userType = UserType::find(3);
+
+        return view("pages.platform-configuration.installer-configuration.form")
+            ->with("userType", $userType)
+            ->with('installer', $installer);
     }
 
     /**
@@ -86,7 +89,12 @@ class InstallerConfigurationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $installer = Installer::find($id);
+        $request->account_level_id = 5; //Installer
+
+        (new UserService)->store($request, $installer->user_id);
+
+        return redirect()->route('installer-configuration.index');
     }
 
     /**
@@ -94,6 +102,13 @@ class InstallerConfigurationController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $installer = Installer::find($id);
+        $installer->user->delete();
+        $installer->delete();
+
+        return redirect()
+            ->route('installer-configuration.index')
+            ->with('message', 'Installer deleted successfully')
+            ->with('status', 'success');
     }
 }

@@ -77,6 +77,46 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach ($jobs as $job)
+                                        <tr>
+                                            <td>{{ $job->id }}</td>
+                                            <td>{{ $job->job_number }}</td>
+                                            <td>{{ $job->cert_no }}</td>
+                                            <td>{{ $job->jobMeasure?->umr }}</td>
+                                            <td>{{ $job->jobStatus->description }}</td>
+                                            <td>{{ $job->propertyInspector?->user->firstname }}
+                                                {{ $job->propertyInspector?->user->lastname }}</td>
+                                            <td>{{ $job->booked_date }}</td>
+                                            <td>{{ $job->property->postcode }}</td>
+                                            <td>{{ $job->installer?->user->firstname }}</td>
+                                            <td>{{ $job->rework_deadline }}</td>
+                                            <td>{{ $job->job_remediation_type }}</td>
+                                            <td>{{ $job->close_date }}</td>
+                                            <td>{{ $job->deadline }}</td>
+                                            <td>{{ $job->invoice_status }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="{{ route('job.show', $job->id) }}"
+                                                        class="btn btn-info btn-sm">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    {{-- <a href="{{ route('job.edit', $job->id) }}"
+                                                        class="btn btn-primary btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a> --}}
+                                                    <form action="{{ route('job.destroy', $job->id) }}" method="POST"
+                                                        class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                            onclick="return confirm('Are you sure you want to delete this job?')">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

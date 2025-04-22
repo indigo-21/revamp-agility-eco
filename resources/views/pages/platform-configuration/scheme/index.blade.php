@@ -112,4 +112,3 @@
     @include('includes.datatables-scripts')
     <script src="{{ asset('assets/js/scheme.js') }}"></script>
 @endsection
-˝

@@ -78,8 +78,12 @@ class PropertyInspectorController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(PropertyInspector $propertyInspector)
+    public function show(string $id)
     {
+        $propertyInspector = PropertyInspector::with('user')
+            ->where('id', $id)
+            ->firstOrFail();
+
         return view('pages.platform-configuration.property-inspector.show')
             ->with('property_inspector', $propertyInspector);
     }
@@ -87,9 +91,11 @@ class PropertyInspectorController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(PropertyInspector $propertyInspector)
+    public function edit(string $id)
     {
-
+        $propertyInspector = PropertyInspector::with('user')
+            ->where('id', $id)
+            ->firstOrFail();
         $employment_basis = AccountLevel::where('name', 'LIKE', '%Property Inspector')
             ->get();
         $measures = Measure::all();
@@ -110,8 +116,11 @@ class PropertyInspectorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PropertyInspector $propertyInspector)
+    public function update(Request $request, string $id)
     {
+        $propertyInspector = PropertyInspector::with('user')
+            ->where('id', $id)
+            ->firstOrFail();
 
         $user = (new UserService)->store($request, $propertyInspector->user_id);
 
@@ -127,8 +136,12 @@ class PropertyInspectorController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PropertyInspector $propertyInspector)
+    public function destroy(string $id)
     {
+        $propertyInspector = PropertyInspector::with('user')
+            ->where('id', $id)
+            ->firstOrFail();
+            
         $propertyInspector->delete();
         $propertyInspector->user->delete();
 

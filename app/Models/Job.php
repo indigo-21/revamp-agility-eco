@@ -51,5 +51,9 @@ class Job extends Model
     {
         return $this->belongsTo(Client::class);
     }
+    public function propertyInspector(): BelongsTo
+    {
+        return $this->belongsTo(PropertyInspector::class);
+    }
 
 }

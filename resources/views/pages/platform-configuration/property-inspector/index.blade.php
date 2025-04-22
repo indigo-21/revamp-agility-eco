@@ -38,7 +38,7 @@
                                 <div class="left">
                                     <h3 class="card-title">
                                         <i class="fas fa-exclamation-triangle"></i>
-                                        List of Property Inspector {{session('status')}}
+                                        List of Property Inspector {{ session('status') }}
                                     </h3>
                                 </div>
                                 <div class="right">
@@ -71,7 +71,7 @@
                                             <td>{{ $property_inspector->user->mobile }}
                                             </td>
                                             <td>
-                                                @if ($property_inspector->status === 1)
+                                                @if ($property_inspector->is_active === 1)
                                                     <span class="right badge badge-success">Active</span>
                                                 @else
                                                     <span class="right badge badge-danger">Inactive</span>
@@ -87,28 +87,22 @@
                                             </td>
                                             <td>{{ $property_inspector->pi_employer }}</td>
                                             <td>
-                                                @if ($property_inspector->qai === 1)
-                                                    <span class="right badge badge-info">QAI</span>
-                                                @endif
-                                                @if ($property_inspector->assessor === 1)
-                                                    <span class="right badge badge-info">Assessor</span>
-                                                @endif
-                                                @if ($property_inspector->surveyor === 1)
-                                                    <span class="right badge badge-info">Surveyor</span>
-                                                @endif
-
+                                                @foreach ($property_inspector->propertyInspectorJobTypes as $job_types)
+                                                    <span class="right badge badge-success">{{ $job_types->jobType->type }}
+                                                    </span>
+                                                @endforeach
                                             </td>
                                             <td>
                                                 <form
-                                                    action="{{ route('property-inspector.destroy', $property_inspector) }}"
+                                                    action="{{ route('property-inspector.destroy', $property_inspector->id) }}"
                                                     method="POST" class="delete-form">
                                                     @csrf
                                                     @method('DELETE')
                                                     <div class="btn-group">
-                                                        <a href="{{ route('property-inspector.show', $property_inspector) }}"
+                                                        <a href="{{ route('property-inspector.show', $property_inspector->id) }}"
                                                             class="btn btn-primary btn-sm"><i class="fas fa-eye"></i>
                                                             View</a>
-                                                        <a href="{{ route('property-inspector.edit', $property_inspector) }}"
+                                                        <a href="{{ route('property-inspector.edit', $property_inspector->id) }}"
                                                             class="btn btn-warning btn-sm">
                                                             <i class="fas fa-pencil-alt"></i> Edit
                                                         </a>

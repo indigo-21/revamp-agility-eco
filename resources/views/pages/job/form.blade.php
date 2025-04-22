@@ -75,7 +75,13 @@
                                 </div>
 
                                 <div class="col-sm-12 col-lg-10">
-                                    <form>
+                                    <form id="jobForm"
+                                        action="{{ isset($job) ? route('job.update', $job) : route('job.store') }}"
+                                        method="POST">
+                                        @csrf
+                                        @if (isset($job))
+                                            @method('PUT')
+                                        @endif
                                         @include('pages.job.stepper.client-job-type')
                                         @include('pages.job.stepper.property-details')
                                         @include('pages.job.stepper.measures')
