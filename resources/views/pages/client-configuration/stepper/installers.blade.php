@@ -1,3 +1,5 @@
+
+
 <div id="step5" class="card card-primary card-outline step">
     <div class="card-header">
         <h3 class="card-title">Installers</h3>
@@ -8,8 +10,8 @@
                 <div class="form-group">
                     <label>List of Installers</label>
                     <select class="duallistbox" multiple="multiple" required name="client_installers">
-                        @foreach ($installers as $installer )
-                            <option value="{{$installer->id}}" >{{$installer->name}}</option>                            
+                        @foreach ($installers as $installer)
+                            <option value="{{$installer->id}}" {{ isset($client) && in_array($installer->id, $client_installers) ? "selected" : ""   }} >{{$installer->name}}</option>                            
                         @endforeach
                     </select>
                 </div>

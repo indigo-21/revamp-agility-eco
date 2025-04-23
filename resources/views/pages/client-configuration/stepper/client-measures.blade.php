@@ -37,7 +37,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                    
+                        @if (isset($client) && count($client_measures) > 0)
+                            @foreach ( $client_measures as $client_measure )
+                                <tr id="{{$client_measure->measure_id}}">
+                                    <td>{{$client_measure->measure->measure_cat}}</td>
+                                    <td>{{$client_measure->measure_fee}}</td>
+                                    <td>GBP</td>
+                                    <td><button class="btn btn-danger btn-sm deleteRow">Delete</button></td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>

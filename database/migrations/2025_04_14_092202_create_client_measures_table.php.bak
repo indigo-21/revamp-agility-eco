@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('installer_clients', function (Blueprint $table) {
+        Schema::create('client_measures', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('installer_id')->constrained();
-            $table->foreignId('client_id')->constrained();
-            $table->string('tmln');
+            $table->foreignId('client_id')->constrained()->onDelete('cascade');
+            $table->foreignId('measures_id')->constrained()->onDelete('cascade');
+            $table->decimal('measure_fee', 5, 2)->nullable();
+            $table->string('measure_fee_currency')->nullable()->default('GBP');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('installer_clients');
+        Schema::dropIfExists('client_measures');
     }
 };

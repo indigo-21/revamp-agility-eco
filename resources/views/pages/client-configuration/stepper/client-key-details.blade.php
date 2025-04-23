@@ -8,6 +8,10 @@
         $can_job_outcome_be_appealed = false;
         $is_active                   = false;
 
+
+        $payment_terms               = "";
+        $charge_by_property_rate     = ""; 
+
         if (isset($client)) {
             $can_job_outcome_be_appealed = $client_key_details->can_job_outcome_appealed;
             $is_active                   = $client_key_details->is_active;
@@ -23,6 +27,9 @@
                 $qai_checkbox      = $qai != "" ? true : false;
                 $surveyor_checkbox = $surveyor != "" ? true : false;
                 $assessor_checkbox = $qai_checkbox != "" ? true : false;
+
+                $payment_terms               = $client_key_details->payment_terms;
+                $charge_by_property_rate     = $client_key_details->charge_by_property_rate; 
             }
         
             
@@ -124,28 +131,28 @@
                         </div>
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-input type="email" name="exceptions_email" label="Exceptions Email" :required="true" />
+                        <x-input type="email" name="exceptions_email" label="Exceptions Email" value="{{isset($client) ? $client->user->email : '' }}" :required="true" uniqueid="{{isset($client) ? $client->user->id : '' }}" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" name="phone_number" label="Phone Number" :required="true" inputformat="[0-9]" />
+                        <x-input type="text" name="phone_number" label="Phone Number" :required="true" value="{{isset($client) ? $client->user->mobile : '' }}" inputformat="[0-9]" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" name="address1" label="Address 1" inputformat="[a-zA-Z0-9!@#&()\-.\s]"/>
+                        <x-input type="text" name="address1" label="Address 1" value="{{isset($client) ? $client->address1 : '' }}" inputformat="[a-zA-Z0-9!@#&()\-.\s]"/>
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" name="address2" label="Address 2" inputformat="[a-zA-Z0-9!@#&()\-.\s]"/>
+                        <x-input type="text" name="address2" label="Address 2" value="{{isset($client) ? $client->address2 : '' }}" inputformat="[a-zA-Z0-9!@#&()\-.\s]"/>
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" name="address3" label="Address 3" inputformat="[a-zA-Z0-9!@#&()\-.\s]"/>
+                        <x-input type="text" name="address3" label="Address 3" value="{{isset($client) ? $client->address3 : '' }}" inputformat="[a-zA-Z0-9!@#&()\-.\s]"/>
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" name="city" label="City" />
+                        <x-input type="text" name="city" value="{{isset($client) ? $client->city : '' }}" label="City" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" name="country" label="County" />
+                        <x-input type="text" name="country" value="{{isset($client) ? $client->country : '' }}" label="County" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" name="postcode" label="Postcode" inputformat="[a-zA-Z0-9\s]"/>
+                        <x-input type="text" name="postcode" value="{{isset($client) ? $client->postcode : '' }}" label="Postcode" inputformat="[a-zA-Z0-9\s]"/>
                     </div>
                     
                 </div>
@@ -159,19 +166,19 @@
                 <x-select label="Charging Scheme" name="charging_scheme" :required="true">
                     <option selected="selected" disabled value="">-Select Charging Scheme-</option>
                     @foreach ($chargingSchemes as $chargingScheme):
-                        <option value="{{$chargingScheme->id}}">{{$chargingScheme->name}}</option>
+                        <option {{isset($client) && $client_key_details->charging_scheme_id == $chargingScheme->id ? 'selected'  : ''}} value="{{$chargingScheme->id}}">{{$chargingScheme->name}}</option>
                     @endforeach
                 </x-select>   
             </div>
             <div class="col-sm-12 col-lg-6">
                 <div class="form-group">
                     <label for="paymentTerms">Payment Terms (days):</label>
-                    <input type="text" class="form-control" id="paymentTerms" name="payment_terms" placeholder="Enter Days" required textpattern="[0-9]">
+                    <input type="text" class="form-control" id="paymentTerms" value="{{$payment_terms}}" name="payment_terms" placeholder="Enter Days" required textpattern="[0-9]">
                     <div class="invalid-feedback"></div>
                 </div>
             </div>
             <div class="col-sm-12 col-lg-6">
-                <x-input type="text" name="charge_by_property_rate" label="Charge by Property Rate" :required="true" inputformat="[0-9.]" />
+                <x-input type="text" name="charge_by_property_rate" label="Charge by Property Rate" value="{{$charge_by_property_rate}}" inputformat="[0-9.]" />
             </div>
             <div class="col-sm-12 col-lg-6">
                 <x-input type="text" name="currency" label="Currency" :required="true" :disabled="true" value="GBP" />
