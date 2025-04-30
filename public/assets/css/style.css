@@ -54,3 +54,8 @@ ul.nav.nav-treeview li a .nav-icon {
     background: #e7493a;
     color: #fff;
 }
+.minimize-btn {
+    background: none;
+    border: none;
+    color: #fff;
+}

@@ -10,6 +10,14 @@ use App\Http\Controllers\ClientConfigurationController;
 use App\Http\Controllers\SurveyQuestionSetController;
 use App\Http\Controllers\InstallerConfigurationController;
 
+// EXECEPTION CONTROLLER
+use App\Http\Controllers\JobEntryExceptionController;
+use App\Http\Controllers\PropertyInspectorExceptionController;
+use App\Http\Controllers\DataValidationExceptionController;
+use App\Http\Controllers\DocumentExceptionController;
+use App\Http\Controllers\BookingExceptionController;
+use App\Http\Controllers\RemoveJobExceptionController;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -33,6 +41,14 @@ Route::middleware('auth')->group(function () {
     Route::resource('scheme', SchemeController::class);
 
     Route::get('client/search-job-types', [JobController::class, 'searchClient']);
+
+    // EXECEPTIONS
+    Route::resource('job-entry-exception', JobEntryExceptionController::class);
+    Route::resource('property-inspector-exception', PropertyInspectorExceptionController::class);
+    Route::resource('data-validation-exception', DataValidationExceptionController::class);
+    Route::resource('document-exception', DocumentExceptionController::class);
+    Route::resource('booking-exception', BookingExceptionController::class);
+    Route::resource('remove-job-exception', RemoveJobExceptionController::class);
 
 
 });
