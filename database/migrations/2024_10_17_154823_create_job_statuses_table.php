@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('status');
             $table->string('description');
             $table->string('generic_state');
+            $table->string('color_scheme')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

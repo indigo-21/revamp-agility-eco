@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\JobImport;
 use App\Models\Client;
 use App\Models\ClientJobType;
 use App\Models\Customer;
@@ -11,6 +12,7 @@ use App\Models\Measure;
 use App\Models\Scheme;
 use App\Services\JobService;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class JobController extends Controller
 {
@@ -19,11 +21,14 @@ class JobController extends Controller
      */
     public function index()
     {
-        $jobs = Job::with(['property', 'customer', 'jobMeasure', 'installer', 'jobType', 'scheme', 'jobStatus'])
-            ->get();
+        $jobs = Job::all();
+        $clients = Client::whereHas('clientKeyDetails', function ($query) {
+            $query->where('is_active', 1);
+        })->with('clientKeyDetails')->get();
 
         return view('pages.job.index')
-            ->with('jobs', $jobs);
+            ->with('jobs', $jobs)
+            ->with('clients', $clients);
     }
 
     /**
@@ -63,7 +68,10 @@ class JobController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $job = Job::find($id);
+
+        return view('pages.job.show')
+            ->with('job', $job);
     }
 
     /**
@@ -90,7 +98,46 @@ class JobController extends Controller
         //
     }
 
+    public function upload(Request $request)
+    {
+        $job_import = new JobImport;
+        Excel::import($job_import, $request->file);
 
+        // save the file to storage public
+        $storagePath = 'job_imports';
+        $fileName = $request->file->getClientOriginalName();
+        $request->file('file')->storeAs($storagePath, $fileName, 'public');
+
+        foreach ($job_import->job_data as $row) {
+            $scheme_data = Scheme::where('short_name', $row->scheme_id)->first();
+            $installer_data = Installer::with('user')
+                ->whereHas('user', function ($query) use ($row) {
+                    $query->where('firstname', $row->installer_id);
+                })->first();
+
+
+            $row->client_id = $request->client_id;
+            $row->job_type_id = $request->job_type_id;
+            $row->scheme_id = $scheme_data->id ?? null;
+            $row->installer_id = $installer_data->id ?? null;
+            $row->customer_primary_tel = (string) $row->customer_primary_tel ?? null;
+            $row->customer_secondary_tel = (string) $row->customer_secondary_tel ?? null;
+            $row->job_csv_filename = $fileName;
+            $row->measures[] = [
+                "job_suffix" => "01",
+                "umr" => $row->umr,
+                "measure_cat" => $row->measure_cat,
+                "info" => $row->info
+            ];
+
+            // dd($row);
+
+            (new JobService())->store($row);
+
+        }
+
+        return redirect()->back()->with('success', 'Jobs imported successfully');
+    }
 
     public function searchClient(Request $request)
     {

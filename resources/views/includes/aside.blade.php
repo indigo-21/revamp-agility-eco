@@ -211,13 +211,13 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="./index.html" class="nav-link ">
+                            <a href="{{ route('make-booking.index') }}" class="nav-link ">
                                 <i class="fa fa-angle-right nav-icon"></i>
                                 <p>Make Booking</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="./index2.html" class="nav-link">
+                            <a href="{{ route('manage-booking.index') }}" class="nav-link">
                                 <i class="fa fa-angle-right nav-icon"></i>
                                 <p>Manage Bookings</p>
                             </a>

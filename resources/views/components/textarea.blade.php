@@ -2,5 +2,5 @@
 
 <label for="{{ $name }}">{{ $label }}</label>
 <textarea name="{{ $name }}" id="{{ $name }}" class="form-control" rows="{{ $rows }}"
-    placeholder="Enter {{ $label }}">{{ $value }}
+    placeholder="Enter {{ $label }}" {{ $attributes }}>{{ $value }}
 </textarea>

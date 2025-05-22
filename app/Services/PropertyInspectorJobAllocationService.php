@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Booking;
 use App\Models\Client;
 use App\Models\ClientInstaller;
+use App\Models\Job;
 use App\Models\PropertyInspector;
 use Carbon\Carbon;
 
@@ -22,12 +24,28 @@ class PropertyInspectorJobAllocationService
 
     public function PIAllocationProcess($request, $measure, $notFirmAvailable = false)
     {
+        // check if the job is already allocated to a property inspector
+        // if yes, then return the property inspector
+        $job_pi_allocated = Job::with('jobMeasure')
+            ->where('cert_no', $request->cert_no)
+            ->get();
+
+
+        if ($job_pi_allocated->count() > 0) {
+            $this->property_inspector = $job_pi_allocated->first()->propertyInspector;
+            self::allocateJob($this->property_inspector);
+
+            return $this->property_inspector;
+        }
+
+        // if no, then proceed with the allocation process
+
         $postcode = self::getPostcode($request->postcode);
 
         self::getClientInstallers($request, $measure, $notFirmAvailable);
         self::postcodeLogic($postcode);
         self::jobTypeLogic($request);
-        self::jobMeasureLogic($request);
+        self::jobMeasureLogic($measure);
         self::availabilityLogic($request, $measure);
         self::jobTypeRatingLogic($request);
         self::lowestNumberOfAllocatedLogic($request);
@@ -124,11 +142,13 @@ class PropertyInspectorJobAllocationService
         }
     }
 
-    public function jobMeasureLogic($request)
+    public function jobMeasureLogic($measure)
     {
-        $property_inspector_pool = $this->property_inspector->filter(function ($property_inspector) use ($request) {
+        $measure_data = (new JobService)->getMeasure($measure);
+
+        $property_inspector_pool = $this->property_inspector->filter(function ($property_inspector) use ($measure_data) {
             foreach ($property_inspector->propertyInspectorMeasures as $inspector_job_measure) {
-                if ($inspector_job_measure->job_measure_id == $request->job_measure_id) {
+                if ($inspector_job_measure->measure_id == $measure_data->id && $inspector_job_measure->expiry >= now()) {
                     return true;
                 }
             }
@@ -148,6 +168,7 @@ class PropertyInspectorJobAllocationService
             $client = (new JobService)->getClient($request);
             $measure_data = (new JobService)->getMeasure($measure);
             $days_available = $client ? (int) $client->clientSlaMetric->job_deadline / 2 : 0;
+            $unbooked_jobs_count = 0;
 
             // count available days from now to 7 days and reduce the count if the property inspector work_sun and work_sat is equals to 0
             for ($i = 1; $i < $days_available + 1; $i++) {
@@ -162,16 +183,26 @@ class PropertyInspectorJobAllocationService
 
             // apply the pi sick dates and booked_job dates
 
+            $start_date = Carbon::now()->startOfDay()->toDateTimeString();
+            $end_date = Carbon::now()->addDays($days_available)->endOfDay()->toDateTimeString();
+
+            $booking_date = Job::where('job_status_id', 1)
+                ->where('property_inspector_id', $property_inspector->id)
+                ->whereBetween('schedule_date', [$start_date, $end_date])
+                ->count();
+
+            $days_available -= $booking_date;
+
+
             // apply the pi unbooked_jobs dates
 
-            // $sample_date = Carbon::createFromFormat('Y-m-d', '2025-04-24');
+            foreach ($property_inspector->job as $job) {
+                if ($job->status == 25) {
+                    $unbooked_jobs_count++;
+                }
+            }
 
-            // // reduce again if this date "2025-04-24" is between the date today and date + 7 days
-            // if ($sample_date->isBetween(now(), now()->addDays(7))) {
-            //     $days_available--;
-            // }
-
-            $total_available_days = $days_available * $property_inspector->hours_spent;
+            $total_available_days = $days_available * $property_inspector->hours_spent - $unbooked_jobs_count;
 
             // check if the total available days is greater than the measure duration and positive
             if ($total_available_days > 0 && $total_available_days >= $measure_data->measure_duration) {

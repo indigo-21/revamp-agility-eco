@@ -16,7 +16,7 @@ class JobService
 {
     public function store($request)
     {
-        foreach ($request->measures as $key => $measure) {
+        foreach ($request->measures as $measure) {
             $job = new Job;
 
             [
@@ -32,7 +32,7 @@ class JobService
             $request->deadline = $client ? (int) $client->clientSlaMetric->job_deadline : 0;
             $request->first_visit_by = $client ? (int) $client->clientSlaMetric->job_deadline / 2 : 0;
 
-            $job->job_number = $job_number . "-" . str_pad($key + 1, 2, '0', STR_PAD_LEFT);
+            $job->job_number = $job_number;
             $job->cert_no = $request->cert_no;
             $job->job_type_id = $request->job_type_id;
             $job->job_status_id = $job_status;
@@ -44,14 +44,15 @@ class JobService
             $job->max_appeal = 0;
             $job->deadline = Carbon::now()->addDays($request->deadline);
             $job->first_visit_by = Carbon::now()->addDays($request->first_visit_by);
-            $job->property_inspector_id = $property_inspector->first()->id ?? null;
+            $job->property_inspector_id = $property_inspector?->first()->id ?? null;
             $job->duration = $measure_data?->measure_duration;
-            $job->notes = $request->notes;
+            $job->notes = $request->notes ?? null;
             $job->lodged_by_tmln = $request->lodged_by_tmln;
             $job->lodged_by_name = $request->lodged_by_name;
             $job->installer_id = $installer_data?->id;
             $job->sub_installer_tmln = $request->sub_installer_tmln;
             $job->scheme_id = $scheme_data?->id;
+            $job->csv_filename = $request->csv_filename ?? null;
 
             $job->save();
 
@@ -114,7 +115,7 @@ class JobService
         $job_duplicates = self::checkJobDuplicates($request, $measure);
         $installer_data = self::getInstaller($request);
         $scheme_data = self::getScheme($request);
-        $job_number = self::getJobNumber($client);
+        $job_number = self::getJobNumber($request, $client, $measure);
         $measure_data = self::getMeasure($measure);
         $check_customer_contact = $this->checkCustomerContactInformation($request);
         $postcode = (new PropertyInspectorJobAllocationService)->getPostcode($request->postcode);
@@ -122,47 +123,35 @@ class JobService
         if (!$measure_data) {
             // return job status 8 - job data invalid measure
             $job_status = 8;
-        }
-
-        if (!$job_duplicates) {
+        } else if (!$job_duplicates) {
             // return job status 6 - job data invalid duplicate
             $job_status = 6;
-        }
-
-        if (!$postcode) {
+        } else if (!$postcode) {
             // return job status 10 - job data invalid postcode
             $job_status = 10;
-        }
-
-        if (!$installer_data) {
+        } else if (!$installer_data) {
             // return job status 7 - job data invalid installer
             $job_status = 7;
-        }
-
-        if ($client->active == 0) {
+        } else if ($client->clientKeyDetails->is_active == 0) {
             // return job status 18 - job data client inactive
             $job_status = 18;
-        }
-
-        if (!$scheme_data) {
+        } else if (!$scheme_data) {
             // return job status 19 - job data invalid scheme
             $job_status = 9;
-        }
-
-        if (!$check_customer_contact) {
+        } else if (!$check_customer_contact) {
             // return job status 11 - job data invalid contact information
             $job_status = 11;
+        } else {
+            $job_status = 12;
         }
-
-        $job_status = 12;
 
         if ($job_status == 12) {
             $property_inspector = (new PropertyInspectorJobAllocationService())->PIAllocationProcess($request, $measure, false);
-        }
 
-        // return job status 22 - job data no property inspector
-        // return job status 25 - job data property inspector allocated (job_unbooked)
-        $job_status = $property_inspector == null ? 22 : 25;
+            // return job status 22 - job data no property inspector
+            // return job status 25 - job data property inspector allocated (job_unbooked)
+            $job_status = !isset($property_inspector) && $property_inspector == null ? 22 : 25;
+        }
 
         return [
             $client,
@@ -171,48 +160,81 @@ class JobService
             $job_number,
             $measure_data,
             $job_status,
-            $property_inspector
+            $property_inspector ?? null
         ];
     }
 
     public function checkJobDuplicates($request, $measure): bool
     {
-
-        $getUmrAndCert = Job::leftJoin('job_measures', 'jobs.id', '=', 'job_measures.job_id')
+        $getUmrAndCert = Job::with('jobMeasure')
             ->where('cert_no', $request->cert_no)
-            ->where('umr', $measure['umr'])
-            ->get();
+            ->whereHas('jobMeasure', function ($query) use ($measure) {
+                $query->where('umr', $measure['umr']);
+            })
+            ->count();
 
-        if (count($getUmrAndCert) > 0) {
+        if ($getUmrAndCert > 0) {
             return false;
         }
 
         return true;
     }
 
-    public function getJobNumber($client)
+    public function getJobNumber($request, $client, $measure)
     {
         $job_number = '';
         $first_job_number = 1;
 
-        $last_job = Job::orderBy('created_at', 'desc')
+        // $last_job = Job::orderBy('created_at', 'desc')
+        //     ->first();
+
+        $last_job = Job::orderByRaw("CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(job_number, '-', 1), SUBSTRING(job_number, 1, 3), -1) AS UNSIGNED) DESC")
             ->first();
+
+        $job_duplicate = Job::with('jobMeasure')
+            ->where('cert_no', $request->cert_no)
+            ->get();
 
         // Example job number = AES0000000001-01
         // get the digits before the after the AES and -
 
-        if ($last_job) {
-            $last_job_number = $last_job->job_number;
+        if ($job_duplicate->isNotEmpty()) {
+            $last_job_number = $job_duplicate[0]->job_number;
             $last_job_number = explode('-', $last_job_number);
             $last_job_number = substr($last_job_number[0], 3);
-            $last_job_number = (int) $last_job_number + 1;
+            $last_job_number = (int) $last_job_number;
             $mid_job_number = str_pad($last_job_number, 10, '0', STR_PAD_LEFT);
         } else {
-            $mid_job_number = str_pad($first_job_number, 10, '0', STR_PAD_LEFT);
+            if ($last_job) {
+                $last_job_number = $last_job->job_number;
+                $last_job_number = explode('-', $last_job_number);
+                $last_job_number = substr($last_job_number[0], 3);
+                $last_job_number = (int) $last_job_number + 1;
+                $mid_job_number = str_pad($last_job_number, 10, '0', STR_PAD_LEFT);
+
+            } else {
+                $mid_job_number = str_pad($first_job_number, 10, '0', STR_PAD_LEFT);
+            }
         }
 
+        $job_number = "{$client->client_abbrevation}{$mid_job_number}-" . str_pad($job_duplicate->count() + 1, 2, '0', STR_PAD_LEFT);
 
-        $job_number = "{$client->client_abbrevation}{$mid_job_number}";
+        // if ($last_job) {
+        //     $last_job_number = $last_job->job_number;
+        //     $last_job_number = explode('-', $last_job_number);
+        //     $last_job_number = substr($last_job_number[0], 3);
+        //     if ($last_number->count() > 0) {
+        //         $last_job_number = (int) $last_job_number;
+        //     } else {
+        //         $last_job_number = (int) $last_job_number + 1;
+        //     }
+        //     $mid_job_number = str_pad($last_job_number, 10, '0', STR_PAD_LEFT);
+        // } else {
+        //     $mid_job_number = str_pad($first_job_number, 10, '0', STR_PAD_LEFT);
+        // }
+
+
+        // $job_number = "{$client->client_abbrevation}{$mid_job_number}-" . str_pad($last_number->count() + 1, 2, '0', STR_PAD_LEFT);
 
         return $job_number;
 
@@ -221,6 +243,7 @@ class JobService
     public function checkCustomerContactInformation($request)
     {
         $contact_primary_tel = $request->customer_primary_tel;
+
         $contact_information_1 = substr($contact_primary_tel, 0, 1);
         $contact_information_2 = substr($contact_primary_tel, 0, 2);
 

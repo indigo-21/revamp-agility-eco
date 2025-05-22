@@ -20,8 +20,6 @@
 
                 <x-input name="sub_installer_tmln" label="Sub Installer TMLN" type="text" value="" />
 
-                <x-input name="sub_installer_tmln" label="Sub Installer TMLN" type="text" value="" />
-
                 <x-select label="Scheme" name="scheme_id" :multiple="false">
                     <option value="" selected="selected" disabled>- Select Scheme -</option>
                     @foreach ($schemes as $scheme)

@@ -141,12 +141,22 @@ class PropertyInspectorController extends Controller
         $propertyInspector = PropertyInspector::with('user')
             ->where('id', $id)
             ->firstOrFail();
-            
+
         $propertyInspector->delete();
         $propertyInspector->user->delete();
 
         return redirect()
             ->route('property-inspector.index')
             ->with('success', 'Property Inspector deleted successfully');
+    }
+
+    public function searchPropertyInspector(Request $request)
+    {
+
+        $propertyInspectors = PropertyInspector::with(['user', 'user.userType', 'user.accountLevel', 'propertyInspectorPostcodes', 'propertyInspectorPostcodes.outwardPostcode'])
+            ->where('id', $request->property_inspector_id)
+            ->first();
+
+        return response()->json($propertyInspectors);
     }
 }
