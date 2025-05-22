@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('client_measures', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_id')->constrained()->onDelete('cascade');
-            $table->foreignId('measures_id')->constrained()->onDelete('cascade');
+            $table->foreignId('measure_id')->constrained()->onDelete('cascade');
             $table->decimal('measure_fee', 5, 2)->nullable();
             $table->string('measure_fee_currency')->nullable()->default('GBP');
             $table->timestamps();

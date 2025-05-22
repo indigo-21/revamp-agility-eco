@@ -2,68 +2,68 @@ $(function () {
     const dateNow  = moment().format("YYYY-MM-DD HH:mm:ss");
     const formData = {};
     //Initialize Elements Plugin
-    $('.duallistbox').bootstrapDualListbox()
+        $('.duallistbox').bootstrapDualListbox()
 
-    //Initialize Select2 Elements
-    $('.select2').select2();
-    let clientMeasureTable = $("#clientMeasureTable").DataTable();
-    let clientJobStatusTable = $("#clientJobStatusTable").DataTable();
+        //Initialize Select2 Elements
+        $('.select2').select2();
+        let clientMeasureTable    = $("#clientMeasureTable").DataTable();
+        let clientJobStatusTable  = $("#clientJobStatusTable").DataTable();
     //End Initialize Elements Plugin
 
     // STEPPER SCRIPT
-    let stepIndex = 0;
-    let steps = $(".step");
-    let stepNav = $(".stepper-nav")
-    let progressBar = $("#progress-bar");
-    let totalSteps = steps.length;
+        let stepIndex   = 0;
+        let steps       = $(".step");
+        let stepNav     = $(".stepper-nav")
+        let progressBar = $("#progress-bar");
+        let totalSteps  = steps.length;
+        
 
+        function updateStepper() {
+            steps.removeClass("active-step").eq(stepIndex).addClass("active-step");
+            progressBar.css("width", ((stepIndex + 1) / totalSteps) * 100 + "%");
+            progressBar.css("width", ((stepIndex + 1) / totalSteps) * 100 + "%");
+            progressBar.text("Step " + (stepIndex + 1));
+            stepNav.removeClass("btn-primary").addClass("btn-outline-primary").eq(stepIndex).removeClass("btn-outline-primary").addClass("btn-primary");
+            
+        }
 
-    function updateStepper() {
-        steps.removeClass("active-step").eq(stepIndex).addClass("active-step");
-        progressBar.css("width", ((stepIndex + 1) / totalSteps) * 100 + "%");
-        progressBar.css("width", ((stepIndex + 1) / totalSteps) * 100 + "%");
-        progressBar.text("Step " + (stepIndex + 1));
-        stepNav.removeClass("btn-primary").addClass("btn-outline-primary").eq(stepIndex).removeClass("btn-outline-primary").addClass("btn-primary");
-
-    }
-
-    $(".next").click(function () {
-        let formID = $(this).attr("formid");
-        let tableID = $(this).attr("tableid");
-        let errorCount = validateForm(formID);
-
-        if (errorCount < 1 && (stepIndex < totalSteps - 1)) {
-            // formData.append(formID, JSON.stringify(appendFormData(formID)))
-            if (!formID && !tableID) {
-                let selectedValues = $('.duallistbox').val();
-                formData["installerForm"] = selectedValues.join(",");
-            } else {
-                formData[formID || tableID] = appendFormData(formID || tableID, tableID);
+        $(".next").click(function () {
+            let formID      = $(this).attr("formid");
+            let tableID     = $(this).attr("tableid");
+            let errorCount  = validateForm(formID);
+            
+            if (errorCount < 1 && (stepIndex < totalSteps - 1)) {
+                // formData.append(formID, JSON.stringify(appendFormData(formID)))
+                if(!formID && !tableID){
+                    let selectedValues          = $('.duallistbox').val();
+                    formData["installerForm"]   = selectedValues.join(",");
+                }else{
+                    formData[formID || tableID] = appendFormData(formID || tableID, tableID);
+                }
+                stepIndex++;
+                updateStepper();
             }
-            stepIndex++;
-            updateStepper();
-        }
+            
+        });
 
-    });
-
-    $(".prev").click(function () {
-        if (stepIndex > 0) {
-            stepIndex--;
-            updateStepper();
-        }
-    });
+        $(".prev").click(function () {
+            if (stepIndex > 0) {
+                stepIndex--;
+                updateStepper();
+            }
+        });
     // END STEPPER SCRIPT
 
-    $(document).on("click", "#clientMeasuresBtn", function () {
-        let formID = $(this).attr("formid");
-        let errorCount = validateForm(formID);
+    $(document).on("click", "#clientMeasuresBtn", function(){
+        let formID      = $(this).attr("formid");
+        let errorCount  = validateForm(formID);
 
-        if (errorCount < 1) {
+        if(errorCount < 1){
             // FORM VALUES
-            let measureId = $('select[name="measure_cat"] option:selected').val();
-            let measureCat = $('select[name="measure_cat"] option:selected').text();
-            let measureVal = $('[name=measure_fee_value]').val();
-            let measureFee = $('[name=measure_fee_currency]').val();
+            let measureId   = $('select[name="measure_cat"] option:selected').val();
+            let measureCat  = $('select[name="measure_cat"] option:selected').text();
+            let measureVal  = $('[name=measure_fee_value]').val();
+            let measureFee  = $('[name=measure_fee_currency]').val();
 
             let newRow = clientMeasureTable.row.add([
                 measureCat,
@@ -76,17 +76,17 @@ $(function () {
 
             clearForm(formID);
         }
-
+        
     });
 
-    $(document).on("click", "#clientJobStatusBtn", function () {
-        let formID = $(this).attr("formid");
-        let errorCount = validateForm(formID);
+    $(document).on("click", "#clientJobStatusBtn", function(){
+        let formID      = $(this).attr("formid");
+        let errorCount  = validateForm(formID);
 
-        if (errorCount < 1) {
+        if(errorCount < 1){
             // FORM VALUES
-            let vera_job_status_name = $('select[name="vera_job_status_name"] option:selected').text();
-            let client_job_status_name = $('[name=client_job_status_name]').val();
+            let vera_job_status_name    = $('select[name="vera_job_status_name"] option:selected').text();
+            let client_job_status_name  = $('[name=client_job_status_name]').val();
 
             clientJobStatusTable.row.add([
                 vera_job_status_name,
@@ -96,8 +96,8 @@ $(function () {
 
             clearForm(formID);
         }
-
-    });
+        
+    }); 
 
     // Handle Row Deletion
     $(document).on('click', '.deleteRow', function () {
@@ -105,10 +105,10 @@ $(function () {
         table.row($(this).parents('tr')).remove().draw();
     });
 
-    $(document).on("click", "#submitBtn", function () {
-        let containerID = $(this).attr("formid");
-        let errorCount = validateForm(containerID);
-        if (errorCount < 1) {
+    $(document).on("click", "#submitBtn", function(){
+        let containerID      = $(this).attr("formid");
+        let errorCount       = validateForm(containerID);
+        if(errorCount < 1){
             formData[containerID] = appendFormData(containerID);
             setTimeout(() => {
                 storeData();
@@ -116,10 +116,10 @@ $(function () {
         }
     });
 
-    $(document).on("keyup", ".job-types", function () {
-        let thisVal = $(this).val();
-        let inputName = $(this).attr("name");
-        let checkboxId = "";
+    $(document).on("keyup",".job-types", function(){
+        let thisVal     = $(this).val();
+        let inputName   = $(this).attr("name");
+        let checkboxId  = "";
         switch (inputName) {
             case "qai_visit_duration":
                 checkboxId = "qai";
@@ -127,17 +127,17 @@ $(function () {
             case "assessor_visit_duration":
                 checkboxId = "assessor";
                 break;
-            default:
+            default: 
                 // surveyor_visit_duration
                 checkboxId = "surveyor";
                 break;
         }
         $(`#${checkboxId}`).attr("checked", false);
 
-        if (thisVal.length > 0) {
+        if(thisVal.length > 0){
             $(`#${checkboxId}`).attr("checked", true);
         }
-
+        
     });
 
     $(document).on("click","[name=active]", function(){
@@ -159,23 +159,23 @@ $(function () {
 
 
     // Initialize Function 
-    function appendFormData(containerID, isFromTable = false) {
+    function appendFormData(containerID, isFromTable = false){
         if (containerID) {
             let data = {};
 
-            if (isFromTable) {
+            if(isFromTable){
                 data[containerID] = [];
-                if ($(`#${containerID} tbody tr`).length > 0) {
-                    let rowId = $(this).attr("id");
-                    $(`#${containerID} tbody tr`).each(function () {
+                if($(`#${containerID} tbody tr`).length > 0){
+                    $(`#${containerID} tbody tr`).each(function(){
+                        let rowId   = $(this).attr("id");
                         let rowData = $(this).find('td').map(function () {
                             return $(this).text().trim();
                         }).get();
-
-                        if (rowData.length > 0) {
+                        
+                        if(rowData.length > 0){
                             let tempData;
                             tempData = {
-                                id: rowId,
+                                id:rowId,
                                 measure: rowData[0],
                                 chargeValue: rowData[1],
                                 currency: rowData[2]
@@ -184,25 +184,25 @@ $(function () {
                         }
                     })
                 }
-
-            } else {
+                console.log(data);
+            }else{
                 $(`#${containerID} [name]`).each((index, element) => {
                     let thisElement = $(element);
-                    let name = thisElement.attr("name");
-                    let tag = element.tagName.toLowerCase();
-                    let type = thisElement.attr("type");
+                    let name        = thisElement.attr("name");
+                    let tag         = element.tagName.toLowerCase();
+                    let type        = thisElement.attr("type");
                     let value;
-
+            
                     // Handle checkbox
-                    if (type === "checkbox") {
-                        data[name] = thisElement.is(":checked");
-                    } else if (type === "radio") {
-                        data[name] = !thisElement.is(":checked");
-                    } else {
+                    if(type === "checkbox") {
+                        data[name] =  thisElement.is(":checked"); 
+                    } else if(type === "radio"){
+                        data[name] =  !thisElement.is(":checked"); 
+                    }else {
                         if (tag === "select") {
-                            if (thisElement.hasClass("duallistbox")) {
+                            if(thisElement.hasClass("duallistbox")){
                                 value = thisElement.val();
-                            } else {
+                            }else{
 
                                 value = thisElement.find("option:selected").val();
                             }
@@ -214,20 +214,23 @@ $(function () {
                 });
             }
 
-            return data;
+           return data;
         }
     }
 
-    function storeData() {
-        let url = $("#clientConfigurationForm").attr("action");
-        console.log(formData);
+    function storeData(){
+        let url         = $("#clientConfigurationForm").attr("action");
+        let client_id   = $("#clientConfigurationForm").attr("clientid");
+        let method      = client_id ? "PUT" : "POST";
+        let type        = client_id ? "PUT" : "POST";
+    
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             url,
-            method: 'POST',
-            type: 'POST',
+            method,
+            type,
             contentType: 'application/json',
             data: JSON.stringify(formData),
             success: function (response) {
@@ -253,7 +256,7 @@ $(function () {
     }
 
 
-
+   
 
 });
 

@@ -58,37 +58,37 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="./index.html" class="nav-link ">
+                            <a href="{{ route('job-entry-exception.index') }}" class="nav-link ">
                                 <i class="fa fa-angle-right nav-icon"></i>
                                 <p>Job Entry Exceptions</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="./index2.html" class="nav-link">
+                            <a href="{{ route('property-inspector-exception.index') }}" class="nav-link">
                                 <i class="fa fa-angle-right nav-icon"></i>
                                 <p>Property Inspector Exceptions</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="./index3.html" class="nav-link">
+                            <a href="{{ route('data-validation-exception.index') }}" class="nav-link">
                                 <i class="fa fa-angle-right nav-icon"></i>
                                 <p>Data Validation Exceptions</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="./index3.html" class="nav-link">
+                            <a href="{{ route('document-exception.index') }}" class="nav-link">
                                 <i class="fa fa-angle-right nav-icon"></i>
                                 <p>Document Exceptions</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="./index3.html" class="nav-link">
+                            <a href="{{ route('booking-exception.index') }}" class="nav-link">
                                 <i class="fa fa-angle-right nav-icon"></i>
                                 <p>Booking Exceptions</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="./index3.html" class="nav-link">
+                            <a href="{{ route('remove-job-exception.index') }}" class="nav-link">
                                 <i class="fa fa-angle-right nav-icon"></i>
                                 <p>Remove Jobs</p>
                             </a>

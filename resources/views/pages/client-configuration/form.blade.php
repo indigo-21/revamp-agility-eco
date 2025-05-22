@@ -81,15 +81,13 @@
                                 </div>
                                 
                                 <div class="col-sm-12 col-lg-9">
-                                    <form id="clientConfigurationForm" action="{{ isset($clients) ? route('client-configuration.update', $clients) : route('client-configuration.store') }}">
+                                    <form id="clientConfigurationForm" action="{{ isset($client) ? route('client-configuration.update', $client->id) : route('client-configuration.store') }}" clientid="{{isset($client) ? $client->id : "" }}">
                                         @include('pages.client-configuration.stepper.client-key-details')
                                         @include('pages.client-configuration.stepper.client-sla-metrics')
                                         @include('pages.client-configuration.stepper.client-measures')
                                         @include('pages.client-configuration.stepper.installers')
                                     </form>
                                 </div>
-
-
                             </div>
                         </div>
                     </div>

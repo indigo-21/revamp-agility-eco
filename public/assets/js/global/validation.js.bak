@@ -28,7 +28,6 @@ function validateForm(formID){
             const isRequired     = thisElement.attr("required");
             const patternAttr    = thisElement.attr("inputformat") ? `^${thisElement.attr("inputformat")}+$` : false;
             const messageElement = thisElement.closest(".form-group").find(".invalid-feedback");
-            const uniqueid       = thisElement.attr("uniqueid") || false;
             let pattern          = patternAttr ? new RegExp(patternAttr) : false;
 
             // Clear any previous errors
@@ -66,7 +65,7 @@ function validateForm(formID){
                     messageElement.html("Invalid format.");
                     if (firstElement == "") firstElement = element;
                 } else{
-                    if(emailExist(value, uniqueid)){
+                    if(emailExist(value)){
                         thisElement.addClass("is-invalid");
                         messageElement.html("This email already Exist");
                         if (firstElement == "") firstElement = element;
@@ -124,8 +123,8 @@ function clearForm(formID){
     
 }
 
-function emailExist(email, uniqueid = false){
-    let data    = {email, uniqueid};
+function emailExist(email){
+    let data    = {email};
     let result  = false;
     $.ajax({
         headers: {
