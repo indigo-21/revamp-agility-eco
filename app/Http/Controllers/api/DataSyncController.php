@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Models\TempSyncLogs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
@@ -70,6 +71,7 @@ class DataSyncController extends Controller
             'client_installers' => ClientInstaller::class,
             'property_inspector_job_types' => PropertyInspectorJobType::class,
             'bookings' => Booking::class,
+            'temp_sync_logs' => TempSyncLogs::class,
         ];
 
         if (!array_key_exists($request->table, $modelMap)) {

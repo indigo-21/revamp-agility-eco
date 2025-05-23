@@ -12,10 +12,6 @@ class PropertyInspector extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function accountLevel()
-    {
-        return $this->belongsTo(AccountLevel::class);
-    }
     public function propertyInspectorPostcodes()
     {
         return $this->hasMany(PropertyInspectorPostcode::class);
@@ -35,5 +31,9 @@ class PropertyInspector extends Model
     public function job()
     {
         return $this->hasMany(Job::class);
+    }
+    public function chargingScheme()
+    {
+        return $this->belongsTo(ChargingScheme::class);
     }
 }
