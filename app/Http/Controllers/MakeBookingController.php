@@ -17,7 +17,8 @@ class MakeBookingController extends Controller
         // get all the jobs columns and group by job_number AES0000000010-01 remove the last 3 characters 
         $jobs = Job::selectRaw('*, SUBSTRING(job_number, 1, LENGTH(job_number) - 3) as job_group')
             ->groupBy('job_group')
-            ->where('job_status_id', 25)
+            ->whereIn('job_status_id', [25, 23])
+            ->where('close_date', null)
             ->get();
 
         return view('pages.booking.make-booking.index')

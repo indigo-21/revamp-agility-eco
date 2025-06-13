@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -54,6 +55,16 @@ class Job extends Model
     public function propertyInspector(): BelongsTo
     {
         return $this->belongsTo(PropertyInspector::class);
+    }
+
+    public function completedJobs(): HasMany
+    {
+        return $this->hasMany(CompletedJob::class);
+    }
+
+    public function remediation(): HasMany
+    {
+        return $this->hasMany(Remediation::class);
     }
 
 }

@@ -44,12 +44,12 @@
                                 </div>
                                 <div class="right">
                                     <div class="btn-group">
-                                        <a class="btn btn-white" href="{{ route('job.create') }}">
-                                            <i class="fa fa-plus-square mr-1" aria-hidden="true"></i> Add Job
-                                        </a>
-                                        <button class="btn btn-warning" data-toggle="modal"
-                                            data-target="#uploadJobCsv">Upload CSV File</button>
-                                        <button class="btn btn-primary">Remove Duplicates</button>
+                                        <x-button-permission type="create" :permission="$userPermission" as="a"
+                                            :href="route('job.create')" class="btn btn-white" label="Add Job" />
+                                        <x-button-permission type="create" :permission="$userPermission" class="btn btn-warning"
+                                            label="Upload CSV File" data-toggle="modal" data-target="#uploadJobCsv" />
+                                        <x-button-permission type="delete" :permission="$userPermission" class="btn btn-primary"
+                                            label="Remove Duplicates" />
                                     </div>
                                 </div>
                             </div>
@@ -109,13 +109,11 @@
                                                             @csrf
                                                             @method('DELETE')
                                                             <div class="btn-group">
-                                                                <a href="{{ route('job.show', $job->id) }}"
-                                                                    class="btn btn-info btn-sm" type="button">
-                                                                    Edit
-                                                                </a>
-                                                                <button type="button" class="btn btn-danger btn-sm">
-                                                                    Delete
-                                                                </button>
+                                                                <x-button-permission type="update" :permission="$userPermission"
+                                                                    as="a" :href="route('job.show', $job->id)"
+                                                                    class="btn btn-info btn-sm" label="Edit" />
+                                                                <x-button-permission type="delete" :permission="$userPermission"
+                                                                    class="btn btn-danger btn-sm" label="Delete" />
                                                             </div>
                                                         </form>
                                                     </td>

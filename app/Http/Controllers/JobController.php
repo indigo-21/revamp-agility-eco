@@ -129,6 +129,7 @@ class JobController extends Controller
                 "measure_cat" => $row->measure_cat,
                 "info" => $row->info
             ];
+            $row->csv_filename = $fileName;
 
             // dd($row);
 

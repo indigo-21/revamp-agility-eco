@@ -15,20 +15,22 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
-            ChargingSchemeSeeder::class,
-            ClientTypesSeeder::class,
-            JobTypesSeeder::class,
-            // ClientSeeder::class,
-            // ClientJobTypeSeeder::class,
-            // SurveyQuestionSetSeeder::class,
-            // SchemeSeeder::class,
-            // InstallerSeeder::class,
-            MeasureSeeder::class,
-            JobStatusSeeder::class,
-            AccountLevelSeeder::class,
-            UserTypeSeeder::class,
-            UserSeeder::class,
-            OutwardPostcodeSeeder::class,
+            // ChargingSchemeSeeder::class,
+            // ClientTypesSeeder::class,
+            // JobTypesSeeder::class,
+            // // ClientSeeder::class,
+            // // ClientJobTypeSeeder::class,
+            // // SurveyQuestionSetSeeder::class,
+            // // SchemeSeeder::class,
+            // // InstallerSeeder::class,
+            // MeasureSeeder::class,
+            // JobStatusSeeder::class,
+            // AccountLevelSeeder::class,
+            // UserTypeSeeder::class,
+            // UserSeeder::class,
+            // OutwardPostcodeSeeder::class,
+            NavigationSeeder::class,
+            UserNavigationSeeder::class,
         ]);
         // User::factory(10)->create();
 

@@ -7,4 +7,4 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('app:store-sync-logs-command')->everyMinute();
+Schedule::command('app:store-sync-logs-command')->everyThirtySeconds();
