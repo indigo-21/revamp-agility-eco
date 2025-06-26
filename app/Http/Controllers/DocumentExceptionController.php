@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\PropertyInspector;
+use App\Models\PropertyInspectorMeasure;
+use App\Models\PropertyInspectorQualification;
 use Illuminate\Http\Request;
 
 class DocumentExceptionController extends Controller
@@ -12,7 +15,20 @@ class DocumentExceptionController extends Controller
      */
     public function index()
     {
-        return view('pages.exception.document.index');
+        $documentExpires = PropertyInspector::where('photo_expiry', '<=', now())
+            ->where('photo_expiry', '!=', null)
+            ->get();
+        $qualificationExpires = PropertyInspectorQualification::where('expiry_date', '<=', now())
+            ->where('expiry_date', '!=', null)
+            ->get();
+        $measureExpires = PropertyInspectorMeasure::where('expiry', '<=', now())
+            ->where('expiry', '!=', null)
+            ->get();
+
+        return view('pages.exception.document.index')
+            ->with('documentExpires', $documentExpires)
+            ->with('qualificationExpires', $qualificationExpires)
+            ->with('measureExpires', $measureExpires);
     }
 
     /**

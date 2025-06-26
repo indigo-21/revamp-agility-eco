@@ -48,9 +48,9 @@
                                 <li class="list-group-item">
                                     <b>Status</b> <a class="float-right">
                                         @if ($property_inspector->status === 1)
-                                            <span class="right badge badge-success">Active</span>
-                                        @else
                                             <span class="right badge badge-danger">Inactive</span>
+                                        @else
+                                            <span class="right badge badge-success">Active</span>
                                         @endif
                                     </a>
                                 </li>
@@ -69,7 +69,7 @@
                     <!-- /.card -->
 
                     <!-- About Me Box -->
-                    <div class="card card-primary">
+                    <div class="card ">
                         <div class="card-header">
                             <h3 class="card-title">Information</h3>
                         </div>
@@ -92,15 +92,10 @@
                             <strong><i class="fas fa-map-marker-alt mr-1"></i> Job Types</strong>
 
                             <p class="text-muted">
-                                @if ($property_inspector->qai === 1)
-                                    <span class="right badge badge-info">Qai</span>
-                                @endif
-                                @if ($property_inspector->assessor === 1)
-                                    <span class="right badge badge-info">Assessor</span>
-                                @endif
-                                @if ($property_inspector->surveyor === 1)
-                                    <span class="right badge badge-info">Surveyor</span>
-                                @endif
+                                @foreach ($property_inspector->propertyInspectorJobTypes as $piJobTypes)
+                                    <span class="right badge badge-danger">{{ $piJobTypes->jobType->type }}
+                                    </span>
+                                @endforeach
                             </p>
 
                             <hr>

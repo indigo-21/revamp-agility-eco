@@ -32,7 +32,7 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-md-12">
                     <div class="card card-default">
                         <div class="card-header">
@@ -95,7 +95,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="row">
                 <div class="col-md-12">
                     <div class="card card-default">
@@ -108,12 +108,12 @@
                                     </h3>
                                 </div>
                                 <div class="right">
-                                    <a type="button" class="btn btn-white" href="">
-                                        <i class="fa fa-plus-square mr-1" aria-hidden="true"></i> Create Installer
-                                    </a>
-                                    <a type="button" class="btn bg-gradient-warning" href="">
-                                        <i class="fa fa-upload mr-1" aria-hidden="true"></i> Upload CSV
-                                    </a>
+                                    <div class="btn-group">
+                                        <x-button-permission type="create" :permission="$userPermission" class="btn btn-primary"
+                                            label="Reimport"/>
+                                        <x-button-permission type="delete" :permission="$userPermission" class="btn btn-warning"
+                                            label="Remove Selected" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -144,11 +144,11 @@
             </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
-
 @endsection
 @section('importedScripts')
     @include('includes.datatables-scripts')
     <!-- Select2 -->
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
+    <script src="{{ asset('assets/js/global/table.js') }}"></script>
 @endsection

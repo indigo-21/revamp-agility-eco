@@ -1,239 +1,133 @@
 $(function () {
-    const dateNow  = moment().format("YYYY-MM-DD HH:mm:ss");
-    const formData = {};
     //Initialize Elements Plugin
-        $('.duallistbox').bootstrapDualListbox()
+    $('.duallistbox').bootstrapDualListbox()
 
-        //Initialize Select2 Elements
-        $('.select2').select2();
-        let clientMeasureTable    = $("#clientMeasureTable").DataTable();
-        let clientJobStatusTable  = $("#clientJobStatusTable").DataTable();
+    //Initialize Select2 Elements
+    $('.select2').select2();
     //End Initialize Elements Plugin
 
-    // STEPPER SCRIPT
-        let stepIndex   = 0;
-        let steps       = $(".step");
-        let stepNav     = $(".stepper-nav")
-        let progressBar = $("#progress-bar");
-        let totalSteps  = steps.length;
-        
-
-        function updateStepper() {
-            steps.removeClass("active-step").eq(stepIndex).addClass("active-step");
-            progressBar.css("width", ((stepIndex + 1) / totalSteps) * 100 + "%");
-            progressBar.css("width", ((stepIndex + 1) / totalSteps) * 100 + "%");
-            progressBar.text("Step " + (stepIndex + 1));
-            stepNav.removeClass("btn-primary").addClass("btn-outline-primary").eq(stepIndex).removeClass("btn-outline-primary").addClass("btn-primary");
-            
-        }
-
-        $(".next").click(function () {
-            let formID      = $(this).attr("formid");
-            let tableID     = $(this).attr("tableid");
-            let errorCount  = validateForm(formID);
-            
-            if (errorCount < 1 && (stepIndex < totalSteps - 1)) {
-                // formData.append(formID, JSON.stringify(appendFormData(formID)))
-                if(!formID && !tableID){
-                    let selectedValues          = $('.duallistbox').val();
-                    formData["installerForm"]   = selectedValues.join(",");
-                }else{
-                    formData[formID || tableID] = appendFormData(formID || tableID, tableID);
-                }
-                stepIndex++;
-                updateStepper();
-            }
-            
+    ["QAI", "Assessor", "Surveyor"].forEach(function (id) {
+        $("#" + id).on('change', function () {
+            $("#" + id.toLowerCase() + "_visit_duration").attr('disabled', !this.checked);
         });
-
-        $(".prev").click(function () {
-            if (stepIndex > 0) {
-                stepIndex--;
-                updateStepper();
-            }
-        });
-    // END STEPPER SCRIPT
-
-    $(document).on("click", "#clientMeasuresBtn", function(){
-        let formID      = $(this).attr("formid");
-        let errorCount  = validateForm(formID);
-
-        if(errorCount < 1){
-            // FORM VALUES
-            let measureId   = $('select[name="measure_cat"] option:selected').val();
-            let measureCat  = $('select[name="measure_cat"] option:selected').text();
-            let measureVal  = $('[name=measure_fee_value]').val();
-            let measureFee  = $('[name=measure_fee_currency]').val();
-
-            let newRow = clientMeasureTable.row.add([
-                measureCat,
-                measureVal,
-                measureFee,
-                '<button class="btn btn-danger btn-sm deleteRow">Delete</button>'
-            ]).draw().node();
-
-            $(newRow).attr("id", measureId);
-
-            clearForm(formID);
-        }
-        
     });
 
-    $(document).on("click", "#clientJobStatusBtn", function(){
-        let formID      = $(this).attr("formid");
-        let errorCount  = validateForm(formID);
+    // STEPPER SCRIPT
+    let stepIndex = 0;
+    let steps = $(".step");
+    let stepNav = $(".stepper-nav")
+    let progressBar = $("#progress-bar");
+    let totalSteps = steps.length;
 
-        if(errorCount < 1){
-            // FORM VALUES
-            let vera_job_status_name    = $('select[name="vera_job_status_name"] option:selected').text();
-            let client_job_status_name  = $('[name=client_job_status_name]').val();
 
-            clientJobStatusTable.row.add([
-                vera_job_status_name,
-                client_job_status_name,
-                '<button class="btn btn-danger btn-sm deleteRow">Delete</button>'
-            ]).draw();
+    function updateStepper() {
+        steps.removeClass("active-step").eq(stepIndex).addClass("active-step");
+        progressBar.css("width", ((stepIndex + 1) / totalSteps) * 100 + "%");
+        progressBar.css("width", ((stepIndex + 1) / totalSteps) * 100 + "%");
+        progressBar.text("Step " + (stepIndex + 1));
+        stepNav.removeClass("btn-primary")
+            .addClass("btn-outline-primary")
+            .eq(stepIndex)
+            .removeClass("btn-outline-primary")
+            .addClass("btn-primary");
 
-            clearForm(formID);
+    }
+
+    $(".next").click(function () {
+        if (stepIndex < totalSteps - 1) {
+            stepIndex++;
+            updateStepper();
         }
-        
-    }); 
+    });
 
-    // Handle Row Deletion
-    $(document).on('click', '.deleteRow', function () {
+    $(".prev").click(function () {
+        if (stepIndex > 0) {
+            stepIndex--;
+            updateStepper();
+        }
+    });
+    // END STEPPER SCRIPT
+
+    function validateMeasuresFields() {
+        let measureCat = $('select[name="measure_id"]').val();
+        let measure_fee_value = $('input[name="measure_fee_value"]').val();
+
+        if (measureCat && measure_fee_value) {
+            $('#addMeasures').prop('disabled', false);
+        } else {
+            $('#addMeasures').prop('disabled', true);
+        }
+    }
+
+    $('select[name="measure_id"], input[name="measure_fee_value"]').on('input change', validateMeasuresFields);
+
+    let clientMeasureTable = $('#clientMeasureTable').DataTable();
+
+    $('#addMeasures').on('click', function () {
+        let measureCat = $('select[name="measure_id"] option:selected').text();
+        let measure_fee_value = $('input[name="measure_fee_value"]').val();
+        let measure_fee_currency = $('input[name="measure_fee_currency"]').val();
+
+        clientMeasureTable.row.add([
+            measureCat,
+            measure_fee_value,
+            measure_fee_currency,
+            '<button class="btn btn-danger btn-sm deleteRow" type="button">Delete</button>'
+        ]).draw();
+
+        // Clear input fields
+        $('select[name="measure_id"]').val('').trigger('change');
+        $('input[name="measure_fee_value"]').val('');
+
+        // Revalidate fields after clearing
+        validateMeasuresFields();
+    });
+
+    // Initial validation on page load
+    validateMeasuresFields();
+
+    $('#clientMeasureTable tbody').on('click', '.deleteRow', function () {
         let table = $(this).closest('table').DataTable();
         table.row($(this).parents('tr')).remove().draw();
     });
 
-    $(document).on("click", "#submitBtn", function(){
-        let containerID      = $(this).attr("formid");
-        let errorCount       = validateForm(containerID);
-        if(errorCount < 1){
-            formData[containerID] = appendFormData(containerID);
-            setTimeout(() => {
-                storeData();
-            }, 1000);
-        }
-    });
 
-    $(document).on("keyup",".job-types", function(){
-        let thisVal     = $(this).val();
-        let inputName   = $(this).attr("name");
-        let checkboxId  = "";
-        switch (inputName) {
-            case "qai_visit_duration":
-                checkboxId = "qai";
-                break;
-            case "assessor_visit_duration":
-                checkboxId = "assessor";
-                break;
-            default: 
-                // surveyor_visit_duration
-                checkboxId = "surveyor";
-                break;
-        }
-        $(`#${checkboxId}`).attr("checked", false);
+    $('#submitButton').on('click', (e) => {
+        e.preventDefault();
 
-        if(thisVal.length > 0){
-            $(`#${checkboxId}`).attr("checked", true);
-        }
-        
-    });
+        let clientForm = $('#clientConfigurationForm');
+        let formRoute = clientForm.attr('action');
+        let formMethod = clientForm.attr('method');
+        let formData = new FormData(clientForm[0]);
 
-    $(document).on("click","[name=active]", function(){
-        let isActive = $(this).attr("id") == "active_yes";
-        let inputId  = isActive ? "date_last_activated" :"date_last_deactivated";
-        $(`#${inputId}`).val(dateNow);
-    });
+        $('#clientMeasureTable tbody tr').each(function (index) {
+            let rowData = $(this).find('td').map(function () {
+                return $(this).text().trim();
+            }).get();
 
-    $(document).on("change","[name=charging_scheme]", function(){
-        let thisVal = $(this).val();
-        $("[name=payment_terms]").attr("required",false);
-        $("[name=charge_by_property_rate]").attr("required",false);
-        if(thisVal == 1){
-            $("[name=payment_terms]").attr("required",true);
-            $("[name=charge_by_property_rate]").attr("required",true);
-        }
-    });
-
-
-
-    // Initialize Function 
-    function appendFormData(containerID, isFromTable = false){
-        if (containerID) {
-            let data = {};
-
-            if(isFromTable){
-                data[containerID] = [];
-                if($(`#${containerID} tbody tr`).length > 0){
-                    $(`#${containerID} tbody tr`).each(function(){
-                        let rowId   = $(this).attr("id");
-                        let rowData = $(this).find('td').map(function () {
-                            return $(this).text().trim();
-                        }).get();
-                        
-                        if(rowData.length > 0){
-                            let tempData;
-                            tempData = {
-                                id:rowId,
-                                measure: rowData[0],
-                                chargeValue: rowData[1],
-                                currency: rowData[2]
-                            }
-                            data[containerID].push(tempData);
-                        }
-                    })
-                }
-                console.log(data);
-            }else{
-                $(`#${containerID} [name]`).each((index, element) => {
-                    let thisElement = $(element);
-                    let name        = thisElement.attr("name");
-                    let tag         = element.tagName.toLowerCase();
-                    let type        = thisElement.attr("type");
-                    let value;
-            
-                    // Handle checkbox
-                    if(type === "checkbox") {
-                        data[name] =  thisElement.is(":checked"); 
-                    } else if(type === "radio"){
-                        data[name] =  !thisElement.is(":checked"); 
-                    }else {
-                        if (tag === "select") {
-                            if(thisElement.hasClass("duallistbox")){
-                                value = thisElement.val();
-                            }else{
-
-                                value = thisElement.find("option:selected").val();
-                            }
-                        } else {
-                            value = thisElement.val();
-                        }
-                        data[name] = value;
-                    }
-                });
+            if (rowData.length > 0) {
+                formData.append(`measures[${index}][measure_cat]`, rowData[0]);
+                formData.append(`measures[${index}][measure_fee_value]`, rowData[1]);
+                formData.append(`measures[${index}][measure_fee_currency]`, rowData[2]);
             }
+        });
 
-           return data;
-        }
-    }
-
-    function storeData(){
-        let url         = $("#clientConfigurationForm").attr("action");
-        let client_id   = $("#clientConfigurationForm").attr("clientid");
-        let method      = client_id ? "PUT" : "POST";
-        let type        = client_id ? "PUT" : "POST";
-    
-        $.ajax({
+        $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            url,
-            method,
-            type,
-            contentType: 'application/json',
-            data: JSON.stringify(formData),
+            }
+        });
+
+        $.ajax({
+            url: formRoute,
+            type: formMethod,
+            data: formData,
+            contentType: false,
+            processData: false,
             success: function (response) {
+                console.log(response.message);
+                // console.log('Form submitted successfully:', response);
+
                 // Remove the alert if it exists
                 $('#formAlert').removeClass('alert-danger').addClass('d-none').empty();
 
@@ -250,13 +144,31 @@ $(function () {
                 }, 1000);
             },
             error: function (xhr, status, error) {
-                console.error(error);
+                console.error('Form submission failed:', error);
+
+                let alertBox = $('#formAlert');
+                alertBox.removeClass().addClass('alert alert-danger').empty();
+
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    let errorList = '<ul class="mb-0">';
+                    for (let field in errors) {
+                        if (errors.hasOwnProperty(field)) {
+                            errors[field].forEach(function (message) {
+                                errorList += `<li>${message}</li>`;
+                            });
+                        }
+                    }
+                    errorList += '</ul>';
+                    alertBox.html(errorList);
+                } else {
+                    alertBox.text('Something went wrong. Please try again.');
+                }
             }
         });
-    }
 
-
-   
+        console.log('submitted!');
+    });
 
 });
 

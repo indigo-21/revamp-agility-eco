@@ -1,4 +1,4 @@
-<div id="photo-and-id" class="card card-primary card-outline step">
+<div id="photo-and-id" class="card step">
     <div class="card-header">
         <h3 class="card-title">Photo and ID</h3>
     </div>

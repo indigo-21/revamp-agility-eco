@@ -6,32 +6,133 @@
     @include('includes.datatables-links')
     <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/daterangepicker/daterangepicker.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
 @endsection
 
 @section('content')
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Manage Jobs</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active">Manage Jobs</li>
-                    </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+    <x-title-breadcrumbs title="Manage Jobs" :breadcrumbs="[
+        ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
+        ['title' => 'Manage Jobs', 'route' => '', 'active' => 'active'],
+    ]" />
 
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
             <!-- Small boxes (Stat box) -->
             <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-default">
+                        <div class="card-header">
+                            <h3 class="card-title">Filter</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                        class="fas fa-minus"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="card-body" style="display: block;">
+                            <form method="GET" action="{{ route('job.index') }}" id="filterForm">
+                                @csrf
+                                <div class="row mb-5">
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <x-select label="Job Status" name="job_status_id" :multiple="false">
+                                                    <option value="" {{ request('job_status_id') ? '' : 'selected' }}
+                                                        disabled>- Select Job Status
+                                                        -
+                                                    </option>
+                                                    @foreach ($jobStatuses as $jobStatus)
+                                                        <option value="{{ $jobStatus->id }}"
+                                                            {{ request('job_status_id') == $jobStatus->id ? 'selected' : '' }}>
+                                                            {{ $jobStatus->description }}
+                                                        </option>
+                                                    @endforeach
+                                                </x-select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <x-select label="Client" name="client" :multiple="false">
+                                                    <option value="" disabled
+                                                        {{ request('client') ? '' : 'selected' }}>- Select Client -
+                                                    </option>
+                                                    @foreach ($clients as $client)
+                                                        <option value="{{ $client->id }}"
+                                                            {{ request('client') == $client->id ? 'selected' : '' }}>
+                                                            {{ $client->user->firstname }} {{ $client->user->lastname }}
+                                                        </option>
+                                                    @endforeach
+                                                </x-select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <x-select label="Outward Postcode" name="outward_postcode"
+                                                    :multiple="false">
+                                                    <option value="" disabled
+                                                        {{ request('outward_postcode') ? '' : 'selected' }}>- Select
+                                                        Outward Postcode -</option>
+                                                    @foreach ($outwardPostcodes as $outwardPostcode)
+                                                        <option value="{{ $outwardPostcode->name }}"
+                                                            {{ request('outward_postcode') == $outwardPostcode->name ? 'selected' : '' }}>
+                                                            {{ $outwardPostcode->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </x-select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Created At:</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">
+                                                                <i class="far fa-calendar-alt"></i>
+                                                            </span>
+                                                        </div>
+                                                        <input type="text" class="form-control float-right"
+                                                            id="jobDateRange" name="job_date_range"
+                                                            value="{{ request('job_date_range') }}">
+                                                    </div>
+                                                    <!-- /.input group -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-md-4">
+                                                <x-radio label="Open Jobs" name="job_filter" id="open_jobs"
+                                                    :value="1" :checked="request('job_filter') == 1" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <x-radio label="Closed Jobs" name="job_filter" id="closed_jobs"
+                                                    :value="2" :checked="request('job_filter') == 2" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <x-radio label="All Jobs" name="job_filter" id="all_jobs" :value="3"
+                                                    :checked="request('job_filter') == 3 || !request('job_filter')" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 offset-md-1">
+                                        <div class="small-box bg-default">
+                                            <div class="inner">
+                                                <h3 id="totalNoOfJobs">{{ $jobs->count() }}</h3>
+
+                                                <p>No. of Jobs</p>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fa-book"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="btn-group">
+                                    <button class="btn btn-primary btn-flat float-right" type="submit">Filter</button>
+                                    <a class="btn btn-default btn-flat float-right"
+                                        href="{{ route('job.index') }}">Reset</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-12">
                     <div class="card card-default">
                         <div class="card-header">
@@ -48,8 +149,10 @@
                                             :href="route('job.create')" class="btn btn-white" label="Add Job" />
                                         <x-button-permission type="create" :permission="$userPermission" class="btn btn-warning"
                                             label="Upload CSV File" data-toggle="modal" data-target="#uploadJobCsv" />
-                                        <x-button-permission type="delete" :permission="$userPermission" class="btn btn-primary"
-                                            label="Remove Duplicates" />
+                                        @if ($jobs->whereIn('job_status_id', [6])->count() > 0)
+                                            <x-button-permission type="delete" :permission="$userPermission" class="btn btn-primary"
+                                                label="Remove Duplicates" id="removeDuplicates" />
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -89,7 +192,8 @@
                                                     <td>{{ $job->cert_no }}</td>
                                                     <td>{{ $job->jobMeasure?->umr }}</td>
                                                     <td>
-                                                        <span class="right badge badge-{{ $job->jobStatus->color_scheme }}">
+                                                        <span
+                                                            class="right badge badge-{{ $job->jobStatus->color_scheme }}">
                                                             {{ $job->jobStatus->description }}
                                                         </span>
                                                     </td>
@@ -104,16 +208,22 @@
                                                     <td>{{ $job->deadline }}</td>
                                                     <td>{{ $job->invoice_status }}</td>
                                                     <td>
-                                                        <form action="{{ route('job.destroy', $job->id) }}" method="POST"
-                                                            class="d-inline">
+                                                        <form action="{{ route('job.destroy', $job->id) }}"
+                                                            method="POST" class="delete-form">
                                                             @csrf
                                                             @method('DELETE')
                                                             <div class="btn-group">
-                                                                <x-button-permission type="update" :permission="$userPermission"
+                                                                <x-button-permission type="view" :permission="$userPermission"
                                                                     as="a" :href="route('job.show', $job->id)"
-                                                                    class="btn btn-info btn-sm" label="Edit" />
+                                                                    class="btn btn-primary btn-sm" label="View" />
+                                                                <x-button-permission type="update" :permission="$userPermission"
+                                                                    class="btn btn-warning btn-sm closeJobBtn"
+                                                                    data-id="{{ $job->id }}" label="Close Job"
+                                                                    data-target="#closeJob" data-toggle="modal"
+                                                                    data-id="{{ $job->id }}" />
                                                                 <x-button-permission type="delete" :permission="$userPermission"
-                                                                    class="btn btn-danger btn-sm" label="Delete" />
+                                                                    class="btn btn-danger btn-sm delete-btn"
+                                                                    label="Delete" />
                                                             </div>
                                                         </form>
                                                     </td>
@@ -180,6 +290,39 @@
             </form>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="closeJob" role="dialog" aria-labelledby="closeJobLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="POST" class="close-job-form">
+                    @csrf
+                    @method('PATCH')
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="closeJobLabel">Close Job</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" value="" name="job_status_id" id="job_number_closed_job" hidden>
+                        <x-select label="Reason" name="job_status_id" :multiple="false">
+                            <option value="28">Wrong Contact Details</option>
+                            <option value="15">Customer Refused</option>
+                            <option value="27">Job Deadline Expired</option>
+                            <option value="36">QA Requirement Achieved</option>
+                        </x-select>
+
+                        <x-textarea name="notes" label="Notes" rows="5" value="" required />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('importedScripts')
@@ -192,6 +335,12 @@
     <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
     @include('includes.datatables-scripts')
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
-
+    <!-- InputMask -->
+    <script src="{{ asset('plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('plugins/inputmask/jquery.inputmask.min.js') }}"></script>
+    <!-- date-range-picker -->
+    <script src="{{ asset('plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script src="{{ asset('plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
     <script src="{{ asset('assets/js/job.js') }}"></script>
 @endsection

@@ -18,7 +18,17 @@ class Client extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function clientJobType(): HasMany
+    public function jobs(): HasMany
+    {
+        return $this->hasMany(Job::class);
+    }
+
+    public function clientMeasures(): HasMany
+    {
+        return $this->hasMany(ClientMeasure::class);
+    }
+
+    public function clientJobTypes(): HasMany
     {
         return $this->hasMany(ClientJobType::class);
     }

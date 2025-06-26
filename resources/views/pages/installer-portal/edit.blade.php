@@ -37,7 +37,7 @@
                 <div class="col-7 col-lg-8">
                     <div class="card">
                         <div class="card-body">
-                            <x-remediation-history :remediations="$remediations" />
+                            <x-history :lists="$remediations" />
                         </div>
                     </div>
                     <!-- /.card -->
@@ -57,6 +57,20 @@
 
                 <div class="col-5 col-lg-4">
                     <x-job-remediation-details :completedJob="$completedJob" />
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <a type="button" href="{{ route('installer-portal.show', $completedJob->job->id) }}"
+                                        class="btn btn-info btn-block">Question Detail</a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a type="button" href="{{ route('installer-portal.index') }}"
+                                        class="btn btn-info btn-block">Job List</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!-- /.col -->
             </div>

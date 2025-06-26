@@ -10,29 +10,16 @@
     </style>
 @endsection
 @section('content')
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Data Validation Exception</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active">Exeception</li>
-                        <li class="breadcrumb-item active">Data Validation Exception</li>
-                    </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+    <x-title-breadcrumbs title="Property Inspector Exception" :breadcrumbs="[
+        ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
+        ['title' => 'Exception', 'route' => '', 'active' => 'active'],
+        ['title' => 'Property Inspector Exception', 'route' => '', 'active' => 'active'],
+    ]" />
 
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-md-12">
                     <div class="card card-default">
                         <div class="card-header">
@@ -97,7 +84,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="row">
                 <div class="col-md-12">
                     <div class="card card-default">
@@ -130,7 +117,27 @@
 
                                 </thead>
                                 <tbody>
-
+                                    @foreach ($jobs as $job)
+                                        <tr>
+                                            <td>{{ $job->job_group }}</td>
+                                            <td>{{ $job->deadline }}</td>
+                                            <td>{{ $job->first_visit_by }}</td>
+                                            <td>{{ $job->created_at }}</td>
+                                            <td>
+                                                <span class="right badge badge-{{ $job->jobStatus->color_scheme }}">
+                                                    {{ $job->jobStatus->description }}
+                                                </span>
+                                            </td>
+                                            <td>{{ $job->client->user->firstname }} {{ $job->client->user->lastname }}</td>
+                                            <td>{{ $job->property->city }}</td>
+                                            <td>{{ $job->property->postcode }}</td>
+                                            <td>{{ $job->duration }}</td>
+                                            <td class="text-center">
+                                                <x-button-permission type="create" :permission="$userPermission" as="a"
+                                                    :href="route('property-inspector-exception.show', $job->job_group)" class="btn btn-primary btn-sm" label="View" />
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -140,11 +147,11 @@
             </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
-
 @endsection
 @section('importedScripts')
     @include('includes.datatables-scripts')
     <!-- Select2 -->
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
+    <script src="{{ asset('assets/js/global/table.js') }}"></script>
 @endsection

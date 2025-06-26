@@ -7,6 +7,14 @@
         .vertical-center {
             vertical-align: middle !important;
         }
+
+        .nav-link.active {
+            color: #000 !important;
+        }
+
+        .nav-link {
+            color: #fff !important;
+        }
     </style>
 @endsection
 @section('content')
@@ -42,13 +50,14 @@
                                         role="tab" aria-controls="document" aria-selected="true">Document Expiry</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="qualification-tab" data-toggle="pill" href="#qualification"
-                                        role="tab" aria-controls="qualification" aria-selected="false">Qualification
+                                    <a class="nav-link text-white" id="qualification-tab" data-toggle="pill"
+                                        href="#qualification" role="tab" aria-controls="qualification"
+                                        aria-selected="false">Qualification
                                         Expiry</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="measure-tab" data-toggle="pill" href="#measure" role="tab"
-                                        aria-controls="measure" aria-selected="false">Measure Expiry</a>
+                                    <a class="nav-link text-white" id="measure-tab" data-toggle="pill" href="#measure"
+                                        role="tab" aria-controls="measure" aria-selected="false">Measure Expiry</a>
                                 </li>
                             </ul>
                         </div>
@@ -58,7 +67,7 @@
                                     aria-labelledby="document-tab">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <h3>Document Expiry Exception</h3>
+                                            {{-- <h3>Document Expiry Exception</h3> --}}
                                             <table id="installerConfigurationTable"
                                                 class="table table-bordered table-striped">
                                                 <thead>
@@ -70,7 +79,20 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <td></td>
+                                                    @foreach ($documentExpires as $document)
+                                                        <tr>
+                                                            <td>{{ $document->user->firstname }}
+                                                                {{ $document->user->lastname }}</td>
+                                                            <td>PHOTO</td>
+                                                            <td>
+                                                                <a href="{{ asset("storage/profile_images/{$document->user->photo}") }}"
+                                                                    target="_blank">
+                                                                    {{ $document->user->photo }}
+                                                                </a>
+                                                            </td>
+                                                            <td>{{ $document->photo_expiry }}</td>
+                                                        </tr>
+                                                    @endforeach
                                                 </tbody>
                                             </table>
                                         </div>
@@ -81,7 +103,7 @@
                                     aria-labelledby="qualification-tab">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <h3>Qualification Expiry Exception</h3>
+                                            {{-- <h3>Qualification Expiry Exception</h3> --}}
                                             <table id="installerConfigurationTable"
                                                 class="table table-bordered table-striped">
                                                 <thead>
@@ -93,7 +115,20 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <td></td>
+                                                    @foreach ($qualificationExpires as $qualification)
+                                                        <tr>
+                                                            <td>{{ $qualification->propertyInspector->user->firstname }}
+                                                                {{ $qualification->propertyInspector->user->lastname }}</td>
+                                                            <td>{{ $qualification->name }}</td>
+                                                            <td>
+                                                                <a href="{{ asset("storage/qualification_certificate/{$qualification->certificate}") }}"
+                                                                    target="_blank">
+                                                                    {{ $qualification->certificate }}
+                                                                </a>
+                                                            </td>
+                                                            <td>{{ $qualification->expiry_date }}</td>
+                                                        </tr>
+                                                    @endforeach
                                                 </tbody>
                                             </table>
                                         </div>
@@ -101,9 +136,9 @@
                                     </div><!-- /.container-fluid -->
                                 </div>
                                 <div class="tab-pane fade" id="measure" role="tabpanel" aria-labelledby="measure-tab">
-                                <div class="row">
+                                    <div class="row">
                                         <div class="col-md-12">
-                                            <h3>Measure Expiry Exception</h3>
+                                            {{-- <h3>Measure Expiry Exception</h3> --}}
                                             <table id="installerConfigurationTable"
                                                 class="table table-bordered table-striped">
                                                 <thead>
@@ -115,7 +150,21 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <td></td>
+                                                    @foreach ($measureExpires as $measure)
+                                                        <tr>
+                                                            <td>{{ $measure->propertyInspector->user->firstname }}
+                                                                {{ $measure->propertyInspector->user->lastname }}
+                                                            </td>
+                                                            <td>{{ $measure->measure->measure_cat }}</td>
+                                                            <td>
+                                                                <a href="{{ asset("storage/measure_certificate/{$measure->cert}") }}"
+                                                                    target="_blank">
+                                                                    {{ $measure->cert }}
+                                                                </a>
+                                                            </td>
+                                                            <td>{{ $measure->expiry }}</td>
+                                                        </tr>
+                                                    @endforeach
                                                 </tbody>
                                             </table>
                                         </div>
@@ -131,11 +180,11 @@
         </div>
     </section>
     <!-- /.content -->
-
 @endsection
 @section('importedScripts')
     @include('includes.datatables-scripts')
     <!-- Select2 -->
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
+    <script src="{{ asset('assets/js/global/table.js') }}"></script>
 @endsection

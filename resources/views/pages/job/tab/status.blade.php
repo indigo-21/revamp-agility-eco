@@ -8,9 +8,9 @@
         <x-job-details label="Job Deadline" value="{{ $job->deadline }}" />
         <x-job-details label="Job First Visit By" value="{{ $job->first_visit_by }}" />
         <x-job-details label="Job Schedule Date" value="{{ $job->schedule_date }}" />
-        <x-job-details label="Assigend PI"
-            value="{{ $job->propertyInspector->user->firstname }} 
-            {{ $job->propertyInspector->user->lastname }}" />
+        <x-job-details label="Assigned PI"
+            value="{{ $job->propertyInspector?->user->firstname }} 
+            {{ $job->propertyInspector?->user->lastname }}" />
     </div>
     <div class="col-md-6">
         <x-job-details label="CSV Filename" value="{{ $job->csv_filename }}" />

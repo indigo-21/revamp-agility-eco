@@ -75,6 +75,7 @@ $(function () {
         thumbnailWidth: 80,
         thumbnailHeight: 80,
         parallelUploads: 20,
+        uploadMultiple: true,
         previewTemplate: previewTemplate,
         autoQueue: false, // Make sure the files aren't queued until manually added
         previewsContainer: "#previews", // Define the container to display the previews
@@ -89,6 +90,11 @@ $(function () {
         file.previewElement.querySelector(".start").onclick = function () { myDropzone.enqueueFile(file) }
     })
 
+    myDropzone.on("sendingmultiple", function (files, xhr, formData) {
+        formData.append("completed_job_id", $('#updateSurveyContent').data('id'));
+        formData.append("filepath", $('#updateSurveyContent').data('filepath'));
+    });
+
     // Update the total progress bar
     myDropzone.on("totaluploadprogress", function (progress) {
         document.querySelector("#total-progress .progress-bar").style.width = progress + "%"
@@ -99,8 +105,6 @@ $(function () {
         document.querySelector("#total-progress").style.opacity = "1"
         // And disable the start button
         file.previewElement.querySelector(".start").setAttribute("disabled", "disabled")
-        formData.append("completed_job_id", $('#updateSurveyContent').data('id')); // replace with your variable
-        formData.append("filepath", $('#updateSurveyContent').data('filepath')); // replace with your variable
     })
 
     // Hide the total progress bar when nothing's uploading anymore

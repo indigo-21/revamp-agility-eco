@@ -51,20 +51,25 @@
                                 <thead>
                                     <tr>
                                         <th>Job Number</th>
-                                        <th>Deadline</th>
-                                        <th>Ideal Visit By</th>
-                                        <th>Extract From</th>
-                                        <th>Job Status</th>
-                                        <th>Client</th>
-                                        <th>City</th>
-                                        <th>Postcode</th>
-                                        <th>Duration</th>
-                                        <th>Action</th>
+                                        <th>Property Inspector</th>
+                                        <th>First Visit By</th>
+                                        <th>Last Update</th>
+                                        <th>Elapsed Time</th>
                                     </tr>
-
                                 </thead>
                                 <tbody>
-
+                                    @foreach ($jobs as $job)
+                                        <tr>
+                                            <td>{{ $job->job_number }}</td>
+                                            <td>
+                                                {{ $job->propertyInspector->user->firstname }}
+                                                {{ $job->propertyInspector->user->lastname }}
+                                            </td>
+                                            <td>{{ $job->first_visit_by }}</td>
+                                            <td>{{ $job->last_update }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($job->first_visit_by)->diffForHumans() }}</td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -74,11 +79,11 @@
             </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
-
 @endsection
 @section('importedScripts')
     @include('includes.datatables-scripts')
     <!-- Select2 -->
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
+    <script src="{{ asset('assets/js/global/table.js') }}"></script>
 @endsection

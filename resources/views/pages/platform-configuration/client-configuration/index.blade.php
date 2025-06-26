@@ -2,8 +2,9 @@
 
 @section('importedStyles')
     @include('includes.datatables-links')
-    <link rel="stylesheet" href="{{asset('plugins/select2/css/select2.min.css')}}">
-    <link rel="stylesheet" href="{{asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     <style>
         .vertical-center {
             vertical-align: middle !important;
@@ -33,7 +34,7 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-md-12">
                     <div class="card card-primary card-outline">
                         <div class="card-header">
@@ -91,7 +92,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <!-- Small boxes (Stat box) -->
             <div class="row">
                 <div class="col-md-12">
@@ -100,14 +101,13 @@
                             <div class="w-100 d-flex justify-content-between align-items-center">
                                 <div class="left">
                                     <h3 class="card-title">
-                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <i class="fas fa-list mr-2"></i>
                                         List of Clients
                                     </h3>
                                 </div>
                                 <div class="right">
-                                    <a type="button" class="btn btn-block btn-white" href="{{route('client-configuration.create')}}">
-                                        <i class="fa fa-plus-circle" aria-hidden="true"></i> Add Client
-                                    </a>
+                                    <x-button-permission type="create" :permission="$userPermission" as="a" :href="route('client-configuration.create')"
+                                        class="btn btn-white" label="Add Client" />
                                 </div>
                             </div>
                         </div>
@@ -128,27 +128,46 @@
                                 <tbody>
                                     @foreach ($clients as $client)
                                         <tr>
-                                            <td>{{ $loop->index + 1 }}</td>
+                                            <td>{{ $client->id }}</td>
                                             <td>
-                                                <strong>{{$client->client_name}}</strong><br>
-                                                <small>{{$client->client_email}}</small><br>
-                                                <small>{{$client->client_mobile}}</small><br>
-                                                <small>{{$client->client_address1}} {{$client->client_address2}} {{$client->client_address3}} {{$client->client_city}} {{$client->client_country}} {{$client->client_postcode}}</small><br>
+                                                <strong>{{ $client->user->firstname }}
+                                                    {{ $client->user->lastname }}</strong><br>
+                                                <small>{{ $client->user->email }}</small><br>
+                                                <small>{{ $client->user->mobile }}</small><br>
+                                                <small>{{ $client->address1 }} {{ $client->city }}
+                                                    {{ $client->country }}
+                                                    {{ $client->postcode }}</small><br>
                                             </td>
-                                            <td>{{$client->client_tla}}</td>
-                                            <td>{{$client->client_type}}</td>
-                                            <td>Job Type</td>
+                                            <td>{{ $client->client_abbrevation }}</td>
+                                            <td>{{ $client->clientType->name }}</td>
                                             <td>
-                                                @if ($client->is_active == 1)
-                                                    Active
+                                                @foreach ($client->clientJobTypes as $jobType)
+                                                    <span class="badge badge-info">{{ $jobType->jobType->type }}</span>
+                                                @endforeach
+                                            </td>
+                                            <td>
+                                                @if ($client->clientKeyDetails->is_active === 1)
+                                                    <span class="right badge badge-success">Active</span>
                                                 @else
-                                                    Inactive
+                                                    <span class="right badge badge-danger">Inactive</span>
                                                 @endif
                                             </td>
-                                            <td>      
-                                                <a type="button" href="{{ route('client-configuration.show', $client->client_id) }}" class="btn btn-block btn-primary">
-                                                    <i class="fa fa-eye" aria-hidden="true"></i>&nbsp; View
-                                                </a>
+                                            <td>
+                                                <form action="{{ route('client-configuration.destroy', $client->id) }}"
+                                                    method="POST" class="delete-form">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <div class="btn-group">
+                                                        <x-button-permission type="view" :permission="$userPermission" as="a"
+                                                            :href="route('client-configuration.show', $client->id)" class="btn btn-primary btn-sm"
+                                                            label="View" />
+                                                        <x-button-permission type="update" :permission="$userPermission" as="a"
+                                                            :href="route('client-configuration.edit', $client->id)" class="btn btn-warning btn-sm"
+                                                            label="Edit" />
+                                                        <x-button-permission type="delete" :permission="$userPermission"
+                                                            class="btn btn-danger btn-sm delete-btn" label="Delete" />
+                                                    </div>
+                                                </form>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -165,7 +184,8 @@
 
 @section('importedScripts')
     @include('includes.datatables-scripts')
+    <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <!-- Select2 -->
-    <script src="{{asset('plugins/select2/js/select2.full.min.js')}}"></script>
+    <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('assets/js/client-configuration.js') }}"></script>
 @endsection

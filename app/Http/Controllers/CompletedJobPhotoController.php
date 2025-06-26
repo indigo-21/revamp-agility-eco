@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\CompletedJob;
 use App\Models\CompletedJobPhoto;
 use App\Models\Job;
+use App\Models\UpdateSurvey;
+use App\Services\UpdateSurveyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -38,32 +40,57 @@ class CompletedJobPhotoController extends Controller
 
     public function updateSurveyPhoto(Request $request)
     {
-        // return true;
+        $completedJob = CompletedJob::find($request->completed_job_id);
+        $job = Job::find($completedJob->job_id);
+        $updateOutcome = "Added Images. <br>";
+
         if ($request->hasFile('photo')) {
-            $photo = $request->file('photo');
+            $updateSurvey = new UpdateSurvey();
 
-            $imageName = $photo->getClientOriginalName();
-            $photo->storeAs('completed_job_photos', $imageName, 'public');
+            $updateSurvey->job_id = $job->id;
+            $updateSurvey->completed_job_id = $completedJob->id;
+            $updateSurvey->user_id = auth()->user()->id;
+            $updateSurvey->update_outcome = "Added Images. <br>";
 
-            $completedJobPhoto = new CompletedJobPhoto;
+            foreach ($request->file('photo') as $photo) {
 
-            $completedJobPhoto->id = Str::uuid()->toString();
-            $completedJobPhoto->completed_job_id = $request->input('completed_job_id');
-            $completedJobPhoto->filename = $imageName;
-            $completedJobPhoto->file_path = $request->input('filepath');
-            $completedJobPhoto->status = 1;
+                $imageName = $photo->getClientOriginalName();
+                $photo->storeAs('completed_job_photos', $imageName, 'public');
 
-            $completedJobPhoto->save();
+                $updateOutcome .= "Image: <a href='/storage/completed_job_photos/{$imageName}' target='_blank'
+                        class='btn-link text-danger'>{$imageName}</a> <br>";
 
-            return $imageName;
-        } else {
-            return response()->json(['error' => 'No file received.'], 400);
+                $completedJobPhoto = new CompletedJobPhoto;
+
+                $completedJobPhoto->id = Str::uuid()->toString();
+                $completedJobPhoto->completed_job_id = $completedJob->id;
+                $completedJobPhoto->filename = $imageName;
+                $completedJobPhoto->file_path = $request->input('filepath');
+                $completedJobPhoto->status = 1;
+
+                $completedJobPhoto->save();
+
+            }
         }
+
+        (new UpdateSurveyService)->store(
+            $job->id,
+            $completedJob->id,
+            $updateOutcome
+        );
     }
 
     public function deleteSurveyPhoto(Request $request)
     {
         $completedJobPhoto = CompletedJobPhoto::find($request->input('completed_job_photo_id'));
+        $completedJob = CompletedJob::find($completedJobPhoto->completed_job_id);
+        $job = Job::find($completedJob->job_id);
+
+        (new UpdateSurveyService)->store(
+            $job->id,
+            $completedJob->id,
+            "Image Removed. <br> Image: {$completedJobPhoto->filename} <br>"
+        );
 
         if (!$completedJobPhoto) {
             throw ValidationException::withMessages(['completed_job_photo_id' => 'Completed job photo not found.']);
@@ -73,5 +100,5 @@ class CompletedJobPhotoController extends Controller
         return response()->json(['message' => 'Completed job photo deleted successfully.'], 200);
     }
 
-    
+
 }

@@ -39,13 +39,6 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card card-primary card-outline">
-                        <div class="card-header">
-                            <div class="w-100 d-flex justify-content-between align-items-center">
-                                <div class="left w-50">
-                                    <h3>Creating New Property Inspector</h3>
-                                </div>
-                            </div>
-                        </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12">

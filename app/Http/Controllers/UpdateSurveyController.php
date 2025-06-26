@@ -13,7 +13,7 @@ class UpdateSurveyController extends Controller
      */
     public function index()
     {
-        $jobs = Job::whereIn('job_status_id', [3, 16])
+        $jobs = Job::whereIn('job_status_id', [3, 16, 26])
             ->get();
 
         return view('pages.update-survey.index')

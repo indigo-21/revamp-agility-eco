@@ -1,24 +1,15 @@
 @extends('layouts.app')
 
+@section('importedStyles')
+    @include('includes.datatables-links')
+@endsection
+
 @section('content')
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Job Details</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item"><a href="/job">Manage Jobs</a></li>
-                        <li class="breadcrumb-item active">Job Details</li>
-                    </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+    <x-title-breadcrumbs title="Job Details" :breadcrumbs="[
+        ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
+        ['title' => 'Manage Jobs', 'route' => '/job', 'active' => ''],
+        ['title' => 'Job Details', 'route' => '', 'active' => 'active'],
+    ]" />
 
     <!-- Main content -->
     <section class="content">
@@ -94,16 +85,16 @@
                                             aria-labelledby="custom-content-above-details-tab">
                                             @include('pages.job.tab.details')
                                         </div>
-                                        <div class="tab-pane fade" id="custom-content-above-booking-history"
-                                            role="tabpanel" aria-labelledby="custom-content-above-booking-history-tab">
+                                        <div class="tab-pane fade" id="custom-content-above-booking-history" role="tabpanel"
+                                            aria-labelledby="custom-content-above-booking-history-tab">
                                             @include('pages.job.tab.booking-history')
                                         </div>
                                         <div class="tab-pane fade" id="custom-content-above-survey-sm" role="tabpanel"
                                             aria-labelledby="custom-content-above-survey-sm-tab">
                                             @include('pages.job.tab.survey-sm')
                                         </div>
-                                        <div class="tab-pane fade" id="custom-content-above-survey-measures"
-                                            role="tabpanel" aria-labelledby="custom-content-above-survey-measures-tab">
+                                        <div class="tab-pane fade" id="custom-content-above-survey-measures" role="tabpanel"
+                                            aria-labelledby="custom-content-above-survey-measures-tab">
                                             @include('pages.job.tab.survey-measures')
                                         </div>
                                         <div class="tab-pane fade" id="custom-content-above-update-survey-history"
@@ -131,4 +122,9 @@
         </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
+@endsection
+
+@section('importedScripts')
+    @include('includes.datatables-scripts')
+    <script src="{{ asset('assets/js/global/table.js') }}"></script>
 @endsection

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\FailedQuestion;
 use App\Models\Client;
 use App\Models\CompletedJob;
 use App\Models\Job;
+use App\Models\UpdateSurvey;
+use App\Services\UpdateSurveyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -15,12 +18,19 @@ class CompletedJobController extends Controller
     {
 
         $completedJob = CompletedJob::find($id);
+        $job = Job::find($completedJob->job_id);
 
+        (new UpdateSurveyService)->store(
+            $job->id,
+            $completedJob->id,
+            "Comment changed. <br> From: {$completedJob->comments}<br> To: {$request->comments}<br>"
+        );
+        
         if (!$completedJob) {
             throw ValidationException::withMessages(['completed_job_id' => 'Completed job not found.']);
         }
 
-        $completedJob->comments = $request->input('comments');
+        $completedJob->comments = $request->comments;
 
         $completedJob->save();
 
@@ -30,26 +40,31 @@ class CompletedJobController extends Controller
     public function updateSurveyPassFail(Request $request, string $id)
     {
         $completedJob = CompletedJob::find($id);
+        $job = Job::find($request->job_id);
+        $client = Client::find($job->client_id);
+
+        (new UpdateSurveyService)->store(
+            $job->id,
+            $completedJob->id,
+            "Status changed. <br> From: {$completedJob->pass_fail}<br> To: {$request->pass_fail}<br>"
+        );
 
         if (!$completedJob) {
             throw ValidationException::withMessages(['completed_job_id' => 'Completed job not found.']);
         }
 
-        $completedJob->pass_fail = $request->input('pass_fail');
+        $completedJob->pass_fail = $request->pass_fail;
 
         $completedJob->save();
 
         $completedJobs = CompletedJob::where('job_id', $request->job_id)
-            ->whereIn('pass_fail', ["Non-Compliant"])
+            ->whereIn('pass_fail', FailedQuestion::values())
             ->count();
 
-        $job = Job::find($request->job_id);
-        $client = Client::find($job->client_id);
-
-        $cat1Duration = $client->clientSlaMetric->cat1_reinspect_remediation_duration_unit;
-        $ncDuration = $client->clientSlaMetric->nc_reinspect_remediation_duration_unit;
-        $cat1ReinspectRemediation = (int) $client->clientSlaMetric->cat1_reinspect_remediation;
-        $ncReinspectRemediation = (int) $client->clientSlaMetric->nc_reinspect_remediation;
+        $cat1Duration = $client->clientSlaMetric->cat1_remediate_complete_duration_unit;
+        $ncDuration = $client->clientSlaMetric->nc_remediate_complete_duration_unit;
+        $cat1ReinspectRemediation = (int) $client->clientSlaMetric->cat1_remediate_complete;
+        $ncReinspectRemediation = (int) $client->clientSlaMetric->nc_remediate_complete;
 
         if ($completedJobs === 0) {
 

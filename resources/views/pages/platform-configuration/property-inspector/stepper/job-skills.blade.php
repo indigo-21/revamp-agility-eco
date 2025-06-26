@@ -1,4 +1,4 @@
-<div id="job-skills" class="card card-primary card-outline step active-step">
+<div id="job-skills" class="card step active-step">
     <div class="card-header">
         <h3 class="card-title">Job Skills</h3>
     </div>

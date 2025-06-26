@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\FailedQuestion;
 use App\Models\CompletedJob;
 use App\Models\Installer;
 use App\Models\Job;
@@ -22,7 +23,7 @@ class InstallerPortalController extends Controller
         $jobs = Job::where('job_status_id', 16)
             ->where('installer_id', $installer->id)
             ->whereHas('completedJobs', function ($q) {
-                $q->where('pass_fail', 'Non-Compliant')
+                $q->whereIn('pass_fail', FailedQuestion::values())
                     ->where(function ($subQ) {
                         // Case 1: No remediations at all
                         $subQ->whereDoesntHave('remediations')
@@ -66,7 +67,7 @@ class InstallerPortalController extends Controller
 
         $job = Job::findOrFail($id);
         $completedJobs = CompletedJob::where('job_id', $job->id)
-            ->whereIn('pass_fail', ["Non-Compliant"])
+            ->whereIn('pass_fail', FailedQuestion::values())
             ->get();
 
         $installerFirstAccess = CompletedJob::where('job_id', $job->id)

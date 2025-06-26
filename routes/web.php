@@ -9,10 +9,12 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\MakeBookingController;
 use App\Http\Controllers\ManageBookingController;
 use App\Http\Controllers\MeasureController;
+use App\Http\Controllers\OpenNcController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RemediationController;
 use App\Http\Controllers\RemediationReinstateController;
 use App\Http\Controllers\RemediationReviewController;
+use App\Http\Controllers\RestoreMaxAttemptController;
 use App\Http\Controllers\SchemeController;
 use App\Http\Controllers\UpdateSurveyController;
 use Illuminate\Support\Facades\Route;
@@ -45,8 +47,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // JOB
-    Route::resource('job', JobController::class)
-        ->middleware('navigation.access:job');
+    Route::middleware('navigation.access:job')->group(function () {
+        Route::resource('job', JobController::class);
+        Route::patch('job/{id}/closeJob', [JobController::class, 'closeJob']);
+    });
+
+    // OPEN NC
+    Route::resource('open-nc', OpenNcController::class)
+        ->middleware('navigation.access:open-nc');
 
     // CONFIGURATIONS
     Route::resource('property-inspector', PropertyInspectorController::class)
@@ -125,6 +133,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('make-booking.attemptMade');
     });
 
+    Route::resource('restore-max-attempts', RestoreMaxAttemptController::class)
+        ->middleware('navigation.access:restore-max-attempts');
 
     Route::middleware('navigation.access:manage-booking')->group(function () {
         // Manage Booking
@@ -142,7 +152,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('client/search-job-types', [JobController::class, 'searchClient'])->middleware('navigation.access:job');
     Route::get('get-property-inspector', [PropertyInspectorController::class, 'searchPropertyInspector'])->middleware('navigation.access:job');
+    Route::get('/pi/details/{id}', [PropertyInspectorController::class, 'getPiDetails'])->middleware('navigation.access:job');
     Route::post('/job-upload', [JobController::class, 'upload'])->name('job.upload');
+    Route::post('/remove-duplicates', [JobController::class, 'removeDuplicates'])->middleware('navigation.access:job');
     Route::post('client-configuration/validateEmail', [ClientConfigurationController::class, 'validateEmail'])->name('validateEmail');
 
 

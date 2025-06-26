@@ -99,16 +99,20 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <div class="btn-group">
-                                                        <a href="{{ route('property-inspector.show', $property_inspector->id) }}"
-                                                            class="btn btn-primary btn-sm"><i class="fas fa-eye"></i>
-                                                            View</a>
-                                                        <a href="{{ route('property-inspector.edit', $property_inspector->id) }}"
-                                                            class="btn btn-warning btn-sm">
-                                                            <i class="fas fa-pencil-alt"></i> Edit
-                                                        </a>
-                                                        <button type="button" class="btn btn-danger btn-sm delete-btn">
-                                                            <i class="fas fa-trash"></i> Delete
-                                                        </button>
+                                                        <x-button-permission type="view" :permission="$userPermission" as="a"
+                                                            :href="route(
+                                                                'property-inspector.show',
+                                                                $property_inspector->id,
+                                                            )" class="btn btn-primary btn-sm"
+                                                            label="View" />
+                                                        <x-button-permission type="update" :permission="$userPermission" as="a"
+                                                            :href="route(
+                                                                'property-inspector.edit',
+                                                                $property_inspector->id,
+                                                            )" class="btn btn-warning btn-sm"
+                                                            label="Edit" />
+                                                        <x-button-permission type="delete" :permission="$userPermission"
+                                                            class="btn btn-danger btn-sm delete-btn" label="Delete" />
                                                     </div>
                                                 </form>
                                             </td>

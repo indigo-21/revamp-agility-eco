@@ -35,7 +35,7 @@
             
         }
 @endphp
-<div id="step1" class="card card-primary card-outline step active-step">
+<div id="step1" class="card step active-step">
     <div class="card-header">
         <h3 class="card-title">Client Key Details</h3>
     </div>

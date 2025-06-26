@@ -67,4 +67,16 @@ class Job extends Model
         return $this->hasMany(Remediation::class);
     }
 
+    public function groupRemediation(): HasMany
+    {
+        return $this->hasMany(Remediation::class)
+            ->groupBy('created_at');
+    }
+
+    public function getRelatedBookingsAttribute()
+    {
+        $baseJobNumber = preg_replace('/-\d+$/', '', $this->job_number);
+        return Booking::where('job_number', $baseJobNumber)->get();
+    }
+
 }

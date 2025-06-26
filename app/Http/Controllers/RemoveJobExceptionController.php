@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Job;
 use Illuminate\Http\Request;
 
 class RemoveJobExceptionController extends Controller
@@ -12,7 +13,11 @@ class RemoveJobExceptionController extends Controller
      */
     public function index()
     {
-        return view('pages.exception.remove-job.index');
+        $jobs = Job::whereIn('job_status_id', [28, 15, 27, 36])
+            ->get();
+
+        return view('pages.exception.remove-job.index')
+            ->with('jobs', $jobs);
     }
 
     /**

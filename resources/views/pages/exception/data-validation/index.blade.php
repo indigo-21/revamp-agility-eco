@@ -2,37 +2,31 @@
 @section('importedStyles')
     @include('includes.datatables-links')
     <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="{{ asset('plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     <style>
         .vertical-center {
             vertical-align: middle !important;
         }
+
+        .selected {
+            background-color: #007bff !important;
+            color: white !important;
+        }
     </style>
 @endsection
 @section('content')
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Job Entry Exeception</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active">Exeception</li>
-                        <li class="breadcrumb-item active">Job Entry Exeception</li>
-                    </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+    <x-title-breadcrumbs title="Data Validation Exception" :breadcrumbs="[
+        ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
+        ['title' => 'Exception', 'route' => '', 'active' => 'active'],
+        ['title' => 'Data Validation Exception', 'route' => '', 'active' => 'active'],
+    ]" />
 
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <div class="row">
+            {{-- <div class="row">
                 <div class="col-md-12">
                     <div class="card card-default">
                         <div class="card-header">
@@ -44,7 +38,8 @@
                                     </h3>
                                 </div>
                                 <div class="right">
-                                    <button type="button" class="minimize-btn" data-toggle="collapse" data-target="#filterBody" aria-expanded="true"><i class="fas fa-minus"></i></button>
+                                    <button type="button" class="minimize-btn" data-toggle="collapse"
+                                        data-target="#filterBody" aria-expanded="true"><i class="fas fa-minus"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -54,10 +49,12 @@
                                     <div class="col-md-4">
                                         <label>Job Status</label>
                                         <div class="d-flex justify-content-around">
-                                            <x-checkbox name="data_invalid_installer" label="Data Invalid (Installer)"></x-checkbox>
+                                            <x-checkbox name="data_invalid_installer"
+                                                label="Data Invalid (Installer)"></x-checkbox>
                                             <x-checkbox name="data_invalid_scheme"
                                                 label="Data Invalid (Scheme)"></x-checkbox>
-                                            <x-checkbox name="data_invalid_measure" label="Data Invalid (Measure)"></x-checkbox>
+                                            <x-checkbox name="data_invalid_measure"
+                                                label="Data Invalid (Measure)"></x-checkbox>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -86,17 +83,17 @@
                             <div class="card-footer">
                                 <div class="text-right">
                                     <a type="button" class="btn btn-primary" href="">
-                                       Filter
+                                        Filter
                                     </a>
                                     <a type="button" class="btn btn-default" href="">
-                                         Reset
+                                        Reset
                                     </a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="row">
                 <div class="col-md-12">
                     <div class="card card-default">
@@ -109,21 +106,26 @@
                                     </h3>
                                 </div>
                                 <div class="right">
-                                    <a type="button" class="btn btn-white" href="">
-                                        <i class="fa fa-plus-square mr-1" aria-hidden="true"></i> Create Installer
-                                    </a>
-                                    <a type="button" class="btn bg-gradient-warning" href="">
-                                        <i class="fa fa-upload mr-1" aria-hidden="true"></i> Upload CSV
-                                    </a>
+                                    {{-- <form method="POST" action="{{ route('data-validation-exception.store') }}"
+                                        id="reimportForm">
+                                        @csrf --}}
+                                    <x-button-permission type="create" :permission="$userPermission" class="btn btn-primary"
+                                        label="Reimport" id="reimportBtn" />
+                                    {{-- </form> --}}
                                 </div>
                             </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table id="installerConfigurationTable" class="table table-bordered table-striped">
+                            <div class="mb-3 d-flex justify-content-end">
+                                {{-- <x-button-permission type="create" :permission="$userPermission" class="btn btn-primary"
+                                    label="Reimport" /> --}}
+                                {{-- <x-button-permission type="delete" :permission="$userPermission" class="btn btn-danger"
+                                    label="Remove Selected" /> --}}
+                            </div>
+                            <table id="dataValidationExceptionTable" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
-                                        <th></th>
                                         <th>Job Number</th>
                                         <th>Date</th>
                                         <th>Job Status</th>
@@ -131,12 +133,24 @@
                                         <th>Installer</th>
                                         <th>Scheme</th>
                                         <th>Postcode</th>
-                                        <th>Exception</th>
                                     </tr>
-
                                 </thead>
                                 <tbody>
-
+                                    @foreach ($jobs as $job)
+                                        <tr>
+                                            <td>{{ $job->job_number }}</td>
+                                            <td>{{ $job->created_at }}</td>
+                                            <td>
+                                                <span class="right badge badge-{{ $job->jobStatus->color_scheme }}">
+                                                    {{ $job->jobStatus->description }}
+                                                </span>
+                                            </td>
+                                            <td>{{ $job->jobMeasure?->measure?->measure_cat ?: 'No Measure' }}</td>
+                                            <td>{{ $job->installer?->user->firstname ?: 'No Installer' }}</td>
+                                            <td>{{ $job->scheme?->short_name ?: 'No Scheme' }}</td>
+                                            <td>{{ $job->property->postcode }}</td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -146,11 +160,13 @@
             </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
-
 @endsection
 @section('importedScripts')
     @include('includes.datatables-scripts')
     <!-- Select2 -->
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
+    <!-- SweetAlert2 -->
+    <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script src="{{ asset('assets/js/data-validation-exception.js') }}"></script>
 @endsection

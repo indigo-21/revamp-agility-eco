@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('job_measures', function (Blueprint $table) {
             $table->id();
             $table->foreignId('job_id')->constrained();
-            $table->foreignId('measure_id')->constrained();
+            $table->foreignId('measure_id')->nullable()->constrained();
             $table->string('umr');
             $table->string('info');
             $table->timestamps();

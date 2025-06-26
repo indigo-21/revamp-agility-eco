@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Job;
 use Illuminate\Http\Request;
 
 class BookingExceptionController extends Controller
@@ -12,7 +13,13 @@ class BookingExceptionController extends Controller
      */
     public function index()
     {
-        return view('pages.exception.booking.index');
+        $jobs = Job::where('first_visit_by', '<=', now())
+            ->where('first_visit_by', '!=', null)
+            ->whereIn('job_status_id', [2, 7, 8, 9, 10, 11, 25])
+            ->get();
+
+        return view('pages.exception.booking.index')
+            ->with('jobs', $jobs);
     }
 
     /**

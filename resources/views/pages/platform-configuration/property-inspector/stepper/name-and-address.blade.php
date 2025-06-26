@@ -1,4 +1,4 @@
-<div id="name-and-address" class="card card-primary card-outline step">
+<div id="name-and-address" class="card step">
     <div class="card-header">
         <h3 class="card-title">Name and Address</h3>
     </div>

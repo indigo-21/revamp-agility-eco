@@ -159,4 +159,11 @@ class PropertyInspectorController extends Controller
 
         return response()->json($propertyInspectors);
     }
+
+    public function getPiDetails(Request $request)
+    {
+        $propertyInspector = PropertyInspector::with(['job', 'user', 'user.userType', 'user.accountLevel'])->find($request->piId);
+
+        return response()->json($propertyInspector);
+    }
 }

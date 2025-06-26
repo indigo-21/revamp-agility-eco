@@ -24,7 +24,7 @@ class PropertyInspectorJobAllocationService
 
     public function PIAllocationProcess($request, $measure, $notFirmAvailable = false)
     {
-        // check if the job is already allocated to a property inspector
+        // check if the job has already allocated to a property inspector
         // if yes, then return the property inspector
         $job_pi_allocated = Job::with('jobMeasure')
             ->where('cert_no', $request->cert_no)
@@ -32,10 +32,12 @@ class PropertyInspectorJobAllocationService
 
 
         if ($job_pi_allocated->count() > 0) {
-            $this->property_inspector = $job_pi_allocated->first()->propertyInspector;
-            self::allocateJob($this->property_inspector);
+            if ($job_pi_allocated->first()->propertyInspector) {
+                $this->property_inspector = $job_pi_allocated->first()->propertyInspector;
+                self::allocateJob($this->property_inspector);
 
-            return $this->property_inspector;
+                return $this->property_inspector;
+            }
         }
 
         // if no, then proceed with the allocation process
@@ -57,6 +59,7 @@ class PropertyInspectorJobAllocationService
         }
 
         return $this->property_inspector ?? null;
+        // return null;
     }
 
     public function getPostcode($request)
@@ -100,7 +103,7 @@ class PropertyInspectorJobAllocationService
         if ($property_inspector_pool->count() == 1) {
             self::allocateJob($property_inspector_pool->first());
         } else if ($property_inspector_pool->count() > 0) {
-            $this->property_inspector = $property_inspector_pool; // Already a collection
+            $this->property_inspector = $property_inspector_pool;
         }
 
     }

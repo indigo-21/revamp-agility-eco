@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Job;
+use App\Models\PropertyInspector;
 use Illuminate\Http\Request;
 
 class PropertyInspectorExceptionController extends Controller
@@ -12,7 +14,14 @@ class PropertyInspectorExceptionController extends Controller
      */
     public function index()
     {
-        return view('pages.exception.property-inspector.index');
+
+        $jobs = Job::selectRaw('*, SUBSTRING(job_number, 1, LENGTH(job_number) - 3) as job_group')
+            ->whereIn('job_status_id', [22])
+            ->groupBy('job_group')
+            ->get();
+
+        return view('pages.exception.property-inspector.index')
+            ->with('jobs', $jobs);
     }
 
     /**
@@ -28,7 +37,25 @@ class PropertyInspectorExceptionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $jobs = Job::where('job_number', 'LIKE', "%$request->jobNumber%")->get();
+        $propertyInspector = PropertyInspector::find($request->piId);
+
+        foreach ($jobs as $key => $job) {
+
+            $job_data = Job::find($job->id);
+
+            $job_data->job_status_id = 25; // Job Booked Not Uploaded
+            $job_data->last_update = now();
+            $job_data->property_inspector_id = $propertyInspector->id;
+            
+            $job_data->save();
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Property Inspector assigned successfully.',
+        ]);
+
     }
 
     /**
@@ -36,7 +63,15 @@ class PropertyInspectorExceptionController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $propertyInspectors = PropertyInspector::where('is_active', 1)
+            ->where('id_expiry', '>=', now())
+            ->get();
+        $job = Job::where('job_number', 'LIKE', "%$id%")->first();
+
+        return view('pages.exception.property-inspector.show')
+            ->with('propertyInspectors', $propertyInspectors)
+            ->with('job', $job)
+            ->with('job_number', $id);
     }
 
     /**

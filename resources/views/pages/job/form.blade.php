@@ -76,7 +76,7 @@
 
                                 <div class="col-sm-12 col-lg-10">
                                     <form id="jobForm"
-                                        action="{{ isset($job) ? route('job.update', $job) : route('job.store') }}"
+                                        action="{{ isset($job) ? route('job.update', $job->id) : route('job.store') }}"
                                         method="POST">
                                         @csrf
                                         @if (isset($job))

@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="{{ asset('plugins/dropzone/min/dropzone.min.css') }}">
 @endsection
 @section('content')
+    {{-- <x-title-breadcrumbs title="Remediation Review" :breadcrumbs="[
+        ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
+        ['title' => 'Remediation', 'route' => '', 'active' => 'active'],
+        ['title' => 'Update Survey', 'route' => '', 'active' => 'active'],
+    ]" /> --}}
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -38,7 +43,7 @@
                 <div class="col-7 col-lg-8">
                     <div class="card">
                         <div class="card-body">
-                            <x-remediation-history :remediations="$remediations" />
+                            <x-history :lists="$remediations" />
                         </div>
                     </div>
                     <!-- /.card -->

@@ -8,23 +8,12 @@
     <link rel="stylesheet" href="{{ asset('plugins/dropzone/min/dropzone.min.css') }}">
 @endsection
 @section('content')
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Update Survey</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active">Update Survey</li>
-                    </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+    <x-title-breadcrumbs title="Job Details" :breadcrumbs="[
+        ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
+        ['title' => 'Update Survey', 'route' => '/update-survey', 'active' => ''],
+        ['title' => 'Edit', 'route' => '/update-survey/' . $completedJob->job_id . '/edit', 'active' => ''],
+        ['title' => 'Uploade Photo', 'route' => '', 'active' => 'active'],
+    ]" />
 
     <!-- Main content -->
     <section class="content">
@@ -45,7 +34,7 @@
                                         <tr data-id="image-{{ $completedJobPhoto->id }}">
                                             <td class="align-middle">
                                                 <img src="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}"
-                                                    alt="" width="100" height="100">
+                                                    alt="" width="100" height="100" style="object-fit: cover;">
                                                 <label for="" class="font-weight-lighter"
                                                     style="font-size: 20px; margin-left: 15px;">
                                                     {{ $completedJobPhoto->filename }}
@@ -53,7 +42,8 @@
 
                                             </td>
                                             <td class="align-middle">
-                                                <button class="btn btn-danger deleteImage" data-id="{{ $completedJobPhoto->id }}">
+                                                <button class="btn btn-danger deleteImage"
+                                                    data-id="{{ $completedJobPhoto->id }}">
                                                     <i class="fas fa-trash"></i>
                                                     <span>Delete</span>
                                                 </button>

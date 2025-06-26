@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\FailedQuestion;
 use App\Models\CompletedJob;
 use App\Models\Job;
+use App\Models\JobStatus;
 use App\Models\Remediation;
 use Illuminate\Http\Request;
 
@@ -15,9 +17,9 @@ class RemediationReviewController extends Controller
     public function index()
     {
         // Get jobs with job_status_id = 16 and for this installer
-        $jobs = Job::where('job_status_id', 16)
+        $jobs = Job::whereIn('job_status_id', [16, 26])
             ->whereHas('completedJobs', function ($q) {
-                $q->where('pass_fail', 'Non-Compliant')
+                $q->whereIn('pass_fail', FailedQuestion::values())
                     ->where(function ($subQ) {
                         // Case 1: No remediations at all
                         $subQ->whereHas('remediations', function ($q2) {
@@ -58,7 +60,7 @@ class RemediationReviewController extends Controller
     {
         $job = Job::findOrFail($id);
         $completedJobs = CompletedJob::where('job_id', $job->id)
-            ->whereIn('pass_fail', ["Non-Compliant"])
+            ->whereIn('pass_fail', FailedQuestion::values())
             ->get();
 
 
@@ -92,8 +94,35 @@ class RemediationReviewController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        //
+        $jobStatus = JobStatus::findOrFail($request->job_status_id);
+        $job = Job::findOrFail($id);
+        $completedJobs = CompletedJob::where('job_id', $job->id)
+            ->whereIn('pass_fail', FailedQuestion::values())
+            ->get();
+
+        foreach ($completedJobs as $completedJob) {
+            $remediation = new Remediation;
+
+            $remediation->job_id = $job->id;
+            $remediation->completed_job_id = $completedJob->id;
+            $remediation->comment = $request->notes;
+            $remediation->role = 'Agent';
+            $remediation->user_id = auth()->user()->id;
+
+            $remediation->save();
+
+        }
+
+        $job->job_status_id = $jobStatus->id;
+        $job->close_date = now();
+        $job->last_update = now();
+        // $job->notes = $request->notes ?? '';
+
+        $job->save();
+
+        return redirect()
+            ->route('remediation-review.index');
     }
 }

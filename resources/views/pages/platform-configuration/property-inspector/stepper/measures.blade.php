@@ -1,4 +1,4 @@
-<div id="measures" class="card card-primary card-outline step">
+<div id="measures" class="card step">
     <div class="card-header">
         <h3 class="card-title">Measures</h3>
     </div>

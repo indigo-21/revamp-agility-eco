@@ -188,6 +188,48 @@ class JobStatusSeeder extends Seeder
                 'generic_state' => 'CLOSED',
                 'color_scheme' => 'danger',
             ],
+            [
+                'status' => 'job_passed_remediation',
+                'description' => 'Job Passed Remediation',
+                'generic_state' => 'CLOSED',
+                'color_scheme' => 'success',
+            ],
+            [
+                'status' => 'job_passed_appeal',
+                'description' => 'Job Passed Appeal',
+                'generic_state' => 'CLOSED',
+                'color_scheme' => 'success',
+            ],
+            [
+                'status' => 'job_fail_no_remediation_response',
+                'description' => 'Remediation Response Time Expired',
+                'generic_state' => 'CLOSED',
+                'color_scheme' => 'danger',
+            ],
+            [
+                'status' => 'job_fail_no_appeal_response',
+                'description' => 'Appeal Response Time Expired',
+                'generic_state' => 'CLOSED',
+                'color_scheme' => 'danger',
+            ],
+            [
+                'status' => 'job_fail_max_appeal',
+                'description' => 'Maximum Number of Appeals Reached',
+                'generic_state' => 'CLOSED',
+                'color_scheme' => 'danger',
+            ],
+            [
+                'status' => 'job_fail_max_remediation',
+                'description' => 'Maximum Number of Remediation Attempts Reached',
+                'generic_state' => 'CLOSED',
+                'color_scheme' => 'danger',
+            ],
+            [
+                'status' => 'job_fail_QA_Target_Met',
+                'description' => 'QA Requirement Achieved',
+                'generic_state' => 'CLOSED',
+                'color_scheme' => 'danger',
+            ],
 
         );
 
