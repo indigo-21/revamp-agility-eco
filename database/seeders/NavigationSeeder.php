@@ -121,7 +121,7 @@ class NavigationSeeder extends Seeder
             [
                 'id' => 14,
                 'name' => 'User Profile Configuration',
-                'link' => '',
+                'link' => 'user-profile-configuration',
                 'icon' => 'angle-right',
                 'has_dropdown' => 0,
                 'parent_id' => 11,
