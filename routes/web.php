@@ -28,7 +28,6 @@ use App\Http\Controllers\DataValidationExceptionController;
 use App\Http\Controllers\DocumentExceptionController;
 use App\Http\Controllers\BookingExceptionController;
 use App\Http\Controllers\RemoveJobExceptionController;
-use App\Http\Controllers\UserProfileConfigurationController;
 
 
 
@@ -62,9 +61,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('navigation.access:survey-question-set');
     Route::resource('scheme', SchemeController::class)
         ->middleware('navigation.access:scheme');
-    Route::resource('user-profile-configuration', UserProfileConfigurationController::class)
-        ->middleware('navigation.access:user-profile-configuration');
-    
 
     // REMEDIATION
     Route::resource('remediation-review', RemediationReviewController::class)
