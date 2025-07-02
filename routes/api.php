@@ -59,6 +59,15 @@ Route::get('/cache-clear', function () {
     }
 });
 
+Route::get('/cache-table', function () {
+    try {
+        Artisan::call('cache:table');
+        return response()->json(['status' => 'success', 'message' => 'Cache table created successfully']);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'error', 'message' => 'Cache table creation failed: ' . $e->getMessage()], 500);
+    }
+});
+
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
