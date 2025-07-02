@@ -76,7 +76,7 @@
                                     <form method="POST" id="clientConfigurationForm"
                                         action="{{ isset($client) ? route('client-configuration.update', $client->id) : route('client-configuration.store') }}">
                                         @csrf
-                                        @if ($client)
+                                        @if (isset($client))
                                             @method('PUT')
                                         @endif
                                         @include('pages.platform-configuration.client-configuration.stepper.client-key-details')

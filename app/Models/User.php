@@ -14,6 +14,40 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::deleting(function (User $user) {
+            // Soft delete related records when user is soft deleted
+            if ($user->isForceDeleting()) {
+                // If force deleting, force delete related records too
+                $user->client()?->forceDelete();
+                $user->propertyInspector()?->forceDelete();
+                $user->installer()?->forceDelete();
+            } else {
+                // Soft delete related records
+                $user->client()?->delete();
+                $user->propertyInspector()?->delete();
+                $user->installer()?->delete();
+            }
+        });
+
+        static::restoring(function (User $user) {
+            // Restore related records when user is restored
+            if ($user->client && $user->client->trashed()) {
+                $user->client->restore();
+            }
+            if ($user->propertyInspector && $user->propertyInspector->trashed()) {
+                $user->propertyInspector->restore();
+            }
+            if ($user->installer && $user->installer->trashed()) {
+                $user->installer->restore();
+            }
+        });
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -48,13 +82,18 @@ class User extends Authenticatable
         ];
     }
 
-    public function clients(){
+    public function client(){
         return $this->hasOne(Client::class);
     }
 
     public function propertyInspector()
     {
         return $this->hasOne(PropertyInspector::class);
+    }
+    
+    public function installer()
+    {
+        return $this->hasOne(Installer::class);
     }
     
     public function accountLevel()

@@ -46,13 +46,8 @@
                                     </h3>
                                 </div>
                                 <div class="right">
-                                    <a type="button" class="btn btn-white"
-                                        href="{{ route('installer-configuration.create') }}">
-                                        <i class="fa fa-plus-square mr-1" aria-hidden="true"></i> Create Installer
-                                    </a>
-                                    {{-- <a type="button" class="btn bg-gradient-warning" href="">
-                                        <i class="fa fa-upload mr-1" aria-hidden="true"></i> Upload CSV
-                                    </a> --}}
+                                    <x-button-permission type="create" :permission="$userPermission" as="a" :href="route('installer-configuration.create')"
+                                        class="btn btn-white" label="Add Installer" />
                                 </div>
                             </div>
                         </div>

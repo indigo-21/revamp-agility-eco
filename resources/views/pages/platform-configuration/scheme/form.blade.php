@@ -43,7 +43,7 @@
                         </div>
                         <!-- /.card-header -->
                         <form method="POST"
-                            action="{{ isset($scheme) ? route('scheme.update', $scheme) : route('scheme.store') }}">
+                            action="{{ isset($scheme) ? route('scheme.update', $scheme->id) : route('scheme.store') }}">
                             @csrf
                             @if (isset($scheme))
                                 @method('PUT')
@@ -82,7 +82,7 @@
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <button type="submit" class="btn btn-primary d-block m-auto w-100">Submit</button>
+                                <button type="submit" class="btn btn-primary d-block float-right">Submit</button>
                             </div>
                         </form>
                     </div>

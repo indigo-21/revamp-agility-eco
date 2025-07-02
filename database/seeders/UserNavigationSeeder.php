@@ -15,7 +15,7 @@ class UserNavigationSeeder extends Seeder
     {
         $values = [];
         for ($i = 1; $i <= 38; $i++) {
-            if ($i != 34) {
+            if ($i != 33 && $i != 38 && $i != 39 ) {
                 $values[] = [
                     'account_level_id' => 1,
                     'navigation_id' => $i,
@@ -31,12 +31,102 @@ class UserNavigationSeeder extends Seeder
         ];
         $values[] = [
             'account_level_id' => 5,
-            'navigation_id' => 31,
+            'navigation_id' => 30,
             'permission' => 1,
         ];
         $values[] = [
             'account_level_id' => 5,
-            'navigation_id' => 34,
+            'navigation_id' => 33,
+            'permission' => 3,
+        ];
+
+        $values[] = [
+            'account_level_id' => 6,
+            'navigation_id' => 38,
+            'permission' => 3,
+        ];
+
+        $values[] = [
+            'account_level_id' => 7,
+            'navigation_id' => 38,
+            'permission' => 3,
+        ];
+
+        $values[] = [
+            'account_level_id' => 8,
+            'navigation_id' => 38,
+            'permission' => 3,
+        ];
+
+        $values[] = [
+            'account_level_id' => 6,
+            'navigation_id' => 39,
+            'permission' => 3,
+        ];
+
+        $values[] = [
+            'account_level_id' => 7,
+            'navigation_id' => 39,
+            'permission' => 3,
+        ];
+
+        $values[] = [
+            'account_level_id' => 8,
+            'navigation_id' => 39,
+            'permission' => 3,
+        ];
+
+        $values[] = [
+            'account_level_id' => 6,
+            'navigation_id' => 26,
+            'permission' => 3,
+        ];
+
+        $values[] = [
+            'account_level_id' => 7,
+            'navigation_id' => 26,
+            'permission' => 3,
+        ];
+
+        $values[] = [
+            'account_level_id' => 8,
+            'navigation_id' => 26,
+            'permission' => 3,
+        ];
+
+        $values[] = [
+            'account_level_id' => 6,
+            'navigation_id' => 27,
+            'permission' => 3,
+        ];
+
+        $values[] = [
+            'account_level_id' => 7,
+            'navigation_id' => 27,
+            'permission' => 3,
+        ];
+
+        $values[] = [
+            'account_level_id' => 8,
+            'navigation_id' => 27,
+            'permission' => 3,
+        ];
+
+        $values[] = [
+            'account_level_id' => 6,
+            'navigation_id' => 28,
+            'permission' => 3,
+        ];
+
+        $values[] = [
+            'account_level_id' => 7,
+            'navigation_id' => 28,
+            'permission' => 3,
+        ];
+
+        $values[] = [
+            'account_level_id' => 8,
+            'navigation_id' => 28,
             'permission' => 3,
         ];
 

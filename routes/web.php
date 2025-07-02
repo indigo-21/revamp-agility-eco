@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompletedJobController;
 use App\Http\Controllers\CompletedJobPhotoController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\InstallerPortalController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\MakeBookingController;
@@ -16,7 +16,9 @@ use App\Http\Controllers\RemediationReinstateController;
 use App\Http\Controllers\RemediationReviewController;
 use App\Http\Controllers\RestoreMaxAttemptController;
 use App\Http\Controllers\SchemeController;
+use App\Http\Controllers\SicknessHolidayController;
 use App\Http\Controllers\UpdateSurveyController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PropertyInspectorController;
 use App\Http\Controllers\ClientConfigurationController;
@@ -141,7 +143,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('navigation.access:restore-max-attempts');
 
     Route::middleware('navigation.access:manage-booking')->group(function () {
-        // Manage Booking
+        // MANAGE BOOKING
         Route::get('manage-booking', [ManageBookingController::class, 'index'])
             ->name('manage-booking.index');
         Route::get('manage-booking/{job_group}/rebook', [ManageBookingController::class, 'edit'])
@@ -154,6 +156,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('manage-booking.show');
     });
 
+    //  USER CONFIGURATION
+    Route::resource('user-configuration', UserController::class)
+        ->middleware('navigation.access:user-configuration');
+
+    // EMAIL TEMPLATES
+    Route::resource('pi-email-template', EmailTemplateController::class)
+        ->middleware('navigation.access:pi-email-template');
+    Route::resource('uphold-email-template', EmailTemplateController::class)
+        ->middleware('navigation.access:uphold-email-template');
+    Route::resource('remediation-template', EmailTemplateController::class)
+        ->middleware('navigation.access:remediation-template');
+    Route::resource('first-template', EmailTemplateController::class)
+        ->middleware('navigation.access:first-template');
+    Route::resource('second-template', EmailTemplateController::class)
+        ->middleware('navigation.access:second-template');
+    Route::resource('automated-email-passed', EmailTemplateController::class)
+        ->middleware('navigation.access:automated-email-passed');
+
     Route::get('client/search-job-types', [JobController::class, 'searchClient'])->middleware('navigation.access:job');
     Route::get('get-property-inspector', [PropertyInspectorController::class, 'searchPropertyInspector'])->middleware('navigation.access:job');
     Route::get('/pi/details/{id}', [PropertyInspectorController::class, 'getPiDetails'])->middleware('navigation.access:job');
@@ -161,6 +181,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/remove-duplicates', [JobController::class, 'removeDuplicates'])->middleware('navigation.access:job');
     Route::post('client-configuration/validateEmail', [ClientConfigurationController::class, 'validateEmail'])->name('validateEmail');
 
+
+    // Property Inspector Portal
+    Route::get('pi-dashboard', [PropertyInspectorController::class, 'piDashboard'])
+        ->name('pi-dashboard.index')
+        ->middleware('navigation.access:pi-dashboard');
+    Route::resource('sickness-holidays', SicknessHolidayController::class)
+        ->middleware('navigation.access:sickness-holidays');
 
 });
 

@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             // UserTypeSeeder::class,
             // UserSeeder::class,
             // OutwardPostcodeSeeder::class,
-            NavigationSeeder::class,
+            // NavigationSeeder::class,
             UserNavigationSeeder::class,
         ]);
         // User::factory(10)->create();

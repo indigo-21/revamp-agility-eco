@@ -148,6 +148,8 @@
                                                 @endif
                                             </td>
                                             <td>
+                                                <x-button-permission type="create" :permission="$userPermission" as="a"
+                                                    :href="route('client-configuration.show')" class="btn btn-white" label="Add Client" />
                                                 <a type="button"
                                                     href="{{ route('client-configuration.show', $client->client_id) }}"
                                                     class="btn btn-block btn-primary">

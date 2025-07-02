@@ -80,7 +80,7 @@ class JobService
             $measure_data,
             $job_status,
             $property_inspector
-        ] = self::jobValidation($request, $measure, $update = true);
+        ] = self::jobValidation($request, $measure, true);
 
         $job->job_status_id = $job_status;
         $job->property_inspector_id = $property_inspector?->first()->id ?? null;

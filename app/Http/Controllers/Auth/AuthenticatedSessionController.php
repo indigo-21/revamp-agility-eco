@@ -28,7 +28,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard.index', absolute: false));
+        if (auth()->user()->accountLevel()->whereIn('id', [6, 7, 8])->first()) {
+            return redirect()->route('pi-dashboard.index');
+        } else {
+            return redirect()->intended(route('dashboard.index', absolute: false));
+        }
+
     }
 
     /**

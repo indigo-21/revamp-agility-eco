@@ -46,7 +46,7 @@ $(function () {
             success: function (data) {
                 $('#job_type_id').empty();
                 $('#job_type_id').append('<option value="" disabled selected> - Select Job Type - </option>');
-                $.each(data[0].client_job_type, function (key, value) {
+                $.each(data[0].client_job_types, function (key, value) {
                     console.log(value);
                     $('#job_type_id').append('<option value="' + value.job_type.id + '">' + value.job_type.type + '</option>');
                 });
