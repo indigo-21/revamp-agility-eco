@@ -77,6 +77,15 @@ Route::get('/migrate-reset', function () {
     }
 });
 
+Route::get('/migrate-fresh', function () {
+    try {
+        Artisan::call('migrate:fresh');
+        return response()->json(['status' => 'success', 'message' => 'Fresh migration completed']);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'error', 'message' => 'Migration fresh failed: ' . $e->getMessage()], 500);
+    }
+});
+
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
