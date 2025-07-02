@@ -170,8 +170,10 @@ class PropertyInspectorController extends Controller
 
     public function piDashboard()
     {
+        $url = env('APP_URL');
+
         $propertyInspector = auth()->user()->propertyInspector;
-        $qrCode = QrCode::size(300)->generate('{"url": "http://192.168.100.125:8000/"}');
+        $qrCode = QrCode::size(300)->generate('{"url": ' . $url . '}');
 
         return view('pages.property-inspector-portal.index')
             ->with('property_inspector', $propertyInspector)
