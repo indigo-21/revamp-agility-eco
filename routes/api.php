@@ -22,6 +22,33 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
+Route::get('/db-check', function () {
+    try {
+        DB::connection()->getPdo();
+        return response()->json(['status' => 'connected', 'message' => 'Database connection successful']);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'error', 'message' => 'Database connection failed: ' . $e->getMessage()], 500);
+    }
+});
+
+Route::get('/migrate', function () {
+    try {
+        Artisan::call('migrate');
+        return response()->json(['status' => 'success', 'message' => 'Database migration completed successfully']);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'error', 'message' => 'Migration failed: ' . $e->getMessage()], 500);
+    }
+});
+
+Route::get('/seed', function () {
+    try {
+        Artisan::call('db:seed');
+        return response()->json(['status' => 'success', 'message' => 'Database seeding completed successfully']);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'error', 'message' => 'Seeding failed: ' . $e->getMessage()], 500);
+    }
+});
+
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
