@@ -68,6 +68,15 @@ Route::get('/cache-table', function () {
     }
 });
 
+Route::get('/migrate-reset', function () {
+    try {
+        Artisan::call('migrate:reset');
+        return response()->json(['status' => 'success', 'message' => 'Database migration reset completed successfully']);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'error', 'message' => 'Migration reset failed: ' . $e->getMessage()], 500);
+    }
+});
+
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
