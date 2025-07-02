@@ -209,13 +209,6 @@ Route::get('/migrate', function () {
     }
 });
 
-Route::get('/seed', function () {
-    try {
-        Artisan::call('db:seed');
-        return response()->json(['status' => 'success', 'message' => 'Database seeding completed successfully']);
-    } catch (\Exception $e) {
-        return response()->json(['status' => 'error', 'message' => 'Seeding failed: ' . $e->getMessage()], 500);
-    }
-});
+
 
 require __DIR__ . '/auth.php';
