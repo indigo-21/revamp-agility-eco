@@ -49,6 +49,16 @@ Route::get('/seed', function () {
     }
 });
 
+
+Route::get('/cache-clear', function () {
+    try {
+        Artisan::call('cache:clear');
+        return response()->json(['status' => 'success', 'message' => 'Cache cleared successfully']);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'error', 'message' => 'Cache clear failed: ' . $e->getMessage()], 500);
+    }
+});
+
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
