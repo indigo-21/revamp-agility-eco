@@ -8,7 +8,7 @@
         <x-job-details label="Client UMR" value="{{ $job->jobMeasure->umr }}" />
         <x-job-details label="Installer" value="{{ $job->lodged_by_name }}" />
         <x-job-details label="Installer TMLN" value="{{ $job->lodged_by_tmln }}" />
-        <x-job-details label="Sub-Installer" value="{{ $job->installer->user->firstname }}" />
+        <x-job-details label="Sub-Installer" value="{{ $job->installer?->user->firstname }}" />
         <x-job-details label="Sub-Installer TMLN" value="{{ $job->sub_installer_tmln }}" />
     </div>
 
@@ -29,7 +29,7 @@
         <div class="row mb-3">
             <h3>Measure Details</h3>
         </div>
-        <x-job-details label="Scheme" value="{{ $job->scheme->short_name }}" />
+        <x-job-details label="Scheme" value="{{ $job->scheme?->short_name }}" />
         <x-job-details label="Measure CAT" value="{{ $job->jobMeasure->measure->measure_cat }}" />
         <x-job-details label="Measure Info" value="{{ $job->jobMeasure->info }}" />
     </div>
