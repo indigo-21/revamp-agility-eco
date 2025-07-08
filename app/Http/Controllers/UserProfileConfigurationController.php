@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AccountLevel;
 use App\Models\Navigation;
+use App\Models\UserNavigation;
 use Illuminate\Http\Request;
 
 class UserProfileConfigurationController extends Controller
@@ -14,7 +15,7 @@ class UserProfileConfigurationController extends Controller
     public function index()
     {
         $accountLevels = AccountLevel::all();
-        return view('pages.platform-configuration.user-profile-configuration.index',compact('accountLevels'));
+        return view('pages.platform-configuration.user-profile-configuration.index', compact('accountLevels'));
     }
 
     /**
@@ -28,10 +29,7 @@ class UserProfileConfigurationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-     
-    }
+    public function store(Request $request) {}
 
     /**
      * Display the specified resource.
@@ -46,16 +44,47 @@ class UserProfileConfigurationController extends Controller
      */
     public function edit(string $id)
     {
-            $navigations = Navigation::All();
-          return view('pages.platform-configuration.user-profile-configuration.show',compact('navigations'));
+        //   $navigations = Navigation::All();
+        $userNavigations = UserNavigation::where('account_level_id', $id)->get();
+
+
+        return view('pages.platform-configuration.user-profile-configuration.show', compact('userNavigations', 'id'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $accountLevelId)
     {
-        //
+        $accessedInputs = $request->input('accessed', []);
+        $permissionInputs = $request->input('permission', []);
+
+        // foreach ($accessedInputs as $navigationId => $accessedValue) {
+        //     $userNavigation = UserNavigation::where('account_level_id', $accountLevelId)
+        //                                     ->where('navigation_id', $navigationId)
+        //                                     ->first();
+
+        //     if ($userNavigation) {
+        //         $userNavigation->accessed = $accessedValue;
+        //         $userNavigation->permission = $permissionInputs[$navigationId] ?? $userNavigation->permission;
+        //         $userNavigation->save();
+        //     } 
+        // }
+
+        UserNavigation::where('account_level_id', $accountLevelId)->delete();
+
+        foreach ($accessedInputs as $navigationId => $accessedValue) {
+            if ($accessedValue == 1) {
+                UserNavigation::create([
+                    'account_level_id' => $accountLevelId,
+                    'navigation_id' => $navigationId,
+                    'accessed' => 1,
+                    'permission' => $permissionInputs[$navigationId] ?? 'View', 
+                ]);
+            }
+        }
+
+        return redirect()->back();
     }
 
     /**
