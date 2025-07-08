@@ -29,9 +29,9 @@
         </div>
         <x-job-details label="Non-Conformance Level" value="{{ $job->job_remediation_type }}" />
         <x-job-details label="Remediation Deadline" value="{{ $job->rework_deadline }}" />
-        <x-job-details label="Installer" value="{{ $job->installer->user->firstname }}" />
-        <x-job-details label="Installer Email Address" value="{{ $job->installer->user->email }}" />
-        <x-job-details label="Installer Contact" value="{{ $job->installer->user->mobile }}" />
+        <x-job-details label="Installer" value="{{ $job->installer?->user->firstname }}" />
+        <x-job-details label="Installer Email Address" value="{{ $job->installer?->user->email }}" />
+        <x-job-details label="Installer Contact" value="{{ $job->installer?->user->mobile }}" />
     </div>
 
     <div class="col-md-6">

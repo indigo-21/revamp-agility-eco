@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\ClientInstaller;
 use App\Models\Job;
 use App\Models\PropertyInspector;
+use App\Models\SicknessHoliday;
 use Carbon\Carbon;
 
 class PropertyInspectorJobAllocationService
@@ -196,6 +197,12 @@ class PropertyInspectorJobAllocationService
 
             $days_available -= $booking_date;
 
+            $sicknessHolidays = SicknessHoliday::where('property_inspector_id', $property_inspector->id)
+                ->whereBetween('start_date', [$start_date, $end_date])
+                ->orWhereBetween('end_date', [$start_date, $end_date])
+                ->count();
+
+            $days_available -= $sicknessHolidays;
 
             // apply the pi unbooked_jobs dates
 

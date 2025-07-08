@@ -12,6 +12,7 @@ use App\Services\PropertyInspectorService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PropertyInspectorController extends Controller
 {
@@ -165,5 +166,17 @@ class PropertyInspectorController extends Controller
         $propertyInspector = PropertyInspector::with(['job', 'user', 'user.userType', 'user.accountLevel'])->find($request->piId);
 
         return response()->json($propertyInspector);
+    }
+
+    public function piDashboard()
+    {
+        $url = env('APP_URL');
+
+        $propertyInspector = auth()->user()->propertyInspector;
+        $qrCode = QrCode::size(300)->generate('{"url": ' . $url . '}');
+
+        return view('pages.property-inspector-portal.index')
+            ->with('property_inspector', $propertyInspector)
+            ->with('qrCode', $qrCode);
     }
 }

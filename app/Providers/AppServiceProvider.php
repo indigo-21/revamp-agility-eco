@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Navigation;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,10 +22,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        if (env('APP_ENV') === 'local') {
+            URL::forceScheme('https');
+        }
+
         View::composer('*', function ($view) {
             $user = auth()->user();
 
-            if($user === null) {
+            if ($user === null) {
                 return;
             }
 
@@ -36,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
                         }
                     ])->get();
 
-                    
+
             $currentLink = request()->segment(1);
             $userPermission = $navigations
                 ->where('link', $currentLink)

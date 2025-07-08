@@ -6,7 +6,9 @@ use App\Enums\FailedQuestion;
 use App\Models\Client;
 use App\Models\CompletedJob;
 use App\Models\Job;
+use App\Models\MessageTemplate;
 use App\Models\UpdateSurvey;
+use App\Services\MailService;
 use App\Services\UpdateSurveyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -25,7 +27,7 @@ class CompletedJobController extends Controller
             $completedJob->id,
             "Comment changed. <br> From: {$completedJob->comments}<br> To: {$request->comments}<br>"
         );
-        
+
         if (!$completedJob) {
             throw ValidationException::withMessages(['completed_job_id' => 'Completed job not found.']);
         }
@@ -74,6 +76,35 @@ class CompletedJobController extends Controller
             $job->rework_deadline = null;
 
             $job->save();
+
+            $emailTemplates = MessageTemplate::where('data_id', 6)
+                ->where('is_active', 1)
+                ->where('type', 'email')
+                ->first();
+
+            // $email = env('EMPLOYER_EMAIL');
+            $email = $job->installer->user->email;
+            $subject = $emailTemplates->subject;
+            $appUrl = env('APP_URL');
+
+            $data = [
+                '_INSTALLER_NAME_' => $job->installer->user->firstname . ' ' . $job->installer->user->lastname,
+                '_CERT_NO_' => $job->cert_no,
+                '_CLIENT_' => $job->client->user->firstname . ' ' . $job->client->user->lastname,
+                '_UMR_' => $job->jobMeasure->umr,
+                '_INSPECTION_DATE_' => $job->schedule_date,
+                '_NC_TYPE_' => $job->job_remediation_type,
+                '_REMEDIATION_DEADLINE_' => $job->rework_deadline,
+                '_HOUSENAME_NUMBER_' => $job->property->house_flat_prefix,
+                '_ADDRESS_LINE_1_' => $job->property->address1,
+                '_POSTCODE_' => $job->property->postcode,
+                '_LINK_' => $appUrl,
+            ];
+
+            $template = $emailTemplates->content;
+
+            (new MailService)->sendEmail($subject, $template, $email, $data);
+
         } else {
             $job->last_update = now();
             $job->job_remediation_type = "NC";

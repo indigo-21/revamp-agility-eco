@@ -28,6 +28,19 @@ class UserSeeder extends Seeder
                 'email_verified_at' => date('Y-m-d H:i:s'),
                 'password' => Hash::make('indigo21'),
             ],
+            [
+                'firstname' => 'Andy',
+                'lastname' => 'Sumpter',
+                'email' => 'andy.sumpter@contactone.net',
+                'organisation' => 'Agility Eco',
+                'mobile' => '09362252822',
+                'landline' => null,
+                'otp' => null,
+                'account_level_id' => 1,
+                'user_type_id' => 1,
+                'email_verified_at' => date('Y-m-d H:i:s'),
+                'password' => Hash::make('password'),
+            ],
         );
 
         foreach ($values as $value) {

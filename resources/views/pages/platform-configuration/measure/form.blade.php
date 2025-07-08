@@ -47,49 +47,61 @@
                             </div>
                         </div>
                         <!-- /.card-header -->
-                        <form id="measureForm"  method="POST"
-                        action="{{ isset($measure) ? route('measure.update', $measure) : route('measure.store') }}">
+                        <form id="measureForm" method="POST"
+                            action="{{ isset($measure) ? route('measure.update', $measure) : route('measure.store') }}">
                             @csrf
-                            @if(isset($measure))
+                            @if (isset($measure))
                                 @method('PUT')
-                             @endif
+                            @endif
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
 
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <x-input name="measure_cat" label="Measure CAT" value="{{ isset($measure) ? $measure->measure_cat : '' }}" />
+                                                <x-input name="measure_cat" label="Measure CAT"
+                                                    value="{{ isset($measure) ? $measure->measure_cat : '' }}" />
                                             </div>
                                             <div class="col-md-6">
-                                                <x-yes-no-select name="cert_required" label="Measure Cert Required" value="{{ isset($measure) ? $measure->cert_required : '' }}" />
+                                                <x-yes-no-select name="cert_required" label="Measure Cert Required"
+                                                    value="{{ isset($measure) ? $measure->cert_required : '' }}" />
 
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <x-input name="measure_min_qual" label="Measure Min Qual" value="{{ isset($measure) ? $measure->measure_min_qual : '' }}" />
+                                                <x-input name="measure_min_qual" label="Measure Min Qual"
+                                                    value="{{ isset($measure) ? $measure->measure_min_qual : '' }}" />
                                             </div>
                                             <div class="col-md-6">
-                                                <x-input name="measure_duration" label="Measure Duration" value="{{ isset($measure) ? $measure->measure_duration : '' }}" />
+                                                <x-input name="measure_duration" label="Measure Duration"
+                                                    value="{{ isset($measure) ? $measure->measure_duration : '' }}" />
 
                                             </div>
                                         </div>
-                                      
+
                                     </div>
                                     <div class="col-md-6">
                                         <div class="row">
-                                            <x-textarea name="cert_description" label="Measure Cert Description" rows="5" value="{{ isset($measure) ? $measure->cert_description : '' }}" />
+                                            <x-textarea name="cert_description" label="Measure Cert Description"
+                                                rows="5"
+                                                value="{{ isset($measure) ? $measure->cert_description : '' }}" />
                                         </div>
                                         <div class="row">
-                                            <x-textarea name="cert_remediation_advice" label="Measure Cert Remediation Advice" rows="5" value="{{ isset($measure) ? $measure->cert_remediation_advice : '' }}" />
+                                            <x-textarea name="cert_remediation_advice"
+                                                label="Measure Cert Remediation Advice" rows="5"
+                                                value="{{ isset($measure) ? $measure->cert_remediation_advice : '' }}" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-footer text-center">
-                                <a href="{{ route('measure.index') }}"><button type="button" class="btn btn-danger">Cancel</button></a>
-                                <button type="submit" class="btn btn-primary" id="submitBtn">{{ isset($measure) ? 'Update' : 'Create'}}</button>
+                                {{-- <a href="{{ route('measure.index') }}"><button type="button"
+                                        class="btn btn-danger">Cancel</button></a>
+                                <button type="submit" class="btn btn-primary"
+                                    id="submitBtn">{{ isset($measure) ? 'Update' : 'Create' }}</button> --}}
+                                <button type="submit" class="btn btn-primary d-block float-right"
+                                    id="submitBtn">Submit</button>
                             </div>
                         </form>
                     </div>

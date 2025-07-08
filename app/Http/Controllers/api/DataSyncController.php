@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Models\CompletedJob;
 use App\Models\CompletedJobPhoto;
+use App\Models\QueuedSms;
 use App\Models\TempSyncLogs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -76,6 +77,7 @@ class DataSyncController extends Controller
             'temp_sync_logs' => TempSyncLogs::class,
             'completed_jobs' => CompletedJob::class,
             'completed_job_photos' => CompletedJobPhoto::class,
+            'queued_sms' => QueuedSms::class,
         ];
 
         if (!array_key_exists($request->table, $modelMap)) {

@@ -203,7 +203,7 @@ class JobController extends Controller
     public function searchClient(Request $request)
     {
         $client_job_types = Client::where('id', $request->client_id)
-            ->with(['clientJobType', 'clientJobType.jobType'])
+            ->with(['clientJobTypes', 'clientJobTypes.jobType'])
             ->get();
 
         return response()->json($client_job_types);

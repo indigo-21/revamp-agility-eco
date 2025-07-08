@@ -76,10 +76,9 @@
                                             <td>{{ \Carbon\Carbon::parse($job->rework_deadline)->format('M d Y') }}
                                             </td>
                                             <td>
-                                                <a href="{{ route('installer-portal.show', $job->id) }}"
-                                                    class="btn btn-primary btn-sm">
-                                                    View Details
-                                                </a>
+                                                <x-button-permission type="view" :permission="$userPermission"
+                                                    as="a" :href="route('installer-portal.show', $job->id)"
+                                                    class="btn btn-primary btn-sm" label="View Details" />
                                             </td>
                                         </tr>
                                     @endforeach

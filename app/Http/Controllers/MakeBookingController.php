@@ -14,11 +14,16 @@ class MakeBookingController extends Controller
      */
     public function index()
     {
+        $propertyInspector = PropertyInspector::find(auth()->user()->propertyInspector?->id);
+
         // get all the jobs columns and group by job_number AES0000000010-01 remove the last 3 characters 
         $jobs = Job::selectRaw('*, SUBSTRING(job_number, 1, LENGTH(job_number) - 3) as job_group')
             ->groupBy('job_group')
             ->whereIn('job_status_id', [25, 23])
             ->where('close_date', null)
+            ->when($propertyInspector, function ($query) use ($propertyInspector) {
+                return $query->where('property_inspector_id', $propertyInspector->id);
+            })
             ->get();
 
         return view('pages.booking.make-booking.index')

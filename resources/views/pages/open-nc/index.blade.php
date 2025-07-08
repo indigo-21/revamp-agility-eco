@@ -128,7 +128,7 @@
                                 <div class="btn-group">
                                     <button class="btn btn-primary btn-flat float-right" type="submit">Filter</button>
                                     <a class="btn btn-default btn-flat float-right"
-                                        href="{{ route('job.index') }}">Reset</a>
+                                        href="{{ route('open-nc.index') }}">Reset</a>
                                 </div>
                             </form>
                         </div>
@@ -144,16 +144,6 @@
                                         List of Jobs
                                     </h3>
                                 </div>
-                                {{-- <div class="right">
-                                    <div class="btn-group">
-                                        <x-button-permission type="create" :permission="$userPermission" as="a"
-                                            :href="route('job.create')" class="btn btn-white" label="Add Job" />
-                                        <x-button-permission type="create" :permission="$userPermission" class="btn btn-warning"
-                                            label="Upload CSV File" data-toggle="modal" data-target="#uploadJobCsv" />
-                                        <x-button-permission type="delete" :permission="$userPermission" class="btn btn-primary"
-                                            label="Remove Duplicates" />
-                                    </div>
-                                </div> --}}
                             </div>
                         </div>
                         <div class="card-body">

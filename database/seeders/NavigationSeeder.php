@@ -105,7 +105,7 @@ class NavigationSeeder extends Seeder
             [
                 'id' => 12,
                 'name' => 'User Configuration',
-                'link' => '',
+                'link' => 'user-configuration',
                 'icon' => 'angle-right',
                 'has_dropdown' => 0,
                 'parent_id' => 10,
@@ -160,7 +160,7 @@ class NavigationSeeder extends Seeder
             ],
             [
                 'id' => 19,
-                'name' => 'Global Settings',
+                'name' => 'Email Templates',
                 'link' => '',
                 'icon' => 'globe-asia',
                 'has_dropdown' => 1,
@@ -169,7 +169,7 @@ class NavigationSeeder extends Seeder
             [
                 'id' => 20,
                 'name' => 'PI Email Template',
-                'link' => '',
+                'link' => 'pi-email-template',
                 'icon' => 'angle-right',
                 'has_dropdown' => 0,
                 'parent_id' => 19,
@@ -177,7 +177,7 @@ class NavigationSeeder extends Seeder
             [
                 'id' => 21,
                 'name' => 'Uphold Email Template',
-                'link' => '',
+                'link' => 'uphold-email-template',
                 'icon' => 'angle-right',
                 'has_dropdown' => 0,
                 'parent_id' => 19,
@@ -185,7 +185,7 @@ class NavigationSeeder extends Seeder
             [
                 'id' => 22,
                 'name' => 'Remediation Template',
-                'link' => '',
+                'link' => 'remediation-template',
                 'icon' => 'angle-right',
                 'has_dropdown' => 0,
                 'parent_id' => 19,
@@ -193,7 +193,7 @@ class NavigationSeeder extends Seeder
             [
                 'id' => 23,
                 'name' => 'First Template',
-                'link' => '',
+                'link' => 'first-template',
                 'icon' => 'angle-right',
                 'has_dropdown' => 0,
                 'parent_id' => 19,
@@ -201,7 +201,7 @@ class NavigationSeeder extends Seeder
             [
                 'id' => 24,
                 'name' => 'Second Template',
-                'link' => '',
+                'link' => 'second-template',
                 'icon' => 'angle-right',
                 'has_dropdown' => 0,
                 'parent_id' => 19,
@@ -209,7 +209,7 @@ class NavigationSeeder extends Seeder
             [
                 'id' => 25,
                 'name' => 'Automated Email Passed',
-                'link' => '',
+                'link' => 'automated-email-passed',
                 'icon' => 'angle-right',
                 'has_dropdown' => 0,
                 'parent_id' => 19,
@@ -309,6 +309,22 @@ class NavigationSeeder extends Seeder
                 'icon' => 'angle-right',
                 'has_dropdown' => 0,
                 'parent_id' => 36,
+            ],
+            [
+                'id' => 38,
+                'name' => 'PI Dashboard',
+                'link' => 'pi-dashboard',
+                'icon' => 'briefcase',
+                'has_dropdown' => 0,
+                'parent_id' => '',
+            ],
+            [
+                'id' => 39,
+                'name' => 'PI Sickness & Holidays',
+                'link' => '',
+                'icon' => 'briefcase',
+                'has_dropdown' => 0,
+                'parent_id' => '',
             ],
         ];
 

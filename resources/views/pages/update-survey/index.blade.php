@@ -60,8 +60,9 @@
                                             <td>{{ $job->property->postcode }}</td>
                                             <td>{{ $job->installer->user->firstname }}</td>
                                             <td>
-                                                <a href="{{ route('update-survey.edit', [$job->id]) }}"
-                                                    class="btn btn-primary btn-sm">Update Survey</a>
+                                                <x-button-permission type="view" :permission="$userPermission" as="a"
+                                                    :href="route('update-survey.edit', $job->id)" class="btn btn-primary btn-sm"
+                                                    label="Update Survey" />
                                             </td>
                                         </tr>
                                     @endforeach
