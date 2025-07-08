@@ -16,7 +16,6 @@ use App\Models\Scheme;
 use App\Models\UpdateSurvey;
 use App\Services\JobService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -154,11 +153,6 @@ class JobController extends Controller
 
     public function upload(Request $request)
     {
-
-        $start = microtime(true);
-
-        DB::enableQueryLog();
-
         $job_import = new JobImport;
         Excel::import($job_import, $request->file);
 
@@ -203,11 +197,6 @@ class JobController extends Controller
 
         }
 
-        \Log::info('Query Log:', DB::getQueryLog());
-
-        $end = microtime(true);
-        \Log::info('Job Import Execution Time: ' . round($end - $start, 2) . ' seconds');
-
         return redirect()->back()->with('success', 'Jobs imported successfully');
     }
 
@@ -238,7 +227,7 @@ class JobController extends Controller
     public function removeDuplicates()
     {
         Job::where('job_status_id', 6)->delete();
-
+        
         return response()->json([
             'message' => 'Duplicate jobs removed successfully'
         ]);
