@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\AccountLevel;
 use App\Models\User;
 use App\Models\UserType;
+use App\Services\MailService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 
 class UserController extends Controller
 {
@@ -120,19 +122,19 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
-        
+
         // Load related data count for confirmation message
         // $relatedCount = 0;
         // $relatedCount += $user->client ? 1 : 0;
         // $relatedCount += $user->propertyInspector ? 1 : 0;
         // $relatedCount += $user->installer ? 1 : 0;
-        
+
         $user->delete(); // This will trigger the model events to cascade soft delete
-        
+
         // $message = $relatedCount > 0 
         //     ? "User and {$relatedCount} related record(s) deleted successfully."
         //     : 'User deleted successfully.';
-            
+
         return redirect()->route('user-configuration.index')
             ->with('success', 'User deleted successfully.');
     }
@@ -144,7 +146,7 @@ class UserController extends Controller
     {
         $user = User::withTrashed()->findOrFail($id);
         $user->restore(); // This will trigger the model events to cascade restore
-        
+
         return redirect()->route('user-configuration.index')
             ->with('success', 'User and related records restored successfully.');
     }
@@ -156,8 +158,20 @@ class UserController extends Controller
     {
         $user = User::withTrashed()->findOrFail($id);
         $user->forceDelete(); // This will trigger the model events to cascade force delete
-        
+
         return redirect()->route('user-configuration.index')
             ->with('success', 'User and related records permanently deleted.');
+    }
+
+    public function resetPassword(Request $request, string $id)
+    {
+        $user = User::findOrFail($id);
+
+        $status = Password::sendResetLink(
+            $user->email ? ['email' => $user->email] : []
+        );
+        return $status == Password::RESET_LINK_SENT
+            ? response()->json(['status' => $status])
+            : response()->json(['error' => __($status)], 400);
     }
 }

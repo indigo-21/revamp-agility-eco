@@ -162,7 +162,7 @@ class JobStatusSeeder extends Seeder
                 'status' => 'job_unbooked',
                 'description' => 'Job Unbooked',
                 'generic_state' => 'UNBOOKED',
-                'color_scheme' => 'succes',
+                'color_scheme' => 'success',
             ],
             [
                 'status' => 'job_rebook_reinspect',

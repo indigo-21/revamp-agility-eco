@@ -92,12 +92,14 @@
                             </div>
                         </div>
                         <!-- /.card-header -->
-                        <form method="POST" action="{{ isset($user) ? route('user-configuration.update', $user->id) : route('user-configuration.store') }}" enctype="multipart/form-data">
+                        <form method="POST"
+                            action="{{ isset($user) ? route('user-configuration.update', $user->id) : route('user-configuration.store') }}"
+                            enctype="multipart/form-data">
                             @if (isset($user))
                                 @method('PUT')
                             @endif
                             @csrf
-                            
+
                             <!-- Display validation errors -->
                             @if ($errors->any())
                                 <div class="alert alert-danger mx-3 mt-3">
@@ -109,7 +111,7 @@
                                     </ul>
                                 </div>
                             @endif
-                            
+
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -117,22 +119,25 @@
                                         @error('photo')
                                             <div class="text-danger small mb-2">{{ $message }}</div>
                                         @enderror
-                                        
-                                        <x-input name="firstname" label="Firstname" :required="true" value="{{ old('firstname', isset($user) ? $user->firstname : '') }}" />
+
+                                        <x-input name="firstname" label="Firstname" :required="true"
+                                            value="{{ old('firstname', isset($user) ? $user->firstname : '') }}" />
                                         @error('firstname')
                                             <div class="text-danger small mb-2">{{ $message }}</div>
                                         @enderror
-                                        
-                                        <x-input name="lastname" label="Lastname" value="{{ old('lastname', isset($user) ? $user->lastname : '') }}" />
+
+                                        <x-input name="lastname" label="Lastname"
+                                            value="{{ old('lastname', isset($user) ? $user->lastname : '') }}" />
                                         @error('lastname')
                                             <div class="text-danger small mb-2">{{ $message }}</div>
                                         @enderror
-                                        
-                                        <x-input name="email" label="Email" type="email" :required="true" value="{{ old('email', isset($user) ? $user->email : '') }}" />
+
+                                        <x-input name="email" label="Email" type="email" :required="true"
+                                            value="{{ old('email', isset($user) ? $user->email : '') }}" />
                                         @error('email')
                                             <div class="text-danger small mb-2">{{ $message }}</div>
                                         @enderror
-                                        
+
                                         {{-- @if (!isset($user))
                                             <x-input name="password" label="Password" type="password" :required="true" id="password" />
                                             @error('password')
@@ -181,17 +186,20 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <x-input name="mobile" label="Mobile" type="text" :required="true" value="{{ old('mobile', isset($user) ? $user->mobile : '') }}" />
+                                        <x-input name="mobile" label="Mobile" type="text" :required="true"
+                                            value="{{ old('mobile', isset($user) ? $user->mobile : '') }}" />
                                         @error('mobile')
                                             <div class="text-danger small mb-2">{{ $message }}</div>
                                         @enderror
-                                        
-                                        <x-input name="landline" label="Landline" type="text" value="{{ old('landline', isset($user) ? $user->landline : '') }}" />
+
+                                        <x-input name="landline" label="Landline" type="text"
+                                            value="{{ old('landline', isset($user) ? $user->landline : '') }}" />
                                         @error('landline')
                                             <div class="text-danger small mb-2">{{ $message }}</div>
                                         @enderror
-                                        
-                                        <x-input name="organisation" label="Organisation" :required="true" value="{{ old('organisation', isset($user) ? $user->organisation : '') }}" />
+
+                                        <x-input name="organisation" label="Organisation" :required="true"
+                                            value="{{ old('organisation', isset($user) ? $user->organisation : '') }}" />
                                         @error('organisation')
                                             <div class="text-danger small mb-2">{{ $message }}</div>
                                         @enderror
@@ -200,7 +208,7 @@
                                             <option selected="selected" disabled value="">- Select Account Level -
                                             </option>
                                             @foreach ($accountLevels as $accountLevel)
-                                                <option value="{{ $accountLevel->id }}" 
+                                                <option value="{{ $accountLevel->id }}"
                                                     {{ old('account_level_id', isset($user) ? $user->account_level_id : '') == $accountLevel->id ? 'selected' : '' }}>
                                                     {{ $accountLevel->name }}
                                                 </option>
@@ -209,13 +217,12 @@
                                         @error('account_level_id')
                                             <div class="text-danger small mb-2">{{ $message }}</div>
                                         @enderror
-                                        
-                                        <x-select label="User type" name="user_type_id" :multiple="false"
-                                            :required="true">
+
+                                        <x-select label="User type" name="user_type_id" :multiple="false" :required="true">
                                             <option selected="selected" disabled value="">- Select User Type -
                                             </option>
                                             @foreach ($userTypes as $userType)
-                                                <option value="{{ $userType->id }}" 
+                                                <option value="{{ $userType->id }}"
                                                     {{ old('user_type_id', isset($user) ? $user->user_type_id : '') == $userType->id ? 'selected' : '' }}>
                                                     {{ $userType->name }}
                                                 </option>
@@ -231,6 +238,8 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ isset($user) ? 'Update User' : 'Create User' }}
                                 </button>
+                                <button type="button" id="resetpassword" class="btn btn-warning"
+                                    data-id="{{ $user->id }}">Reset Password</button>
                                 <a href="{{ route('user-configuration.index') }}" class="btn btn-secondary ml-2">Cancel</a>
                             </div>
                         </form>

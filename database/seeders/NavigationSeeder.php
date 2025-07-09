@@ -289,7 +289,7 @@ class NavigationSeeder extends Seeder
             [
                 'id' => 35,
                 'name' => 'Reports',
-                'link' => '',
+                'link' => '/reports',
                 'icon' => 'chart-pie',
                 'has_dropdown' => 0,
                 'parent_id' => '',

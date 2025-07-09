@@ -45,6 +45,11 @@ class PropertyInspectorJobAllocationService
 
         $postcode = self::getPostcode($request->postcode);
 
+        if ($this->property_inspector->count() == 0) {
+            // return job status 22 - job data no property inspector
+            return null;
+        }
+
         self::getClientInstallers($request, $measure, $notFirmAvailable);
         self::postcodeLogic($postcode);
         self::jobTypeLogic($request);
@@ -197,12 +202,12 @@ class PropertyInspectorJobAllocationService
 
             $days_available -= $booking_date;
 
-            $sicknessHolidays = SicknessHoliday::where('property_inspector_id', $property_inspector->id)
-                ->whereBetween('start_date', [$start_date, $end_date])
-                ->orWhereBetween('end_date', [$start_date, $end_date])
-                ->count();
+            // $sicknessHolidays = SicknessHoliday::where('property_inspector_id', $property_inspector->id)
+            //     ->whereBetween('start_date', [$start_date, $end_date])
+            //     ->orWhereBetween('end_date', [$start_date, $end_date])
+            //     ->count();
 
-            $days_available -= $sicknessHolidays;
+            // $days_available -= $sicknessHolidays;
 
             // apply the pi unbooked_jobs dates
 

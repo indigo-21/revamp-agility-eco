@@ -1,8 +1,8 @@
-@props(['label', 'name', 'required' => false, 'multiple' => false])
+@props(['label', 'name', 'required' => false, 'multiple' => false, 'id' => null])
 
 <div class="form-group">
     <label>{{ $label }}</label>
-    <select class="form-control select2 w-100" id="{{ $name }}" name="{{ $name }}"
+    <select class="form-control select2 w-100" id="{{ $id ?? $name }}" name="{{ $name }}"
         {{ $multiple ? 'multiple' : '' }} @required($required) {{ $attributes }}>
         {{ $slot }}
     </select>

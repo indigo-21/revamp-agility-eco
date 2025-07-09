@@ -15,6 +15,7 @@ class UserProfileConfigurationController extends Controller
     public function index()
     {
         $accountLevels = AccountLevel::all();
+
         return view('pages.platform-configuration.user-profile-configuration.index', compact('accountLevels'));
     }
 
@@ -29,7 +30,9 @@ class UserProfileConfigurationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {}
+    public function store(Request $request)
+    {
+    }
 
     /**
      * Display the specified resource.
@@ -44,47 +47,57 @@ class UserProfileConfigurationController extends Controller
      */
     public function edit(string $id)
     {
-        //   $navigations = Navigation::All();
-        $userNavigations = UserNavigation::where('account_level_id', $id)->get();
 
+        $navigationLists = Navigation::all();
+        $accessLevel = AccountLevel::findOrFail($id);
+        // $userNavigations = UserNavigation::where('account_level_id', $id)->get()->keyBy('navigation_id');
 
-        return view('pages.platform-configuration.user-profile-configuration.show', compact('userNavigations', 'id'));
+        return view('pages.platform-configuration.user-profile-configuration.form')
+            ->with('navigationLists', $navigationLists)
+            ->with('accountLevelId', $id)
+            ->with('accessLevel', $accessLevel);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $accountLevelId)
+    public function update(Request $request, string $id)
     {
-        $accessedInputs = $request->input('accessed', []);
-        $permissionInputs = $request->input('permission', []);
 
-        // foreach ($accessedInputs as $navigationId => $accessedValue) {
-        //     $userNavigation = UserNavigation::where('account_level_id', $accountLevelId)
-        //                                     ->where('navigation_id', $navigationId)
-        //                                     ->first();
+        // $userProfileConfiguration = new UserNavigation;
 
-        //     if ($userNavigation) {
-        //         $userNavigation->accessed = $accessedValue;
-        //         $userNavigation->permission = $permissionInputs[$navigationId] ?? $userNavigation->permission;
-        //         $userNavigation->save();
-        //     } 
-        // }
+        $userProfileConfiguration = UserNavigation::where('account_level_id', $request->account_level_id)
+            ->where('navigation_id', $id)
+            ->first();
 
-        UserNavigation::where('account_level_id', $accountLevelId)->delete();
-
-        foreach ($accessedInputs as $navigationId => $accessedValue) {
-            if ($accessedValue == 1) {
-                UserNavigation::create([
-                    'account_level_id' => $accountLevelId,
-                    'navigation_id' => $navigationId,
-                    'accessed' => 1,
-                    'permission' => $permissionInputs[$navigationId] ?? 'View', 
-                ]);
-            }
+        if (!$userProfileConfiguration) {
+            $userProfileConfiguration = new UserNavigation;
+            $userProfileConfiguration->permission = 1;
         }
 
-        return redirect()->back();
+        if ($request->type === "navigation") {
+            if ($request->selectedValue == 1) {
+                $userProfileConfiguration->account_level_id = $request->account_level_id;
+                $userProfileConfiguration->navigation_id = $id;
+
+                $userProfileConfiguration->save();
+            } else {
+                $userProfileConfiguration->where('account_level_id', $request->account_level_id)
+                    ->where('navigation_id', $id)
+                    ->delete();
+            }
+        } else if ($request->type === "permission") {
+            $userProfileConfiguration->account_level_id = $request->account_level_id;
+            $userProfileConfiguration->navigation_id = $id;
+            $userProfileConfiguration->permission = $request->selectedValue;
+
+            $userProfileConfiguration->save();
+        }
+
+        return response()->json([
+            'message' => 'Configuration updated successfully!',
+            'data' => $request->all(),
+        ]);
     }
 
     /**

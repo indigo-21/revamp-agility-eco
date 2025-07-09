@@ -9,10 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Navigation extends Model
 {
     use SoftDeletes;
-    
-    protected $casts = [
-        'has_dropdown' => 'boolean',
-    ];
 
     public function userNavigations(): HasMany
     {

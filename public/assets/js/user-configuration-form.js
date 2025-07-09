@@ -147,4 +147,53 @@ $(document).ready(function () {
     //         }
     //     }
     // });
+
+    $("#resetpassword").on("click", function () {
+        userId = $(this).data("id");
+        Swal.fire({
+            title: 'Reset Password',
+            text: 'Are you sure you want to reset the password for this user?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, reset it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (userId) {
+                    $.ajax({
+                        url: `/user-configuration/${userId}/reset-password`,
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (response) {
+                            Swal.fire({
+                                title: 'Success',
+                                text: response.message,
+                                icon: 'success',
+                                confirmButtonColor: '#3085d6'
+                            });
+                        },
+                        error: function (xhr) {
+                            Swal.fire({
+                                title: 'Error',
+                                text: xhr.responseJSON.message || 'An error occurred while resetting the password.',
+                                icon: 'error',
+                                confirmButtonColor: '#d33'
+                            });
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'User ID is not available.',
+                        icon: 'error',
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            }
+        });
+    }
+    );
 });

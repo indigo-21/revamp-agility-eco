@@ -14,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RemediationController;
 use App\Http\Controllers\RemediationReinstateController;
 use App\Http\Controllers\RemediationReviewController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RestoreMaxAttemptController;
 use App\Http\Controllers\SchemeController;
 use App\Http\Controllers\SicknessHolidayController;
@@ -74,7 +75,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('navigation.access:scheme');
     Route::resource('user-profile-configuration', UserProfileConfigurationController::class)
         ->middleware('navigation.access:user-profile-configuration');
-    
+
 
     // REMEDIATION
     Route::resource('remediation-review', RemediationReviewController::class)
@@ -159,6 +160,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //  USER CONFIGURATION
     Route::resource('user-configuration', UserController::class)
         ->middleware('navigation.access:user-configuration');
+    Route::post('/user-configuration/{id}/reset-password', [UserController::class, 'resetPassword'])
+        ->name('user-configuration.reset-password')
+        ->middleware('navigation.access:user-configuration');
 
     // EMAIL TEMPLATES
     Route::resource('pi-email-template', EmailTemplateController::class)
@@ -188,6 +192,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('navigation.access:pi-dashboard');
     Route::resource('sickness-holidays', SicknessHolidayController::class)
         ->middleware('navigation.access:sickness-holidays');
+
+    Route::resource('reports', ReportController::class)
+        ->middleware('navigation.access:reports');
 
 });
 
