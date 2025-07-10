@@ -61,7 +61,7 @@ class SicknessHolidayController extends Controller
 
         $template = $emailTemplates->content;
 
-        (new MailService)->sendEmail($subject, $template, $email, $data);
+        (new MailService)->sendEmail($subject, $template, $email, $data, true);
 
         return redirect()->route('sickness-holidays.index')->with('success', 'Sickness/Holiday request submitted successfully.');
     }

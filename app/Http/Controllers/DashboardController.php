@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Job;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -11,7 +12,17 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('dashboard');
+        $jobBooked = Job::where('job_status_id', 1)->count();
+        $jobPending = Job::whereIn('job_status_id', [5, 6, 7, 8, 9, 10, 25, 22])->count();
+        $jobFailed = Job::where('job_status_id', 16)->count();
+        $totalJobs = Job::count();
+        $jobFailPercent = ($jobFailed / $totalJobs) * 100;
+
+        return view('dashboard')
+            ->with('jobBooked', $jobBooked)
+            ->with('jobPending', $jobPending)
+            ->with('jobFailed', $jobFailed)
+            ->with('jobFailPercent', $jobFailPercent);
     }
 
     /**

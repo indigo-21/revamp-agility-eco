@@ -103,7 +103,7 @@ class CompletedJobController extends Controller
 
             $template = $emailTemplates->content;
 
-            (new MailService)->sendEmail($subject, $template, $email, $data);
+            (new MailService)->sendEmail($subject, $template, $email, $data, true);
 
         } else {
             $job->last_update = now();

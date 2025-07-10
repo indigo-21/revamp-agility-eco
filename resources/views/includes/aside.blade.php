@@ -17,7 +17,7 @@
                         @if ($navigation->userNavigations->where('account_level_id', auth()->user()->accountLevel->id)->count())
                             <li class="nav-item">
                                 <a href="{{ $navigation->link ? route("{$navigation->link}.index") : '#' }}"
-                                    class="nav-link">
+                                    class="nav-link {{ request()->routeIs("{$navigation->link}.*") ? 'active' : '' }}">
                                     <i class="nav-icon fas fa-{{ $navigation->icon }}"></i>
                                     <p>
                                         {{ $navigation->name }}
@@ -26,8 +26,22 @@
                             </li>
                         @endif
                     @elseif ($navigation->parent_id == 0 && $navigation->has_dropdown)
-                        <li class="nav-item ">
-                            <a href="#" class="nav-link">
+                        @php
+                            // Check if any sub-navigation is currently active
+                            $hasActiveSubNav = false;
+                            foreach ($navigations as $sub_nav) {
+                                if (
+                                    $sub_nav->parent_id == $navigation->id &&
+                                    $sub_nav->link &&
+                                    request()->routeIs("{$sub_nav->link}.*")
+                                ) {
+                                    $hasActiveSubNav = true;
+                                    break;
+                                }
+                            }
+                        @endphp
+                        <li class="nav-item {{ $hasActiveSubNav ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $hasActiveSubNav ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-{{ $navigation->icon }}"></i>
                                 <p>
                                     {{ $navigation->name }}
@@ -40,7 +54,7 @@
                                         @if ($navigation->userNavigations->where('account_level_id', auth()->user()->accountLevel->id)->count())
                                             <li class="nav-item">
                                                 <a href="{{ $sub_navigation->link ? route("{$sub_navigation->link}.index") : '#' }}"
-                                                    class="nav-link">
+                                                    class="nav-link {{ request()->routeIs("{$sub_navigation->link}.*") ? 'active' : '' }}">
                                                     <i class="fa fa-{{ $sub_navigation->icon }} nav-icon"></i>
                                                     <p>{{ $sub_navigation->name }}</p>
                                                 </a>

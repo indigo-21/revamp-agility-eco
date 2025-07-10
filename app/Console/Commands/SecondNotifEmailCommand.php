@@ -7,21 +7,21 @@ use App\Models\Job;
 use App\Models\MessageTemplate;
 use App\Services\MailService;
 
-class FirstNotifEmailCommand extends Command
+class SecondNotifEmailCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:first-notif-email-command';
+    protected $signature = 'app:second-notif-email-command';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Send first notification email for jobs that are due today and have no remediations';
+    protected $description = 'Send second notification email for jobs that are due today and have no remediations';
 
     /**
      * Execute the console command.
@@ -32,18 +32,18 @@ class FirstNotifEmailCommand extends Command
             ->get();
         $appUrl = env('APP_URL');
 
-        $firstTemplateCat1 = MessageTemplate::where('data_id', 4)
+        $firstTemplateCat1 = MessageTemplate::where('data_id', 5)
             ->where('remediation_type', 'cat1')
             ->first();
 
-        $firstTemplateNc = MessageTemplate::where('data_id', 4)
+        $firstTemplateNc = MessageTemplate::where('data_id', 5)
             ->where('remediation_type', 'nc')
             ->first();
 
         foreach ($completedJobs as $key => $job) {
             $jobRemediationCount = $job->remediation->count();
             $dateCreated = $job->completedJobs->first()->created_at;
-            $dateCreatedPlusOneDay = $dateCreated->addDay();
+            $dateCreatedPlusOneDay = $dateCreated->addDays(7);
 
             // Skip if job has remediations or not due today
             if ($jobRemediationCount !== 0 || !$dateCreatedPlusOneDay->isToday()) {
