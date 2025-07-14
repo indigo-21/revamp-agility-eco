@@ -44,7 +44,7 @@
                     <!-- small box -->
                     <div class="small-box bg-success">
                         <div class="inner">
-                            <h3>{{ $jobFailPercent }}<sup style="font-size: 20px">%</sup></h3>
+                            <h3>{{ number_format($jobFailPercent, 2) }}<sup style="font-size: 20px">%</sup></h3>
 
                             <p>Over All NC Rate</p>
                         </div>

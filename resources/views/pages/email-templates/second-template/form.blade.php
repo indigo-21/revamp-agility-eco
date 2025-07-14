@@ -9,82 +9,56 @@
 @endsection
 @section('content')
     <x-email-template-create :messageTemplate="isset($messageTemplate) ? $messageTemplate : null" :url="$url" title="Second Template" :remediationType="true">
-        <strong>Installer Name:</strong>
-        <p class="text-muted">
-            _INSTALLER_NAME_
-        </p>
-
-        <hr>
-
-        <strong>Client:</strong>
-        <p class="text-muted">
-            _CLIENT_
-        </p>
-
-        <hr>
-
-        <strong>Cert Number:</strong>
-        <p class="text-muted">
-            _CERT_NO_
-        </p>
-
-        <hr>
-
-        <strong>UMR:</strong>
-        <p class="text-muted">
-            _UMR_
-        </p>
-
-        <hr>
-
-        <strong>Inspection Date:</strong>
-        <p class="text-muted">
-            _INSPECTION_DATE_
-        </p>
-
-        <hr>
-
-        <strong>NC type:</strong>
-        <p class="text-muted">
-            _NC_TYPE_
-        </p>
-
-        <hr>
-
-        <strong>Remediation Deadline:</strong>
-        <p class="text-muted">
-            _REMEDIATION_DEADLINE_
-        </p>
-
-        <hr>
-
-        <strong>Housename Number:</strong>
-        <p class="text-muted">
-            _HOUSENAME_NUMBER_
-        </p>
-
-        <hr>
-
-        <strong>Address Line 1:</strong>
-        <p class="text-muted">
-            _ADDRESS_LINE_1_
-        </p>
-
-        <hr>
-
-        <strong>Postcode:</strong>
-        <p class="text-muted">
-            _POSTCODE_
-        </p>
-
-        <hr>
-
-        <strong>Link:</strong>
-        <p class="text-muted">
-            _LINK_
-        </p>
-
-        <hr>
+        <div class="table-responsive">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>Installer Name:</th>
+                        <td>_INSTALLER_NAME_</td>
+                    </tr>
+                    <tr>
+                        <th>Client:</th>
+                        <td>_CLIENT_</td>
+                    </tr>
+                    <tr>
+                        <th>Cert Number:</th>
+                        <td>_CERT_NO_</td>
+                    </tr>
+                    <tr>
+                        <th>UMR:</th>
+                        <td>_UMR_</td>
+                    </tr>
+                    <tr>
+                        <th>Inspection Date:</th>
+                        <td>_INSPECTION_DATE_</td>
+                    </tr>
+                    <tr>
+                        <th>NC type:</th>
+                        <td>_NC_TYPE_</td>
+                    </tr>
+                    <tr>
+                        <th>Remediation Deadline:</th>
+                        <td>_REMEDIATION_DEADLINE_</td>
+                    </tr>
+                    <tr>
+                        <th>Housename Number:</th>
+                        <td>_HOUSENAME_NUMBER_</td>
+                    </tr>
+                    <tr>
+                        <th>Address Line 1:</th>
+                        <td>_ADDRESS_LINE_1_</td>
+                    </tr>
+                    <tr>
+                        <th>Postcode:</th>
+                        <td>_POSTCODE_</td>
+                    </tr>
+                    <tr>
+                        <th>Link:</th>
+                        <td>_LINK_</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </x-email-template-create>
 @endsection
 @section('importedScripts')

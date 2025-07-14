@@ -60,6 +60,7 @@ class RemediationService
                         // ->where('is_active', 1)
                         ->where('type', 'email')
                         ->where('uphold_type', 'remediation')
+                        ->where('is_active', 1)
                         ->first();
 
                     break;
@@ -85,6 +86,7 @@ class RemediationService
                         // ->where('is_active', 1)
                         ->where('type', 'email')
                         ->where('uphold_type', 'appeal')
+                        ->where('is_active', 1)
                         ->first();
 
                     break;

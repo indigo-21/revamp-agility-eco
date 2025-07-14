@@ -23,6 +23,7 @@ class EmailTemplateController extends Controller
             'first-template' => 4, // First Email Template
             'second-template' => 5, // Second Email Template
             'automated-email-passed' => 6, // Automated Email Passed Template
+            'reminder-chaser' => 7, // 28-Day Reminder Chaser Template
         };
 
     }
@@ -55,7 +56,7 @@ class EmailTemplateController extends Controller
     public function store(Request $request)
     {
         // Validate that we're not creating an inactive template when no active templates exist
-        if (!$request->is_active) {
+        if (!$request->is_active && !in_array($this->emailData, [2, 4, 5, 7])) {
             $activeTemplateCount = MessageTemplate::where('data_id', $this->emailData)
                 ->where('is_active', true)
                 ->count();
@@ -80,7 +81,30 @@ class EmailTemplateController extends Controller
         $messageTemplate->save();
 
         if ($request->is_active) {
-            $this->setTemplateActive($messageTemplate->id);
+            if ($this->emailData === 2) {
+                $activeTemplate = MessageTemplate::where('data_id', $this->emailData)
+                    ->where('is_active', true)
+                    ->where('uphold_type', $request->uphold_type)
+                    ->where('id', '!=', $messageTemplate->id)
+                    ->count();
+
+                if ($activeTemplate > 0) {
+                    $this->setTemplateActiveUphold($messageTemplate->id, $request->uphold_type);
+                }
+            } else if ($this->emailData === 4 || $this->emailData === 5 || $this->emailData === 7) {
+                $activeTemplate = MessageTemplate::where('data_id', $this->emailData)
+                    ->where('is_active', true)
+                    ->where('remediation_type', $request->remediation_type)
+                    ->where('id', '!=', $messageTemplate->id)
+                    ->count();
+
+                if ($activeTemplate > 0) {
+                    $this->setTemplateActiveRemediation($messageTemplate->id, $request->remediation_type);
+                }
+            } else {
+                $this->setTemplateActive($messageTemplate->id);
+            }
+
         }
 
         return redirect()->route("{$this->url}.index")
@@ -114,14 +138,13 @@ class EmailTemplateController extends Controller
     {
         $messageTemplate = MessageTemplate::findOrFail($id);
 
-        // Check if trying to set this template as inactive when it's the only active template
-        if (!$request->is_active && $messageTemplate->is_active) {
-            $activeTemplateCount = MessageTemplate::where('data_id', $this->emailData)
-                ->where('is_active', true)
-                ->where('id', '!=', $id)
-                ->count();
+        $activeTemplate = MessageTemplate::where('data_id', $this->emailData)
+            ->where('is_active', true)
+            ->where('id', '!=', $id);
 
-            if ($activeTemplateCount === 0) {
+        if (!$request->is_active && $messageTemplate->is_active && !in_array($this->emailData, [2, 4, 5])) {
+
+            if ($activeTemplate->count() === 0) {
                 return redirect()->back()
                     ->withInput()
                     ->withErrors(['is_active' => 'At least one email template must be active. Cannot deactivate the last active template.']);
@@ -138,7 +161,30 @@ class EmailTemplateController extends Controller
         $messageTemplate->save();
 
         if ($request->is_active) {
-            $this->setTemplateActive($messageTemplate->id);
+            if ($this->emailData === 2) {
+                $activeTemplate = MessageTemplate::where('data_id', $this->emailData)
+                    ->where('is_active', true)
+                    ->where('uphold_type', $request->uphold_type)
+                    ->where('id', '!=', $id)
+                    ->count();
+
+                if ($activeTemplate > 0) {
+                    $this->setTemplateActiveUphold($id, $request->uphold_type);
+                }
+            } else if ($this->emailData === 4 || $this->emailData === 5 || $this->emailData === 7) {
+                $activeTemplate = MessageTemplate::where('data_id', $this->emailData)
+                    ->where('is_active', true)
+                    ->where('remediation_type', $request->remediation_type)
+                    ->where('id', '!=', $id)
+                    ->count();
+
+                if ($activeTemplate > 0) {
+                    $this->setTemplateActiveRemediation($id, $request->remediation_type);
+                }
+            } else {
+                $this->setTemplateActive($messageTemplate->id);
+            }
+
         }
 
         return redirect()->route("{$this->url}.index")
@@ -154,14 +200,41 @@ class EmailTemplateController extends Controller
 
         // Check if trying to delete the last active template
         if ($messageTemplate->is_active) {
-            $activeTemplateCount = MessageTemplate::where('data_id', $this->emailData)
-                ->where('is_active', true)
-                ->where('id', '!=', $id)
-                ->count();
+            if ($this->emailData === 2) {
+                // For uphold templates, check if this is the last active template of this uphold_type
+                $activeTemplateCount = MessageTemplate::where('data_id', $this->emailData)
+                    ->where('is_active', true)
+                    ->where('uphold_type', $messageTemplate->uphold_type)
+                    ->where('id', '!=', $id)
+                    ->count();
 
-            if ($activeTemplateCount === 0) {
-                return redirect()->back()
-                    ->withErrors(['general' => 'Cannot delete the last active email template. At least one template must remain active.']);
+                if ($activeTemplateCount === 0) {
+                    return redirect()->back()
+                        ->withErrors(['general' => "Cannot delete the last active {$messageTemplate->uphold_type} uphold template. At least one template of this type must remain active."]);
+                }
+            } elseif ($this->emailData === 4 || $this->emailData === 5 || $this->emailData === 7) {
+                // For first/second templates, check if this is the last active template of this remediation_type
+                $activeTemplateCount = MessageTemplate::where('data_id', $this->emailData)
+                    ->where('is_active', true)
+                    ->where('remediation_type', $messageTemplate->remediation_type)
+                    ->where('id', '!=', $id)
+                    ->count();
+
+                if ($activeTemplateCount === 0) {
+                    return redirect()->back()
+                        ->withErrors(['general' => "Cannot delete the last active {$messageTemplate->remediation_type} remediation template. At least one template of this type must remain active."]);
+                }
+            } else {
+                // For other email types, check if this is the last active template overall
+                $activeTemplateCount = MessageTemplate::where('data_id', $this->emailData)
+                    ->where('is_active', true)
+                    ->where('id', '!=', $id)
+                    ->count();
+
+                if ($activeTemplateCount === 0) {
+                    return redirect()->back()
+                        ->withErrors(['general' => 'Cannot delete the last active email template. At least one template must remain active.']);
+                }
             }
         }
 
@@ -176,6 +249,34 @@ class EmailTemplateController extends Controller
         $messageTemplate = MessageTemplate::where('data_id', $this->emailData)
             ->where('is_active', true)
             ->where('id', '!=', $id)
+            ->get();
+
+        foreach ($messageTemplate as $template) {
+            $template->is_active = 0;
+            $template->save();
+        }
+    }
+
+    public function setTemplateActiveUphold($id, $uphold_type)
+    {
+        $messageTemplate = MessageTemplate::where('data_id', $this->emailData)
+            ->where('is_active', true)
+            ->where('id', '!=', $id)
+            ->where('uphold_type', $uphold_type)
+            ->get();
+
+        foreach ($messageTemplate as $template) {
+            $template->is_active = 0;
+            $template->save();
+        }
+    }
+
+    public function setTemplateActiveRemediation($id, $remediation_type)
+    {
+        $messageTemplate = MessageTemplate::where('data_id', $this->emailData)
+            ->where('is_active', true)
+            ->where('id', '!=', $id)
+            ->where('remediation_type', $remediation_type)
             ->get();
 
         foreach ($messageTemplate as $template) {

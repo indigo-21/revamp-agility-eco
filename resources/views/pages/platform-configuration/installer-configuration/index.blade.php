@@ -12,23 +12,10 @@
     </style>
 @endsection
 @section('content')
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Installer Configuration</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active">Installer Configuration</li>
-                    </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+    <x-title-breadcrumbs title="Installer Configuration" :breadcrumbs="[
+        ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
+        ['title' => 'Installer Configuration', 'route' => '', 'active' => 'active'],
+    ]" />
 
     <!-- Main content -->
     <section class="content">
@@ -59,6 +46,7 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Contact Number</th>
+                                        <th>28 Day Reminder</th>
                                         <th>Action</th>
                                     </tr>
 
@@ -69,6 +57,7 @@
                                             <td>{{ $installer->user->firstname }}</td>
                                             <td>{{ $installer->user->email }}</td>
                                             <td>{{ $installer->user->mobile }}</td>
+                                            <td>{{ $installer->sent_available ? 'Yes' : 'No' }}</td>
                                             <td>
                                                 <form
                                                     action="{{ route('installer-configuration.destroy', $installer->id) }}"

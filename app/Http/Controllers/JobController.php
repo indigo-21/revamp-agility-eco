@@ -27,7 +27,6 @@ class JobController extends Controller
     public function index(Request $request)
     {
 
-        // Example: "2025-06-03 - 2025-07-31"
         $dateRange = $request->job_date_range;
         $dates = explode(' - ', $dateRange);
         $startDate = $dates[0] ?? null;
@@ -47,13 +46,16 @@ class JobController extends Controller
             }
         })->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
             $query->whereBetween('created_at', [$startDate, $endDate]);
-        })->when($request->job_filter, function ($query) use ($request) {
+        })->when($request->job_filter, function ($query) use ($request, $startDate, $endDate) {
             switch ($request->job_filter) {
                 case '1':
                     $query->whereNull('close_date');
                     break;
                 case '2':
                     $query->whereNot('close_date');
+                    break;
+                case '3':
+                    $query->where('completed_survey_date', '<=', now()->subDays(28));
                     break;
                 default:
                     break;
@@ -227,7 +229,7 @@ class JobController extends Controller
     public function removeDuplicates()
     {
         Job::where('job_status_id', 6)->delete();
-        
+
         return response()->json([
             'message' => 'Duplicate jobs removed successfully'
         ]);

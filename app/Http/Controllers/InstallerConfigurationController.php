@@ -43,6 +43,7 @@ class InstallerConfigurationController extends Controller
 
         $installer = new Installer();
         $installer->user_id = $user->id;
+        $installer->sent_available = $request->sent_available;
         $installer->save();
 
         // $installerClients = json_decode($request->input('clientsArray'), true);
@@ -91,6 +92,9 @@ class InstallerConfigurationController extends Controller
     {
         $installer = Installer::find($id);
         $request->account_level_id = 5; //Installer
+
+        $installer->sent_available = $request->sent_available;
+        $installer->save();
 
         (new UserService)->store($request, $installer->user_id);
 

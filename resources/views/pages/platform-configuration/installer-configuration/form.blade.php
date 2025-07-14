@@ -3,6 +3,7 @@
     @include('includes.datatables-links')
     <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <style>
         .vertical-center {
             vertical-align: middle !important;
@@ -56,31 +57,43 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <x-input name="firstname" label="Name of Installer"
-                                            value="{{ isset($installer) ? $installer->user->firstname : '' }}" />
                                         <div class="row">
                                             <div class="col-md-6">
+                                                <x-input name="firstname" label="Name of Installer"
+                                                    value="{{ isset($installer) ? $installer->user->firstname : '' }}" />
+
                                                 <x-input name="email" label="Email" type="email"
                                                     value="{{ isset($installer) ? $installer->user->email : '' }}" />
-                                            </div>
 
-                                            <div class="col-md-6">
-
-                                                <x-input name="mobile" label="Contact Number" type="number"
-                                                    value="{{ isset($installer) ? $installer->user->mobile : '' }}" />
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
                                                 <x-select label="User Profile" name="user_type_id" :multiple="false">
                                                     <option value="{{ $userType->id }}" selected>{{ $userType->name }}
                                                     </option>
                                                 </x-select>
                                             </div>
+
                                             <div class="col-md-6">
+                                                <x-radio-layout label="28 Day Reminder">
+                                                    <div class="col-md-6">
+                                                        <x-radio label="Yes" name="sent_available" id="active_yes"
+                                                            :checked="isset($installer) &&
+                                                            $installer->sent_available === 1
+                                                                ? true
+                                                                : true" :value="1" />
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <x-radio label="No" name="sent_available" id="active_no"
+                                                            :checked="isset($installer) &&
+                                                            $installer->sent_available === 0
+                                                                ? true
+                                                                : false" :value="0" />
+                                                    </div>
+                                                </x-radio-layout>
+
+                                                <x-input name="mobile" label="Contact Number" type="number"
+                                                    value="{{ isset($installer) ? $installer->user->mobile : '' }}" />
+
                                                 <x-input name="organisation" label="Organisation"
                                                     value="{{ isset($installer) ? $installer->user->organisation : '' }}" />
-
                                             </div>
                                         </div>
                                     </div>

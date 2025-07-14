@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ asset('plugins/summernote/summernote-bs4.min.css') }}">
 @endsection
 @section('content')
-    <x-email-template-create :messageTemplate="isset($messageTemplate) ? $messageTemplate : null" :url="$url" title="Remediation Template">
+    <x-email-template-create :messageTemplate="isset($messageTemplate) ? $messageTemplate : null" :url="$url" title="28-Day Chaser" :remediationType="true">
         <div class="table-responsive">
             <table class="table">
                 <tbody>
@@ -55,6 +55,18 @@
                     <tr>
                         <th>Link:</th>
                         <td>_LINK_</td>
+                    </tr>
+                    <tr>
+                        <th>Outstanding Since:</th>
+                        <td>_OUTSTANDING_SINCE_</td>
+                    </tr>
+                    <tr>
+                        <th>Credit Note Currency:</th>
+                        <td>_CREDIT_NOTE_CURRENCY_</td>
+                    </tr>
+                    <tr>
+                        <th>Credit Note Value:</th>
+                        <td>_CREDIT_NOTE_VALUE_</td>
                     </tr>
                 </tbody>
             </table>

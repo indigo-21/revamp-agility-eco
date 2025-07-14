@@ -14,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RemediationController;
 use App\Http\Controllers\RemediationReinstateController;
 use App\Http\Controllers\RemediationReviewController;
+use App\Http\Controllers\ReminderExceptionController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RestoreMaxAttemptController;
 use App\Http\Controllers\SchemeController;
@@ -82,6 +83,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('navigation.access:remediation-review');
     Route::resource('remediation-reinstate', RemediationReinstateController::class)
         ->middleware('navigation.access:remediation-reinstate');
+    Route::resource('reminder-exception', ReminderExceptionController::class)
+        ->middleware('navigation.access:reminder-exception');
 
 
     // INSTALLER PORTAL
@@ -177,6 +180,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('navigation.access:second-template');
     Route::resource('automated-email-passed', EmailTemplateController::class)
         ->middleware('navigation.access:automated-email-passed');
+    Route::resource('reminder-chaser', EmailTemplateController::class)
+        ->middleware('navigation.access:reminder-chaser');
 
     Route::get('client/search-job-types', [JobController::class, 'searchClient'])->middleware('navigation.access:job');
     Route::get('get-property-inspector', [PropertyInspectorController::class, 'searchPropertyInspector'])->middleware('navigation.access:job');

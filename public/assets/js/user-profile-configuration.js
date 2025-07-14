@@ -10,8 +10,8 @@ $(function () {
     }
 
 
-    // Handle navigation select changes (these are select elements, not inputs)
-    $("select[name='navigation']").on("change", function () {
+    // Handle navigation select changes using event delegation
+    $(document).on("change", "select[name='navigation']", function () {
         account_level_id = $(this).data('account_level');
         navigation_id = $(this).data('navigation');
         selectedValue = $(this).val();
@@ -20,8 +20,8 @@ $(function () {
         submit(navigation_id, selectedValue, account_level_id, type);
     });
 
-    // Handle permission radio button changes
-    $(".radioPermission").on("change", function () {
+    // Handle permission radio button changes using event delegation
+    $(document).on("change", ".radioPermission", function () {
         account_level_id = $(this).data('account_level');
         navigation_id = $(this).data('navigation');
         selectedValue = $(this).val();

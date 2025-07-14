@@ -21,7 +21,7 @@
         <div class="container-fluid">
             <!-- Small boxes (Stat box) -->
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-8">
                     <div class="card card-default">
                         <div class="card-header">
                             <h3 class="card-title">Filter</h3>
@@ -35,12 +35,13 @@
                             <form method="GET" action="{{ route('job.index') }}" id="filterForm">
                                 @csrf
                                 <div class="row mb-5">
-                                    <div class="col-md-8">
+                                    <div class="col-md-12">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <x-select label="Job Status" name="job_status_id" :multiple="false">
                                                     <option value="" {{ request('job_status_id') ? '' : 'selected' }}
-                                                        disabled>- Select Job Status
+                                                        disabled>-
+                                                        Select Job Status
                                                         -
                                                     </option>
                                                     @foreach ($jobStatuses as $jobStatus)
@@ -59,7 +60,8 @@
                                                     @foreach ($clients as $client)
                                                         <option value="{{ $client->id }}"
                                                             {{ request('client') == $client->id ? 'selected' : '' }}>
-                                                            {{ $client->user->firstname }} {{ $client->user->lastname }}
+                                                            {{ $client->user->firstname }}
+                                                            {{ $client->user->lastname }}
                                                         </option>
                                                     @endforeach
                                                 </x-select>
@@ -80,7 +82,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>Created At:</label>
+                                                    <label>Date Created:</label>
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text">
@@ -96,29 +98,21 @@
                                             </div>
                                         </div>
                                         <div class="row mt-2">
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <x-radio label="Open Jobs" name="job_filter" id="open_jobs"
                                                     :value="1" :checked="request('job_filter') == 1" />
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <x-radio label="Closed Jobs" name="job_filter" id="closed_jobs"
                                                     :value="2" :checked="request('job_filter') == 2" />
                                             </div>
-                                            <div class="col-md-4">
-                                                <x-radio label="All Jobs" name="job_filter" id="all_jobs" :value="3"
-                                                    :checked="request('job_filter') == 3 || !request('job_filter')" />
+                                            <div class="col-md-3">
+                                                <x-radio label="NC > 28 Days" name="job_filter" id="sent_reminder"
+                                                    :value="3" :checked="request('job_filter') == 3" />
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 offset-md-1">
-                                        <div class="small-box bg-default">
-                                            <div class="inner">
-                                                <h3 id="totalNoOfJobs">{{ $jobs->count() }}</h3>
-
-                                                <p>No. of Jobs</p>
-                                            </div>
-                                            <div class="icon">
-                                                <i class="fas fa-book"></i>
+                                            <div class="col-md-3">
+                                                <x-radio label="All Jobs" name="job_filter" id="all_jobs"
+                                                    :value="4" :checked="request('job_filter') == 4 || !request('job_filter')" />
                                             </div>
                                         </div>
                                     </div>
@@ -130,6 +124,86 @@
                                         href="{{ route('job.index') }}">Reset</a>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="small-box bg-white">
+                        <div class="inner">
+                            <h3 id="totalNoOfJobs">{{ $jobs->count() }}</h3>
+
+                            <p>No. of Jobs</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <a href="{{ route('property-inspector.index') }}">
+                                <div class="info-box bg-light">
+                                    <div class="info-box-content">
+                                        <span class="info-box-text text-center text-muted">Property Inspector</span>
+                                        <span class="info-box-number text-center text-muted mb-0"><i
+                                                class="fa fa-arrow-alt-circle-down"></i></span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{{ route('client-configuration.index') }}">
+                                <div class="info-box bg-light">
+                                    <div class="info-box-content">
+                                        <span class="info-box-text text-center text-muted">Clients</span>
+                                        <span class="info-box-number text-center text-muted mb-0"><i
+                                                class="fa fa-arrow-alt-circle-down"></i></span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{{ route('make-booking.index') }}">
+                                <div class="info-box bg-light">
+                                    <div class="info-box-content">
+                                        <span class="info-box-text text-center text-muted">Booking</span>
+                                        <span class="info-box-number text-center text-muted mb-0"><i
+                                                class="fa fa-arrow-alt-circle-down"></i></span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{{ route('remediation-review.index') }}">
+                                <div class="info-box bg-light">
+                                    <div class="info-box-content">
+                                        <span class="info-box-text text-center text-muted">Remediation Review</span>
+                                        <span class="info-box-number text-center text-muted mb-0"><i
+                                                class="fa fa-arrow-alt-circle-down"></i></span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{{ route('update-survey.index') }}">
+                                <div class="info-box bg-light">
+                                    <div class="info-box-content">
+                                        <span class="info-box-text text-center text-muted">Update Survey</span>
+                                        <span class="info-box-number text-center text-muted mb-0"><i
+                                                class="fa fa-arrow-alt-circle-down"></i></span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{{ route('open-nc.index') }}">
+                                <div class="info-box bg-light">
+                                    <div class="info-box-content">
+                                        <span class="info-box-text text-center text-muted">Open NC</span>
+                                        <span class="info-box-number text-center text-muted mb-0"><i
+                                                class="fa fa-arrow-alt-circle-down"></i></span>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -164,7 +238,7 @@
                                         <thead>
                                             <tr>
                                                 <th colspan="11">Job Details</th>
-                                                <th colspan="3">Key Dates</th>
+                                                <th colspan="4">Key Dates</th>
                                                 <th rowspan="2">Action</th>
                                             </tr>
                                             <tr>
@@ -182,6 +256,7 @@
                                                 <th>Close Date</th>
                                                 <th>Deadline</th>
                                                 <th>Invoice Status</th>
+                                                <th>28-Reminder</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -207,6 +282,7 @@
                                                     <td>{{ $job->close_date }}</td>
                                                     <td>{{ $job->deadline }}</td>
                                                     <td>{{ $job->invoice_status }}</td>
+                                                    <td>{{ $job->sent_reminder === 1 ? 'Yes' : 'No' }}</td>
                                                     <td>
                                                         <form action="{{ route('job.destroy', $job->id) }}"
                                                             method="POST" class="delete-form">

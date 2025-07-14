@@ -34,10 +34,12 @@ class FirstNotifEmailCommand extends Command
 
         $firstTemplateCat1 = MessageTemplate::where('data_id', 4)
             ->where('remediation_type', 'cat1')
+            ->where('is_active', 1)
             ->first();
 
         $firstTemplateNc = MessageTemplate::where('data_id', 4)
             ->where('remediation_type', 'nc')
+            ->where('is_active', 1)
             ->first();
 
         foreach ($completedJobs as $key => $job) {

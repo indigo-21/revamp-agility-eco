@@ -326,6 +326,22 @@ class NavigationSeeder extends Seeder
                 'has_dropdown' => 0,
                 'parent_id' => '',
             ],
+            [
+                'id' => 40,
+                'name' => '28-Day Exceptions',
+                'link' => '',
+                'icon' => 'angle-right',
+                'has_dropdown' => 0,
+                'parent_id' => 30,
+            ],
+            [
+                'id' => 41,
+                'name' => '28-Day Chaser',
+                'link' => '',
+                'icon' => 'angle-right',
+                'has_dropdown' => 0,
+                'parent_id' => 19,
+            ],
         ];
 
         foreach ($values as $value) {

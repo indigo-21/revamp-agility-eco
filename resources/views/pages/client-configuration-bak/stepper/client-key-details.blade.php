@@ -46,10 +46,10 @@
                     <div class="col-sm-12 col-lg-6">
                         <x-radio-layout label="Active">
                             <div class="col-md-6">
-                                <x-radio label="Yes" name="active" id="active_yes" :checked="$is_active" />
+                                <x-radio label="Yes" name="active" id="active_yes" :checked="$is_active" :value="1"/>
                             </div>
                             <div class="col-md-6">
-                                <x-radio label="No" name="active" id="active_no" :checked="!$is_active"/>
+                                <x-radio label="No" name="active" id="active_no" :checked="!$is_active" :value="0"/>
                             </div>
                         </x-radio-layout>
                     </div>

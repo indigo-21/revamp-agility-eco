@@ -9,33 +9,28 @@
 @endsection
 @section('content')
     <x-email-template-create :messageTemplate="isset($messageTemplate) ? $messageTemplate : null" :url="$url" title="PI Email Template">
-        <strong>Start Date</strong>
-        <p class="text-muted">
-            _START_DATE_
-        </p>
-
-        <hr>
-
-        <strong>End Date</strong>
-        <p class="text-muted">
-            _END_DATE_
-        </p>
-
-        <hr>
-
-        <strong>PI Name</strong>
-        <p class="text-muted">
-            _PI_NAME_
-        </p>
-
-        <hr>
-
-        <strong>Reason</strong>
-        <p class="text-muted">
-            _REASON_
-        </p>
-
-        <hr>
+        <div class="table-responsive">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>Start Date</th>
+                        <td>_START_DATE_</td>
+                    </tr>
+                    <tr>
+                        <th>End Date</th>
+                        <td>_END_DATE_</td>
+                    </tr>
+                    <tr>
+                        <th>PI Name</th>
+                        <td>_PI_NAME_</td>
+                    </tr>
+                    <tr>
+                        <th>Reason</th>
+                        <td>_REASON_</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </x-email-template-create>
 @endsection
 @section('importedScripts')

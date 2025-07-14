@@ -1,6 +1,6 @@
 @props(['label'])
 
-<div class="form-group clearfix">
+<div {{ $attributes->merge(['class' => 'form-group clearfix']) }}>
     <label>{{ $label }}</label>
     <br>
     <div class="row">
