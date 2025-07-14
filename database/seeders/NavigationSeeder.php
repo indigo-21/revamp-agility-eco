@@ -321,7 +321,7 @@ class NavigationSeeder extends Seeder
             [
                 'id' => 39,
                 'name' => 'PI Sickness & Holidays',
-                'link' => '',
+                'link' => 'sickness-holidays',
                 'icon' => 'briefcase',
                 'has_dropdown' => 0,
                 'parent_id' => '',
