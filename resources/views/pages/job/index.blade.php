@@ -295,8 +295,7 @@
                                                                 <x-button-permission type="update" :permission="$userPermission"
                                                                     class="btn btn-warning btn-sm closeJobBtn"
                                                                     data-id="{{ $job->id }}" label="Close Job"
-                                                                    data-target="#closeJob" data-toggle="modal"
-                                                                    data-id="{{ $job->id }}" />
+                                                                    data-target="#closeJob" data-toggle="modal"/>
                                                                 <x-button-permission type="delete" :permission="$userPermission"
                                                                     class="btn btn-danger btn-sm delete-btn"
                                                                     label="Delete" />

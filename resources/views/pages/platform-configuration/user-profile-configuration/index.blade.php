@@ -58,10 +58,8 @@
                                                             class="btn btn-info btn-sm">
                                                             <i class="fas fa-eye"></i> View
                                                         </a> --}}
-                                                    <a href="{{ route('user-profile-configuration.edit', $accountLevel->id) }}"
-                                                        class="btn btn-primary btn-sm">
-                                                        <i class="fas fa-edit"></i> Edit
-                                                    </a>
+                                                    <x-button-permission type="update" :permission="$userPermission" as="a"
+                                                        :href="route('user-profile-configuration.edit', $accountLevel->id)" class="btn btn-primary btn-sm" label="Edit" />
                                                     {{-- <button type="submit" class="btn btn-danger btn-sm"
                                                             onclick="return confirm('Are you sure you want to delete this user profile?')">
                                                             <i class="fas fa-trash"></i> Delete

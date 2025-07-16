@@ -7,9 +7,9 @@
 @endsection
 
 @section('content')
-    <x-title-breadcrumbs title="Survey Question Set" :breadcrumbs="[
+    <x-title-breadcrumbs title="Scheme" :breadcrumbs="[
         ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
-        ['title' => 'Survey Question Set', 'route' => '', 'active' => 'active'],
+        ['title' => 'Scheme', 'route' => '', 'active' => 'active'],
     ]" />
 
     <!-- Main content -->
@@ -24,7 +24,7 @@
                                 <div class="left">
                                     <h3 class="card-title">
                                         <i class="fas fa-list mr-2"></i>
-                                        List of Survey Questions
+                                        List of Schemes
                                     </h3>
                                 </div>
                                 <div class="right">
@@ -66,13 +66,11 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <div class="btn-group">
-                                                        <a class="btn btn-primary btn-sm"
-                                                            href="{{ route('scheme.edit', $scheme->id) }}">
-                                                            <i class="fas fa-pencil-alt"></i>Edit
-                                                        </a>
-                                                        <button type="button" class="btn btn-danger btn-sm delete-btn">
-                                                            <i class="fas fa-trash"></i>Delete
-                                                        </button>
+                                                        <x-button-permission type="update" :permission="$userPermission" as="a"
+                                                            :href="route('scheme.edit', $scheme->id)" class="btn btn-primary btn-sm"
+                                                            label="Edit" />
+                                                        <x-button-permission type="delete" :permission="$userPermission"
+                                                            class="btn btn-danger btn-sm delete-btn" label="Delete" />
                                                     </div>
                                                 </form>
                                             </td>

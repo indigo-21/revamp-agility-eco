@@ -100,24 +100,24 @@
                                                             method="POST" class="unbook-job-form">
                                                             @csrf
                                                             <div class="btn-group">
-                                                                <a class="btn btn-sm btn-primary"
-                                                                    href="{{ route('manage-booking.edit', ['job_group' => $job->job_group]) }}">
-                                                                    Rebook
-                                                                </a>
-                                                                <button class="btn btn-sm btn-warning unbook-job"
-                                                                    type="button">
-                                                                    Unbook
-                                                                </button>
-                                                                <button class="btn btn-sm btn-danger closeJob"
-                                                                    type="button" data-toggle="modal"
-                                                                    data-target="#closeJob"
-                                                                    data-job-number="{{ $job->job_group }}">
-                                                                    Close Job
-                                                                </button>
-                                                                <a class="btn btn-sm btn-secondary"
-                                                                    href="{{ route('manage-booking.show', ['job_group' => $job->job_group]) }}">
-                                                                    History
-                                                                </a>
+                                                                <x-button-permission type="create" :permission="$userPermission"
+                                                                    as="a" :href="route('manage-booking.edit', [
+                                                                        'job_group' => $job->job_group,
+                                                                    ])"
+                                                                    class="btn btn-sm btn-primary" label="Rebook" />
+                                                                <x-button-permission type="update" :permission="$userPermission"
+                                                                    class="btn btn-sm btn-warning unbook-job"
+                                                                    label="Unbook" />
+                                                                <x-button-permission type="delete" :permission="$userPermission"
+                                                                    class="btn btn-sm btn-danger closeJob"
+                                                                    data-job-number="{{ $job->job_group }}"
+                                                                    label="Close" data-target="#closeJob"
+                                                                    data-toggle="modal" />
+                                                                <x-button-permission type="view" :permission="$userPermission"
+                                                                    as="a" :href="route('make-booking.show', [
+                                                                        'job_group' => $job->job_group,
+                                                                    ])"
+                                                                    class="btn btn-sm btn-secondary" label="History" />
                                                             </div>
                                                         </form>
                                                     </td>

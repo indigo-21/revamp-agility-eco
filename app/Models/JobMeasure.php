@@ -15,4 +15,9 @@ class JobMeasure extends Model
     {
         return $this->belongsTo(Measure::class);
     }
+
+    public function job(): BelongsTo
+    {
+        return $this->belongsTo(Job::class);
+    }
 }

@@ -3,24 +3,11 @@
     @include('includes.datatables-links')
 @endsection
 @section('content')
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Installer Portal</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item"> <a href="{{ route('installer-portal.index') }}">Remediation</a></li>
-                        <li class="breadcrumb-item active">Non-Compliances</li>
-                    </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+    <x-title-breadcrumbs title="Installer Portal" :breadcrumbs="[
+        ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
+        ['title' => 'Remediation', 'route' => '/installer-portal', 'active' => ''],
+        ['title' => 'Non-Compliances', 'route' => '', 'active' => 'active'],
+    ]" />
 
     <!-- Main content -->
     <section class="content">

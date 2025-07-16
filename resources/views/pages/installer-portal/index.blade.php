@@ -3,24 +3,11 @@
     @include('includes.datatables-links')
 @endsection
 @section('content')
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Installer Portal</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active">Remediation</li>
-                        <li class="breadcrumb-item active">Installer Portal</li>
-                    </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+    <x-title-breadcrumbs title="Installer Portal" :breadcrumbs="[
+        ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
+        ['title' => 'Remediation', 'route' => '', 'active' => 'active'],
+        ['title' => 'Installer Portal', 'route' => '', 'active' => 'active'],
+    ]" />
 
     <!-- Main content -->
     <section class="content">
@@ -76,9 +63,8 @@
                                             <td>{{ \Carbon\Carbon::parse($job->rework_deadline)->format('M d Y') }}
                                             </td>
                                             <td>
-                                                <x-button-permission type="view" :permission="$userPermission"
-                                                    as="a" :href="route('installer-portal.show', $job->id)"
-                                                    class="btn btn-primary btn-sm" label="View Details" />
+                                                <x-button-permission type="view" :permission="$userPermission" as="a"
+                                                    :href="route('installer-portal.show', $job->id)" class="btn btn-primary btn-sm" label="View Details" />
                                             </td>
                                         </tr>
                                     @endforeach

@@ -106,29 +106,28 @@
                                                     <td>{{ $job->rework_deadline }}</td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a class="btn btn-sm btn-primary"
-                                                                href="{{ route('make-booking.edit', ['job_group' => $job->job_group]) }}">
-                                                                Book
-                                                            </a>
-                                                            <a class="btn btn-sm btn-info"
-                                                                href="{{ route('make-booking.editPI', ['job_group' => $job->job_group]) }}">
-                                                                Edit PI
-                                                            </a>
-                                                            <button class="btn btn-sm btn-danger closeJob" type="button"
-                                                                data-toggle="modal" data-target="#closeJob"
-                                                                data-job-number="{{ $job->job_group }}">
-                                                                Close Job
-                                                            </button>
-                                                            <button class="btn btn-sm btn-warning attemptMade"
-                                                                type="button" data-toggle="modal"
-                                                                data-target="#attemptMade"
-                                                                data-job-number="{{ $job->job_group }}">
-                                                                Attempt Made
-                                                            </button>
-                                                            <a class="btn btn-sm btn-secondary"
-                                                                href="{{ route('make-booking.show', ['job_group' => $job->job_group]) }}">
-                                                                History
-                                                            </a>
+                                                            <x-button-permission type="create" :permission="$userPermission"
+                                                                as="a" :href="route('make-booking.edit', [
+                                                                    'job_group' => $job->job_group,
+                                                                ])"
+                                                                class="btn btn-primary btn-sm" label="Book" />
+                                                            <x-button-permission type="update" :permission="$userPermission"
+                                                                as="a" :href="route('make-booking.editPI', [
+                                                                    'job_group' => $job->job_group,
+                                                                ])" class="btn btn-info btn-sm"
+                                                                label="Edit PI" />
+                                                            <x-button-permission type="delete" :permission="$userPermission"
+                                                                class="btn btn-sm btn-danger closeJob"
+                                                                data-job-number="{{ $job->job_group }}" label="Close Job"
+                                                                data-target="#closeJob" data-toggle="modal" />
+                                                            <x-button-permission type="update" :permission="$userPermission"
+                                                                class="btn btn-sm btn-warning attemptMade"
+                                                                data-job-number="{{ $job->job_group }}"
+                                                                label="Attempt Made" data-target="#attemptMade"
+                                                                data-toggle="modal" />
+                                                            <x-button-permission type="view" :permission="$userPermission"
+                                                                as="a" :href="route('make-booking.show', ['job_group' => $job->job_group])"
+                                                                class="btn btn-sm btn-secondary" label="History" />
                                                         </div>
                                                     </td>
                                                 </tr>

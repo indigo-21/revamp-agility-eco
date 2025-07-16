@@ -26,8 +26,8 @@ class UserNavigationSeeder extends Seeder
 
         $values[] = [
             'account_level_id' => 5,
-            'navigation_id' => 1,
-            'permission' => 1,
+            'navigation_id' => 42,
+            'permission' => 3,
         ];
         $values[] = [
             'account_level_id' => 5,

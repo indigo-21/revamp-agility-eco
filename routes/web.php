@@ -90,6 +90,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // INSTALLER PORTAL
     Route::resource('installer-portal', InstallerPortalController::class)
         ->middleware('navigation.access:installer-portal');
+    Route::get('installer-dashboard', [InstallerPortalController::class, 'installerDashboard'])
+        ->name('installer-dashboard.index')
+        ->middleware('navigation.access:installer-dashboard');
 
 
     // UPDATE SURVEY

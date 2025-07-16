@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Job;
+use App\Models\JobMeasure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -18,11 +20,46 @@ class DashboardController extends Controller
         $totalJobs = Job::count();
         $jobFailPercent = ($jobFailed / $totalJobs) * 100;
 
+        $installerFailedJobs = Job::leftJoin('job_measures', 'jobs.id', '=', 'job_measures.job_id')
+            ->select(DB::raw('count(*) as failed_count'), 'installer_id', 'measure_id')
+            ->where('job_status_id', 16)
+            ->groupBy('installer_id', 'job_measures.measure_id')
+            ->get();
+
+        $installerJobs = Job::leftJoin('job_measures', 'jobs.id', '=', 'job_measures.job_id')
+            ->select(DB::raw('count(*) as total_count'), 'installer_id', 'measure_id')
+            ->whereIn('job_status_id', [3, 16])
+            ->groupBy('installer_id', 'job_measures.measure_id')
+            ->get();
+
+        // Map the two collections based on installer_id and measure_id
+        $installerJobsMap = $installerJobs->keyBy(function ($item) {
+            return $item->installer_id . '_' . $item->measure_id;
+        });
+
+        $dashboardData = $installerFailedJobs->map(function ($failedJob) use ($installerJobsMap) {
+            $key = $failedJob->installer_id . '_' . $failedJob->measure_id;
+            $totalJob = $installerJobsMap->get($key);
+            
+            $totalCount = $totalJob ? $totalJob->total_count : 0;
+            $failedCount = $failedJob->failed_count;
+            $ncRate = $totalCount > 0 ? ($failedCount / $totalCount) * 100 : 0;
+            
+            return [
+                'installer_id' => $failedJob->installer_id,
+                'measure_id' => $failedJob->measure_id,
+                'total_jobs' => $totalCount,
+                'failed_jobs' => $failedCount,
+                'nc_rate' => round($ncRate, 2)
+            ];
+        });
+
         return view('dashboard')
             ->with('jobBooked', $jobBooked)
             ->with('jobPending', $jobPending)
             ->with('jobFailed', $jobFailed)
-            ->with('jobFailPercent', $jobFailPercent);
+            ->with('jobFailPercent', $jobFailPercent)
+            ->with('dashboardData', $dashboardData);
     }
 
     /**

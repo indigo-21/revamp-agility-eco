@@ -19,7 +19,7 @@
 @section('content')
     <x-title-breadcrumbs title="Data Validation Exception" :breadcrumbs="[
         ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
-        ['title' => 'Exception', 'route' => '', 'active' => 'active'],
+        ['title' => 'Exceptions', 'route' => '', 'active' => 'active'],
         ['title' => 'Data Validation Exception', 'route' => '', 'active' => 'active'],
     ]" />
 

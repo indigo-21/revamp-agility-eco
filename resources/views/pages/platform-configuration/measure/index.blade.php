@@ -9,31 +9,17 @@
     </style>
 @endsection
 @section('content')
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Measure Configuration</h1>
-                    
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active">Measure Configuration</li>
-                    </ol>
-                </div><!-- /.col -->
-               
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+    <x-title-breadcrumbs title="Measure Configuration" :breadcrumbs="[
+        ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
+        ['title' => 'Measure Configuration', 'route' => '', 'active' => 'active'],
+    ]" />
+    
     @if (session('success'))
-    <div class="container-fluid">
-        <div class="alert alert-success">
-            {{ session('success') }}
+        <div class="container-fluid">
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
         </div>
-    </div>
     @endif
     <!-- Main content -->
     <section class="content">
@@ -44,7 +30,7 @@
                     <div class="card card-default">
                         <div class="card-header">
                             <div class="w-100 d-flex justify-content-between align-items-center">
-                            
+
                                 <div class="left">
                                     <h3 class="card-title">
                                         <i class="fas fa-list mr-2"></i>
@@ -52,11 +38,10 @@
                                     </h3>
                                 </div>
                                 <div class="right">
-                                    <a type="button" class="btn btn-white"
-                                        href="{{route('measure.create')}}">
+                                    <a type="button" class="btn btn-white" href="{{ route('measure.create') }}">
                                         <i class="fa fa-plus-square mr-1" aria-hidden="true"></i> Add Measure
                                     </a>
-                                   
+
                                 </div>
                             </div>
                         </div>
@@ -82,10 +67,9 @@
                                             <td>{{ $measure->measure_min_qual }}</td>
                                             <td>
                                                 <div class="btn-group">
-                                                 <a href="{{ route('measure.edit', $measure->id) }}"
+                                                    <a href="{{ route('measure.edit', $measure->id) }}"
                                                         class="btn btn-warning btn-sm">Edit</a>
-                                                    <form
-                                                        action="{{ route('measure.destroy', $measure->id) }}"
+                                                    <form action="{{ route('measure.destroy', $measure->id) }}"
                                                         method="POST" class="delete-form">
                                                         @csrf
                                                         @method('DELETE')

@@ -5,24 +5,11 @@
     <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 @endsection
 @section('content')
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Remediation Review</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active">Remediation</li>
-                        <li class="breadcrumb-item active">Remediation Review</li>
-                    </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+    <x-title-breadcrumbs title="Remediation Review" :breadcrumbs="[
+        ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
+        ['title' => 'Remediation', 'route' => '', 'active' => 'active'],
+        ['title' => 'Remediation Review', 'route' => '', 'active' => 'active'],
+    ]" />
 
     <!-- Main content -->
     <section class="content">

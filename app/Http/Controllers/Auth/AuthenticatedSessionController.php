@@ -30,6 +30,8 @@ class AuthenticatedSessionController extends Controller
 
         if (auth()->user()->accountLevel()->whereIn('id', [6, 7, 8])->first()) {
             return redirect()->route('pi-dashboard.index');
+        } else if (auth()->user()->accountLevel()->whereIn('id', [5])->first()) {
+            return redirect()->route('installer-dashboard.index');
         } else {
             return redirect()->intended(route('dashboard.index', absolute: false));
         }

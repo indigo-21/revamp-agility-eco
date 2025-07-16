@@ -12,7 +12,7 @@
 @section('content')
     <x-title-breadcrumbs title="Property Inspector Exception" :breadcrumbs="[
         ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
-        ['title' => 'Exception', 'route' => '', 'active' => 'active'],
+        ['title' => 'Exceptions', 'route' => '', 'active' => 'active'],
         ['title' => 'Property Inspector Exception', 'route' => '', 'active' => 'active'],
     ]" />
 

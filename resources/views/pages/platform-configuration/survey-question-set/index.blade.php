@@ -64,10 +64,11 @@
                                             <td>{{ $surveyQuestionSet['updated_at'] }}</td>
                                             <td>{{ $surveyQuestionSet['question_set'] }}</td>
                                             <td>
-                                                <a href="{{ route('survey-question-set.show', $surveyQuestionSet) }}"
-                                                    class="btn btn-primary btn-sm btn-block">
-                                                    <i class="fa fa-eye" aria-hidden="true"></i>&nbsp; View
-                                                </a>
+                                                <x-button-permission type="view" :permission="$userPermission" as="a"
+                                                    :href="route(
+                                                        'survey-question-set.show',
+                                                        $surveyQuestionSet->id,
+                                                    )" class="btn btn-primary btn-sm" label="View" />
                                             </td>
                                         </tr>
                                     @endforeach

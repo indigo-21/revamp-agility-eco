@@ -119,4 +119,31 @@ class InstallerPortalController extends Controller
     {
         //
     }
+
+    public function installerDashboard()
+    {
+        $installer = Installer::where('user_id', auth()->user()->id)->first();
+        
+        $jobs = Job::where('job_status_id', 16)
+            ->where('installer_id', $installer->id)
+            ->whereHas('completedJobs', function ($q) {
+                $q->whereIn('pass_fail', FailedQuestion::values())
+                    ->where(function ($subQ) {
+                        // Case 1: No remediations at all
+                        $subQ->whereDoesntHave('remediations')
+                            // Case 2: Latest remediation is Agent or null
+                            ->orWhereHas('remediations', function ($q2) {
+                            $q2->where(function ($query) {
+                                $query->where('role', 'Agent')
+                                    ->orWhereNull('role');
+                            })
+                                ->whereRaw('id = (SELECT id FROM remediations WHERE completed_job_id = completed_jobs.id ORDER BY created_at DESC LIMIT 1)');
+                        });
+                    });
+            })
+            ->get();
+
+        return view('pages.installer-portal.installer-dashboard')
+            ->with('jobs', $jobs);
+    }
 }

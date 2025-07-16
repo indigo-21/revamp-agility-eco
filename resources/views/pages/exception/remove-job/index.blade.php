@@ -10,24 +10,11 @@
     </style>
 @endsection
 @section('content')
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Remove Job Exception</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active">Exeception</li>
-                        <li class="breadcrumb-item active">Remove Job Exception</li>
-                    </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+    <x-title-breadcrumbs title="Remove Job Exception" :breadcrumbs="[
+        ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
+        ['title' => 'Exceptions', 'route' => '', 'active' => 'active'],
+        ['title' => 'Remove Job Exception', 'route' => '', 'active' => 'active'],
+    ]" />
 
     <!-- Main content -->
     <section class="content">
@@ -83,7 +70,7 @@
                                 <div class="left">
                                     <h3 class="card-title">
                                         <i class="fas fa-list mr-2"></i>
-                                        List of Remove Jobs Exception
+                                        List of Jobs
                                     </h3>
                                 </div>
                             </div>

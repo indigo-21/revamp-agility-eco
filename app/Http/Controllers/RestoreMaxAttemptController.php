@@ -17,7 +17,7 @@ class RestoreMaxAttemptController extends Controller
         $jobs = Job::where('job_status_id', 29)
             ->get();
 
-        return view('pages.restore-max-attempt.index')
+        return view('pages.booking.restore-max-attempt.index')
             ->with('jobs', $jobs);
     }
 

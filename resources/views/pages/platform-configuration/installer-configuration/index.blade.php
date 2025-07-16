@@ -65,14 +65,14 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <div class="btn btn-group">
-                                                        <a href="{{ route('installer-configuration.edit', $installer->id) }}"
-                                                            class="btn bg-gradient-primary btn-sm">
-                                                            <i class="fa fa-pencil-alt" aria-hidden="true"></i> Edit
-                                                        </a>
-                                                        <button type="button"
-                                                            class="btn bg-gradient-danger btn-sm delete-btn">
-                                                            <i class="fa fa-trash-alt" aria-hidden="true"></i> Remove
-                                                        </button>
+                                                        <x-button-permission type="update" :permission="$userPermission" as="a"
+                                                            :href="route(
+                                                                'installer-configuration.edit',
+                                                                $installer->id,
+                                                            )" label="Edit"
+                                                            class="btn btn-primary btn-sm" />
+                                                        <x-button-permission type="delete" :permission="$userPermission"
+                                                            class="btn btn-danger btn-sm delete-btn" label="Delete" />
                                                     </div>
                                                 </form>
                                             </td>

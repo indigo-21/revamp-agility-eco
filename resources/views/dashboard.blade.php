@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('importedStyles')
+    @include('includes.datatables-links')
+@endsection
+
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -11,7 +15,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Dashboard v1</li>
+                        <li class="breadcrumb-item active">Dashboard</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -92,13 +96,79 @@
             <!-- /.row -->
             <!-- Main row -->
             <div class="row">
-                <!-- Left col -->
-                <section class="col-lg-7 connectedSortable">
-                </section>
-                <!-- /.Left col -->
+                <div class="col-md-6">
+                    <div class="card card-default">
+                        <div class="card-header">
+                            <div class="w-100 d-flex justify-content-between align-items-center">
+                                <div class="left">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-list mr-2"></i>
+                                        NC Percentage
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Installer</th>
+                                        <th>Measure Type</th>
+                                        <th>NC Rate</th>
+                                        <th>Scheme</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($dashboardData as $data)
+                                        <tr>
+                                            <td>{{ $data['installer'] }}</td>
+                                            <td>{{ $data['measure_type'] }}</td>
+                                            <td>{{ $data['nc_rate'] }}%</td>
+                                            <td>{{ $data['scheme'] }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card card-default">
+                        <div class="card-header">
+                            <div class="w-100 d-flex justify-content-between align-items-center">
+                                <div class="left">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-list mr-2"></i>
+                                        NC Percentage
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Question Number</th>
+                                        <th>Count of Answered Question</th>
+                                        <th>Severity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- /.row (main row) -->
         </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
+@endsection
+
+@section('importedScripts')
+    @include('includes.datatables-scripts')
+    <script src="{{ asset('assets/js/global/table.js') }}"></script>
 @endsection
