@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('job_id')->constrained();
             $table->foreignId('measure_id')->nullable()->constrained();
             $table->string('umr');
-            $table->string('info');
+            $table->string('info')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

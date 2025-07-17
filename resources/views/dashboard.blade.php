@@ -122,10 +122,10 @@
                                 <tbody>
                                     @foreach ($dashboardData as $data)
                                         <tr>
-                                            <td>{{ $data['installer'] }}</td>
-                                            <td>{{ $data['measure_type'] }}</td>
+                                            <td>{{ $data['installer_name'] }}</td>
+                                            <td>{{ $data['measure_cat'] }}</td>
                                             <td>{{ $data['nc_rate'] }}%</td>
-                                            <td>{{ $data['scheme'] }}</td>
+                                            <td>{{ $data['scheme_name'] }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -156,6 +156,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach ($dashboardData2 as $data)
+                                        <tr>
+                                            <td>{{ $data['question_number'] }}</td>
+                                            <td>{{ $data['answered_questions'] }}</td>
+                                            <td>{{ $data['nc_severity'] }}</td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

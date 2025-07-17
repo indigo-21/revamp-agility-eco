@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('customer_name');
             $table->string('customer_primary_tel');
             $table->string('customer_secondary_tel')->nullable();
-            $table->string('customer_email');
+            $table->string('customer_email')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

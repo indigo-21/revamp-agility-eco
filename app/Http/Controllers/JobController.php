@@ -32,7 +32,13 @@ class JobController extends Controller
         $startDate = $dates[0] ?? null;
         $endDate = $dates[1] ?? null;
 
-        $jobs = Job::whereHas('jobStatus', function ($query) use ($request) {
+        $jobs = Job::with([
+            'jobMeasure',
+            'jobStatus',
+            'propertyInspector.user',
+            'property',
+            'installer.user'
+        ])->whereHas('jobStatus', function ($query) use ($request) {
             if ($request->filled('job_status_id')) {
                 $query->where('id', $request->job_status_id);
             }
