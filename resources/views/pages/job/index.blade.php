@@ -130,7 +130,7 @@
                 <div class="col-md-4">
                     <div class="small-box bg-white">
                         <div class="inner">
-                            {{-- <h3 id="totalNoOfJobs">{{ $jobs->count() }}</h3> --}}
+                            <h3 id="totalNoOfJobs">{{ $jobs->count() }}</h3>
 
                             <p>No. of Jobs</p>
                         </div>
@@ -260,7 +260,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{-- @foreach ($jobs as $job)
+                                            @foreach ($jobs as $job)
                                                 <tr>
                                                     <td>{{ $job->id }}</td>
                                                     <td>{{ $job->job_number }}</td>
@@ -303,7 +303,7 @@
                                                         </form>
                                                     </td>
                                                 </tr>
-                                            @endforeach --}}
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
