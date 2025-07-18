@@ -136,8 +136,8 @@ class JobsDataTable extends DataTable
             ->columns($this->getColumns())
             ->minifiedAjax(
                 app()->environment('production')
-                ? secure_url(request()->path())
-                : url(request()->path())
+                ? secure_url(request()->fullUrl())
+                : url(request()->fullUrl())
             )
             ->orderBy(1)
             ->selectStyleSingle()
@@ -145,6 +145,8 @@ class JobsDataTable extends DataTable
                 'scrollX' => true, // Enable horizontal scrolling if needed
                 'responsive' => true,
                 'autoWidth' => false,
+                'processing' => true,
+                'serverSide' => true,
             ])
             ->buttons([
                 Button::make('excel'),
