@@ -47,7 +47,9 @@ class ManageBookingController extends Controller
 
     public function rebook(Request $request, string $job_number)
     {
-        $jobs = Job::where('job_number', 'LIKE', "%$job_number%")->get();
+        $jobs = Job::where('job_number', 'LIKE', "%$job_number%")
+            ->whereIn('job_status_id', [1, 2, 25])
+            ->get();
 
         $booking = new Booking();
 

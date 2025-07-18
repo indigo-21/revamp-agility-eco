@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\JobsDataTable;
 use App\Imports\JobImport;
 use App\Models\Booking;
 use App\Models\Client;
@@ -24,61 +25,19 @@ class JobController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(JobsDataTable $jobsDataTable, Request $request)
     {
-
-        $dateRange = $request->job_date_range;
-        $dates = explode(' - ', $dateRange);
-        $startDate = $dates[0] ?? null;
-        $endDate = $dates[1] ?? null;
-
-        $jobs = Job::with([
-            'jobMeasure',
-            'jobStatus',
-            'propertyInspector.user',
-            'property',
-            'installer.user'
-        ])->whereHas('jobStatus', function ($query) use ($request) {
-            if ($request->filled('job_status_id')) {
-                $query->where('id', $request->job_status_id);
-            }
-        })->whereHas('client', function ($query) use ($request) {
-            if ($request->filled('client')) {
-                $query->where('id', $request->client);
-            }
-        })->whereHas('property', function ($query) use ($request) {
-            if ($request->filled('outward_postcode')) {
-                $query->where('postcode', 'LIKE', $request->outward_postcode . '%');
-            }
-        })->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
-            $query->whereBetween('created_at', [$startDate, $endDate]);
-        })->when($request->job_filter, function ($query) use ($request, $startDate, $endDate) {
-            switch ($request->job_filter) {
-                case '1':
-                    $query->whereNull('close_date');
-                    break;
-                case '2':
-                    $query->whereNot('close_date');
-                    break;
-                case '3':
-                    $query->where('completed_survey_date', '<=', now()->subDays(28));
-                    break;
-                default:
-                    break;
-            }
-        })->get();
-
         $clients = Client::whereHas('clientKeyDetails', function ($query) {
             $query->where('is_active', 1);
         })->with('clientKeyDetails')->get();
         $jobStatuses = JobStatus::all();
         $outwardPostcodes = OutwardPostcode::all();
 
-        return view('pages.job.index')
-            ->with('jobs', $jobs)
-            ->with('clients', $clients)
-            ->with('jobStatuses', $jobStatuses)
-            ->with('outwardPostcodes', $outwardPostcodes);
+        return $jobsDataTable->render('pages.job.index', [
+            'clients' => $clients,
+            'jobStatuses' => $jobStatuses,
+            'outwardPostcodes' => $outwardPostcodes
+        ]);
     }
 
     /**

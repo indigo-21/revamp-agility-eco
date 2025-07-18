@@ -28,7 +28,8 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table id="remediationReviewTable" class="table table-bordered table-striped">
+                            {!! $dataTable->table() !!}
+                            {{-- <table id="remediationReviewTable" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>Job Number</th>
@@ -90,7 +91,7 @@
                                         </tr>
                                     @endforeach
                                 </tbody>
-                            </table>
+                            </table> --}}
                         </div>
                     </div>
                 </div>
@@ -146,19 +147,20 @@
                         <div class="modal-body">
                             <input type="text" value="" name="installer_id" id="installer_id" hidden>
                             <input type="text" value="" name="job_id" id="job_id" hidden>
-                            <x-input type="text" name="installer_name" label="Installer Name" value="" :disabled="true" />
+                            <x-input type="text" name="installer_name" label="Installer Name" value=""
+                                :disabled="true" />
                             <x-input type="text" name="invoices_outstanding_since" label="Invoices Outstanding Since"
-                                value="" required/>
+                                value="" required />
                             <div class="row">
                                 <div class="col-md-8">
                                     <x-input type="text" name="credit_note_value" label="Credit Note Value"
-                                        value="" type="number" required/>
+                                        value="" type="number" required />
                                 </div>
                                 <div class="col-md-4">
-                                    <x-input type="text" name="currency" label="Currency" value="GBP" readonly/>
+                                    <x-input type="text" name="currency" label="Currency" value="GBP" readonly />
                                 </div>
                             </div>
-                            <x-file name="attachment" label="Email PDF Attachment"/>
+                            <x-file name="attachment" label="Email PDF Attachment" />
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -172,9 +174,10 @@
     <!-- /.content -->
 @endsection
 @section('importedScripts')
+    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
     @include('includes.datatables-scripts')
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
-    <script src="{{ asset('assets/js/global/table.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/global/table.js') }}"></script> --}}
     <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
     <script src="{{ asset('assets/js/reminder-exception.js') }}"></script>
 @endsection

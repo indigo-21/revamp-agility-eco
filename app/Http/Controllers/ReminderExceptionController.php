@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\ReminderExceptionsDataTable;
 use App\Enums\FailedQuestion;
 use App\Models\CompletedJob;
 use App\Models\Job;
@@ -12,31 +13,9 @@ use Illuminate\Http\Request;
 
 class ReminderExceptionController extends Controller
 {
-    public function index()
+    public function index(ReminderExceptionsDataTable $reminderExceptionsDataTable)
     {
-        // Get jobs with job_status_id = 16 and for this installer
-        $jobs = Job::whereIn('job_status_id', [16, 26])
-            ->where('sent_reminder', false)
-            ->whereHas('completedJobs', function ($q) {
-                $q->whereIn('pass_fail', FailedQuestion::values())
-                    ->where('created_at', '<=', now()->subDays(28))
-                    ->where(function ($subQ) {
-                        // Case 1: No remediations at all
-                        $subQ->whereDoesntHave('remediations')
-                            ->orWhereHas('remediations', function ($q2) {
-                            $q2->where(function ($query) {
-                                $query->where('role', 'Installer')
-                                    ->where('role', 'Agent')
-                                    ->orWhereNull('role');
-                            })
-                                ->whereRaw('id = (SELECT id FROM remediations WHERE completed_job_id = completed_jobs.id ORDER BY created_at DESC LIMIT 1)');
-                        });
-                    });
-            })
-            ->get();
-
-        return view('pages.reminder-exception.index')
-            ->with('jobs', $jobs);
+        return $reminderExceptionsDataTable->render('pages.reminder-exception.index');
     }
 
     /**

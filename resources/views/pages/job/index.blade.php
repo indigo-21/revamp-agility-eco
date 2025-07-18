@@ -130,7 +130,7 @@
                 <div class="col-md-4">
                     <div class="small-box bg-white">
                         <div class="inner">
-                            <h3 id="totalNoOfJobs">{{ $jobs->count() }}</h3>
+                            <h3 id="totalNoOfJobs">Loading...</h3>
 
                             <p>No. of Jobs</p>
                         </div>
@@ -223,91 +223,42 @@
                                             :href="route('job.create')" class="btn btn-white" label="Add Job" />
                                         <x-button-permission type="create" :permission="$userPermission" class="btn btn-warning"
                                             label="Upload CSV File" data-toggle="modal" data-target="#uploadJobCsv" />
-                                        @if ($jobs->whereIn('job_status_id', [6])->count() > 0)
-                                            <x-button-permission type="delete" :permission="$userPermission" class="btn btn-primary"
-                                                label="Remove Duplicates" id="removeDuplicates" />
-                                        @endif
+                                        <x-button-permission type="delete" :permission="$userPermission" class="btn btn-primary"
+                                            label="Remove Duplicates" id="removeDuplicates" />
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <table id="example1" class="table table-bordered table-striped text-center">
-                                        <thead>
-                                            <tr>
-                                                <th colspan="11">Job Details</th>
-                                                <th colspan="4">Key Dates</th>
-                                                <th rowspan="2">Action</th>
-                                            </tr>
-                                            <tr>
-                                                <th>Job ID</th>
-                                                <th>Job Number</th>
-                                                <th>Cert#</th>
-                                                <th>UMR</th>
-                                                <th>Job Status</th>
-                                                <th>Property Inspector</th>
-                                                <th>Booked Date</th>
-                                                <th>Postcode</th>
-                                                <th>Installer</th>
-                                                <th>Remediation Deadline</th>
-                                                <th>NC Level</th>
-                                                <th>Close Date</th>
-                                                <th>Deadline</th>
-                                                <th>Invoice Status</th>
-                                                <th>28-Reminder</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($jobs as $job)
-                                                <tr>
-                                                    <td>{{ $job->id }}</td>
-                                                    <td>{{ $job->job_number }}</td>
-                                                    <td>{{ $job->cert_no }}</td>
-                                                    <td>{{ $job->jobMeasure?->umr }}</td>
-                                                    <td>
-                                                        <span
-                                                            class="right badge badge-{{ $job->jobStatus->color_scheme }}">
-                                                            {{ $job->jobStatus->description }}
-                                                        </span>
-                                                    </td>
-                                                    <td>{{ $job->propertyInspector?->user->firstname }}
-                                                        {{ $job->propertyInspector?->user->lastname }}</td>
-                                                    <td>{{ $job->booked_date }}</td>
-                                                    <td>{{ $job->property->postcode }}</td>
-                                                    <td>{{ $job->installer?->user->firstname }}</td>
-                                                    <td>{{ $job->rework_deadline }}</td>
-                                                    <td>{{ $job->job_remediation_type }}</td>
-                                                    <td>{{ $job->close_date }}</td>
-                                                    <td>{{ $job->deadline }}</td>
-                                                    <td>{{ $job->invoice_status }}</td>
-                                                    <td>{{ $job->sent_reminder === 1 ? 'Yes' : 'No' }}</td>
-                                                    <td>
-                                                        <form action="{{ route('job.destroy', $job->id) }}"
-                                                            method="POST" class="delete-form">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <div class="btn-group">
-                                                                <x-button-permission type="view" :permission="$userPermission"
-                                                                    as="a" :href="route('job.show', $job->id)"
-                                                                    class="btn btn-primary btn-sm" label="View" />
-                                                                <x-button-permission type="update" :permission="$userPermission"
-                                                                    class="btn btn-warning btn-sm closeJobBtn"
-                                                                    data-id="{{ $job->id }}" label="Close Job"
-                                                                    data-target="#closeJob" data-toggle="modal"/>
-                                                                <x-button-permission type="delete" :permission="$userPermission"
-                                                                    class="btn btn-danger btn-sm delete-btn"
-                                                                    label="Delete" />
-                                                            </div>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                            <table id="jobs-table" class="table table-bordered table-striped text-center">
+                                <thead>
+                                    <tr>
+                                        <th colspan="11">Job Details</th>
+                                        <th colspan="4">Key Dates</th>
+                                        <th rowspan="2">Action</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Job ID</th>
+                                        <th>Job Number</th>
+                                        <th>Cert#</th>
+                                        <th>UMR</th>
+                                        <th>Job Status</th>
+                                        <th>Property Inspector</th>
+                                        <th>Booked Date</th>
+                                        <th>Postcode</th>
+                                        <th>Installer</th>
+                                        <th>Remediation Deadline</th>
+                                        <th>NC Level</th>
+                                        <th>Close Date</th>
+                                        <th>Deadline</th>
+                                        <th>Invoice Status</th>
+                                        <th>28-Reminder</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- DataTables will populate this -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -381,7 +332,7 @@
                     </div>
                     <div class="modal-body">
                         <input type="text" value="" name="job_status_id" id="job_number_closed_job" hidden>
-                        <x-select label="Reason" name="job_status_id" :multiple="false">
+                        <x-select label="Reason" name="job_status_id" id="job_status" :multiple="false">
                             <option value="28">Wrong Contact Details</option>
                             <option value="15">Customer Refused</option>
                             <option value="27">Job Deadline Expired</option>
@@ -400,7 +351,9 @@
     </div>
 @endsection
 
+
 @section('importedScripts')
+    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
     <script>
         var toastType = @json(session('success'));
     </script>

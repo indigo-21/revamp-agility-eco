@@ -18,12 +18,53 @@ $(function () {
         $(this).val('');
     });
 
-    $('.table').DataTable({
-        // "order": [[0, "desc"]],
-        responsive: true,
-        autoWidth: false,
-        filter: true,
+    $('#filterForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form data
+        var formData = $(this).serialize();
+        
+        // Get current URL and add query parameters
+        var url = new URL(window.location.href);
+        var params = new URLSearchParams(formData);
+        
+        // Clear existing parameters
+        url.search = '';
+        
+        // Add new parameters
+        params.forEach(function(value, key) {
+            if (value) {
+                url.searchParams.append(key, value);
+            }
+        });
+        
+        // Reload the page with new parameters
+        window.location.href = url.toString();
     });
+
+    // Update job count when DataTable is loaded
+    $(document).ready(function() {
+        // Wait for DataTable to be initialized
+        setTimeout(function() {
+            if ($.fn.DataTable.isDataTable('#jobs-table')) {
+                var table = $('#jobs-table').DataTable();
+                
+                // Update count on initial load
+                updateJobCount(table);
+                
+                // Update count when table is redrawn (search, filter, etc.)
+                table.on('draw', function() {
+                    updateJobCount(table);
+                });
+            }
+        }, 1000);
+    });
+
+    function updateJobCount(table) {
+        var filteredRecords = table.page.info().recordsDisplay;
+        
+        $('#totalNoOfJobs').text(filteredRecords);
+    }
 
     bsCustomFileInput.init();
 

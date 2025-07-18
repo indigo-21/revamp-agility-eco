@@ -34,7 +34,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="table table-bordered table-striped text-center">
+                                    <table id="managebookings-table" class="table table-bordered table-striped text-center">
                                         <thead>
                                             <tr>
                                                 <th>Job Number</th>

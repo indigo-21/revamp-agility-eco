@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\MakeBookingsDataTable;
 use App\Models\Booking;
 use App\Models\Job;
 use App\Models\PropertyInspector;
@@ -12,22 +13,9 @@ class MakeBookingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(MakeBookingsDataTable $makeBookingsDataTable)
     {
-        $propertyInspector = PropertyInspector::find(auth()->user()->propertyInspector?->id);
-
-        // get all the jobs columns and group by job_number AES0000000010-01 remove the last 3 characters 
-        $jobs = Job::selectRaw('*, SUBSTRING(job_number, 1, LENGTH(job_number) - 3) as job_group')
-            ->groupBy('job_group')
-            ->whereIn('job_status_id', [25, 23])
-            ->where('close_date', null)
-            ->when($propertyInspector, function ($query) use ($propertyInspector) {
-                return $query->where('property_inspector_id', $propertyInspector->id);
-            })
-            ->get();
-
-        return view('pages.booking.make-booking.index')
-            ->with('jobs', $jobs);
+        return $makeBookingsDataTable->render('pages.booking.make-booking.index');
     }
 
     /**
@@ -58,7 +46,9 @@ class MakeBookingController extends Controller
 
     public function book(Request $request, string $job_number)
     {
-        $jobs = Job::where('job_number', 'LIKE', "%$job_number%")->get();
+        $jobs = Job::where('job_number', 'LIKE', "%$job_number%")
+            ->whereIn('job_status_id', [1, 2, 25])
+            ->get();
 
         $booking = new Booking;
 

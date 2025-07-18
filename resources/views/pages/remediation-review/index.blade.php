@@ -29,61 +29,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table id="remediationReviewTable" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Job Number</th>
-                                        <th>Job Status</th>
-                                        <th>Cert No</th>
-                                        <th>UMR</th>
-                                        <th>Installer</th>
-                                        <th>CAT Measure</th>
-                                        <th>Address</th>
-                                        <th>Postcode</th>
-                                        <th>Non-Comliance Type</th>
-                                        <th>Inspection Date</th>
-                                        <th>Evidence Submission Date</th>
-                                        <th>Remediation Deadline</th>
-                                        <th>Reinspect Deadline</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($jobs as $job)
-                                        <tr>
-                                            <td>{{ $job->job_number }}</td>
-                                            <td>
-                                                <span class="right badge badge-{{ $job->jobStatus->color_scheme }}">
-                                                    {{ $job->jobStatus->description }}
-                                                </span>
-                                            </td>
-                                            <td>{{ $job->cert_no }}</td>
-                                            <td>{{ $job->jobMeasure->umr }}</td>
-                                            <td>{{ $job->installer->user->firstname }}</td>
-                                            <td>{{ $job->jobMeasure->measure->measure_cat }}</td>
-                                            <td>{{ $job->property->address1 }}</td>
-                                            <td>{{ $job->property->postcode }}</td>
-                                            <td>{{ $job->job_remediation_type }}</td>
-                                            <td>{{ $job->schedule_date }}</td>
-                                            <td>{{ $job->remediation->last()?->created_at }}</td>
-                                            <td>{{ $job->rework_deadline }}</td>
-                                            <td>{{ Carbon\Carbon::parse($job->remediation->last()?->created_at)->addDays(21)->format('Y-m-d H:i:s') }}
-                                            </td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <x-button-permission type="create" :permission="$userPermission" as="a"
-                                                        :href="route('remediation-review.show', $job->id)" class="btn btn-primary btn-sm"
-                                                        label="View Details" />
-                                                    <x-button-permission type="delete" :permission="$userPermission"
-                                                        class="btn btn-danger btn-sm closeJob" label="Close Job"
-                                                        data-target="#closeJob" data-toggle="modal"
-                                                        data-id="{{ $job->id }}" />
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                            {!! $dataTable->table() !!}
                         </div>
                     </div>
                 </div>
@@ -127,8 +73,9 @@
     <!-- /.content -->
 @endsection
 @section('importedScripts')
+    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
     @include('includes.datatables-scripts')
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
-    <script src="{{ asset('assets/js/global/table.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/global/table.js') }}"></script> --}}
     <script src="{{ asset('assets/js/remediation.js') }}"></script>
 @endsection

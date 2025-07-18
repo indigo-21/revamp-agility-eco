@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\RemediationsDataTable;
 use App\Enums\FailedQuestion;
 use App\Models\CompletedJob;
 use App\Models\Job;
@@ -14,27 +15,29 @@ class RemediationReviewController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(RemediationsDataTable $remediationsDataTable)
     {
-        // Get jobs with job_status_id = 16 and for this installer
-        $jobs = Job::whereIn('job_status_id', [16, 26])
-            ->whereHas('completedJobs', function ($q) {
-                $q->whereIn('pass_fail', FailedQuestion::values())
-                    ->where(function ($subQ) {
-                        // Case 1: No remediations at all
-                        $subQ->whereHas('remediations', function ($q2) {
-                            $q2->where(function ($query) {
-                                $query->where('role', 'Installer')
-                                    ->orWhereNull('role');
-                            })
-                                ->whereRaw('id = (SELECT id FROM remediations WHERE completed_job_id = completed_jobs.id ORDER BY created_at DESC LIMIT 1)');
-                        });
-                    });
-            })
-            ->get();
+        // // Get jobs with job_status_id = 16 and for this installer
+        // $jobs = Job::whereIn('job_status_id', [16, 26])
+        //     ->whereHas('completedJobs', function ($q) {
+        //         $q->whereIn('pass_fail', FailedQuestion::values())
+        //             ->where(function ($subQ) {
+        //                 // Case 1: No remediations at all
+        //                 $subQ->whereHas('remediations', function ($q2) {
+        //                     $q2->where(function ($query) {
+        //                         $query->where('role', 'Installer')
+        //                             ->orWhereNull('role');
+        //                     })
+        //                         ->whereRaw('id = (SELECT id FROM remediations WHERE completed_job_id = completed_jobs.id ORDER BY created_at DESC LIMIT 1)');
+        //                 });
+        //             });
+        //     })
+        //     ->get();
 
-        return view('pages.remediation-review.index')
-            ->with('jobs', $jobs);
+        // return view('pages.remediation-review.index')
+        //     ->with('jobs', $jobs);
+
+        return $remediationsDataTable->render('pages.remediation-review.index');
     }
 
     /**

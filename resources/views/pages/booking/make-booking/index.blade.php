@@ -34,106 +34,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="table table-bordered table-striped text-center">
-                                        <thead>
-                                            <tr>
-                                                <th>Job Number</th>
-                                                <th>Job Status</th>
-                                                <th>Job PI</th>
-                                                <th>Postcode</th>
-                                                <th>Address</th>
-                                                <th>Installer</th>
-                                                <th>Measures</th>
-                                                <th>Job First Visit By</th>
-                                                <th>Owner Name</th>
-                                                <th>Owner Email</th>
-                                                <th>Owner Contact Number</th>
-                                                <th>Latest Comment</th>
-                                                <th>Last Attempt Made</th>
-                                                <th>Job Max Attempts</th>
-                                                <th>Revisit</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($jobs as $job)
-                                                @php
-                                                    $relatedJobs = \App\Models\Job::where(
-                                                        'job_number',
-                                                        'LIKE',
-                                                        "%{$job->job_group}%",
-                                                    )->get();
-
-                                                    $lastBooking = \App\Models\Booking::where(
-                                                        'job_number',
-                                                        $job->job_group,
-                                                    )->orderBy('created_at', 'desc');
-                                                @endphp
-
-                                                <tr>
-                                                    <td>{{ $job->job_group }}</td>
-                                                    <td>
-                                                        <span class="right badge badge-{{ $job->jobStatus->color_scheme }}">
-                                                            {{ $job->jobStatus->description }}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        {{ $job->propertyInspector->user->firstname }}
-                                                        {{ $job->propertyInspector->user->lastname }}
-                                                    </td>
-                                                    <td>{{ $job->property->postcode }}</td>
-                                                    <td>{{ $job->property->house_flat_prefix }}
-                                                        {{ $job->property->address1 }}</td>
-                                                    <td>{{ $job->installer->user->firstname }}</td>
-                                                    <td>
-                                                        @foreach ($relatedJobs as $relatedJob)
-                                                            <span
-                                                                class="badge badge-info">{{ $relatedJob->jobMeasure->measure->measure_cat }}</span>
-                                                        @endforeach
-                                                    </td>
-                                                    <td>{{ $job->first_visit_by }}</td>
-                                                    <td>{{ $job->customer->customer_name }}</td>
-                                                    <td>{{ $job->customer->customer_email }}</td>
-                                                    <td>{{ $job->customer->customer_primary_tel }}</td>
-                                                    <td>
-                                                        {{ $lastBooking->first()->booking_notes ?? 'No comments' }}
-                                                    </td>
-                                                    <td>
-                                                        {{ $lastBooking->where('booking_outcome', 'Attempt Made')->first()->booking_date ?? 'No Attempts Made' }}
-
-                                                    </td>
-                                                    <td>{{ $job->max_attempts }}</td>
-                                                    <td>{{ $job->rework_deadline }}</td>
-                                                    <td>
-                                                        <div class="btn-group">
-                                                            <x-button-permission type="create" :permission="$userPermission"
-                                                                as="a" :href="route('make-booking.edit', [
-                                                                    'job_group' => $job->job_group,
-                                                                ])"
-                                                                class="btn btn-primary btn-sm" label="Book" />
-                                                            <x-button-permission type="update" :permission="$userPermission"
-                                                                as="a" :href="route('make-booking.editPI', [
-                                                                    'job_group' => $job->job_group,
-                                                                ])" class="btn btn-info btn-sm"
-                                                                label="Edit PI" />
-                                                            <x-button-permission type="delete" :permission="$userPermission"
-                                                                class="btn btn-sm btn-danger closeJob"
-                                                                data-job-number="{{ $job->job_group }}" label="Close Job"
-                                                                data-target="#closeJob" data-toggle="modal" />
-                                                            <x-button-permission type="update" :permission="$userPermission"
-                                                                class="btn btn-sm btn-warning attemptMade"
-                                                                data-job-number="{{ $job->job_group }}"
-                                                                label="Attempt Made" data-target="#attemptMade"
-                                                                data-toggle="modal" />
-                                                            <x-button-permission type="view" :permission="$userPermission"
-                                                                as="a" :href="route('make-booking.show', ['job_group' => $job->job_group])"
-                                                                class="btn btn-sm btn-secondary" label="History" />
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                    {!! $dataTable->table() !!}
                                 </div>
                             </div>
                         </div>
@@ -204,6 +105,7 @@
 @endsection
 
 @section('importedScripts')
+    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
     <script>
         var toastType = @json(session('success'));
     </script>
