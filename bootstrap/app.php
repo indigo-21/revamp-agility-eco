@@ -14,6 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
+        
+        // Trust proxies for HTTPS detection
+        $middleware->trustProxies(at: '*');
+        
         $middleware->alias([
             'navigation.access' => NavigationAccess::class,
         ]);
