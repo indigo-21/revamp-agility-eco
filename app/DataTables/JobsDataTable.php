@@ -136,7 +136,7 @@ class JobsDataTable extends DataTable
             ->columns($this->getColumns())
             ->minifiedAjax(
                 app()->environment('production')
-                ? secure_url(request()->fullUrl())
+                ? secure_url(request()->path())
                 : url(request()->fullUrl())
             )
             ->orderBy(1)
