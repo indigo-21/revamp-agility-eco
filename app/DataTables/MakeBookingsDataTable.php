@@ -129,11 +129,7 @@ class MakeBookingsDataTable extends DataTable
         return $this->builder()
             ->setTableId('makebookings-table')
             ->columns($this->getColumns())
-              ->minifiedAjax(
-                app()->environment('production')
-                ? secure_url(request()->path())
-                : url(request()->path())
-            )
+            ->minifiedAjax()
             ->orderBy(1)
             ->selectStyleSingle()
             ->addTableClass('table table-bordered table-striped text-center')
