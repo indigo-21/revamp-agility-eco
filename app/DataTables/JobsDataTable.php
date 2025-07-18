@@ -134,7 +134,7 @@ class JobsDataTable extends DataTable
         return $this->builder()
             ->setTableId('jobs-table')
             ->columns($this->getColumns())
-            ->minifiedAjax()
+            ->minifiedAjax(request()->url())
             ->orderBy(1)
             ->selectStyleSingle()
             ->parameters([
