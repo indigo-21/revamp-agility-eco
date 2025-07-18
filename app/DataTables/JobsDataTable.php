@@ -63,7 +63,7 @@ class JobsDataTable extends DataTable
     public function query(Job $model): QueryBuilder
     {
         $request = request();
-
+        
         $query = $model->newQuery()
             ->with(['jobMeasure', 'jobStatus', 'propertyInspector.user', 'property', 'installer.user', 'client']);
 
@@ -88,7 +88,7 @@ class JobsDataTable extends DataTable
             $dates = explode(' - ', $dateRange);
             $startDate = $dates[0] ?? null;
             $endDate = $dates[1] ?? null;
-
+            
             if ($startDate && $endDate) {
                 $query->whereBetween('created_at', [$startDate, $endDate]);
             }
@@ -134,11 +134,7 @@ class JobsDataTable extends DataTable
         return $this->builder()
             ->setTableId('jobs-table')
             ->columns($this->getColumns())
-            ->minifiedAjax(
-                app()->environment('production')
-                ? secure_url(request()->fullUrl())
-                : url(request()->fullUrl())
-            )
+            ->minifiedAjax()
             ->orderBy(1)
             ->selectStyleSingle()
             ->parameters([
