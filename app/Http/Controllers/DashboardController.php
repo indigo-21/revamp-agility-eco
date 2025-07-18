@@ -19,7 +19,7 @@ class DashboardController extends Controller
         $jobPending = Job::whereIn('job_status_id', [5, 6, 7, 8, 9, 10, 25, 22])->count();
         $jobFailed = Job::where('job_status_id', 16)->count();
         $totalJobs = Job::count();
-        $jobFailPercent = ($jobFailed / $totalJobs) * 100;
+        $jobFailPercent = $totalJobs > 0 ? ($jobFailed / $totalJobs) * 100 : 0;
 
         // Single query to get both failed and total counts
         $dashboardData = Job::with(['installer.user', 'jobMeasure.measure', 'scheme'])
