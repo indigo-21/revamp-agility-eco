@@ -131,16 +131,26 @@ class JobsDataTable extends DataTable
      */
     public function html(): HtmlBuilder
     {
+        $ajaxUrl = secure_url(request()->getPathInfo());
+        
         return $this->builder()
             ->setTableId('jobs-table')
             ->columns($this->getColumns())
-            ->minifiedAjax()
+            ->ajax([
+                'url' => $ajaxUrl,
+                'type' => 'GET',
+                'headers' => [
+                    'X-Requested-With' => 'XMLHttpRequest',
+                ],
+            ])
             ->orderBy(1)
             ->selectStyleSingle()
             ->parameters([
                 'scrollX' => true, // Enable horizontal scrolling if needed
                 'responsive' => true,
                 'autoWidth' => false,
+                'processing' => true,
+                'serverSide' => true,
             ])
             ->buttons([
                 Button::make('excel'),
