@@ -98,7 +98,11 @@ class RemediationsDataTable extends DataTable
         return $this->builder()
             ->setTableId('remediations-table')
             ->columns($this->getColumns())
-            ->minifiedAjax()
+            ->minifiedAjax(
+                app()->environment('production')
+                ? secure_url(request()->path())
+                : url(request()->path())
+            )
             ->orderBy(1)
             ->addTableClass('table table-bordered table-striped text-center')
             ->parameters([
