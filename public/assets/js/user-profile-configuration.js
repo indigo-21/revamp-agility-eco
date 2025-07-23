@@ -16,6 +16,7 @@ $(function () {
         navigation_id = $(this).data('navigation');
         selectedValue = $(this).val();
         type = "navigation";
+        updatePermissions($(this));
 
         submit(navigation_id, selectedValue, account_level_id, type);
     });
@@ -26,7 +27,7 @@ $(function () {
         navigation_id = $(this).data('navigation');
         selectedValue = $(this).val();
         type = "permission";
-
+        
         submit(navigation_id, selectedValue, account_level_id, type);
     });
 });
@@ -54,10 +55,64 @@ function submit(navigation_id, selectedValue = null, account_level_id = null, ty
         },
         success: function (response) {
             console.log(response);
+            successPrompt(response);
         },
         error: function (xhr, status, error) {
             // Handle error response
             alert('Error saving configuration: ' + error);
         }
     });
+}
+
+const successPrompt = (response) => {
+  
+    let toastElement    = document.querySelectorAll('.toast');
+    let lastToast       = toastElement[toastElement.length - 1];
+    let {message, data} = response;
+    let subtitle        = "";
+
+    switch (data.selectedValue) {
+        case "1":
+            subtitle = "Viewing";
+            break;
+        case "2":
+            subtitle = "View/Add/Edit";
+            break;
+        case "3":
+            subtitle = "View/Add/Edit/Delete";
+            break;
+    
+        default:
+            subtitle = "No Access";
+            break;
+    }
+
+
+        $(document).Toasts('create', {
+            class: 'bg-info',
+            title: "Permission",
+            subtitle: subtitle,
+            body: message,
+        })
+
+        
+        setTimeout(() => {
+             if (lastToast) {
+                lastToast.classList.remove("show"); // removes 'show' class
+            }
+        }, 3000);
+       
+}
+
+const updatePermissions = (element) => {
+    let canAccess = element.val() == 1;
+    let parent = element.closest("tr");
+    let radio = parent.find(".radioPermission");
+
+    radio.first().attr("checked", canAccess);
+    if(!canAccess){
+        radio.attr("checked", false);
+        radio.attr("disabled", true);
+    }
+    
 }
