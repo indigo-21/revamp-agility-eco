@@ -55,12 +55,13 @@ class SurveyQuestionSetController extends Controller
      */
     public function show(string $id)
     {
-        // dd($id)
-        $surveyQuestionSets = SurveyQuestion::where('survey_question_set_id',$id)
-        // ->orderBy('created_at', 'desc')
-        ->get();
+        $data = [
+            "surveyQuestionSets"=> SurveyQuestionSet::find($id),
+            "surveyQuestions"   => SurveyQuestion::where('survey_question_set_id',$id)->get(),
+        ];
         // dd( $surveyQuestionSets);
-        return view('pages.platform-configuration.survey-question-set.show',compact('surveyQuestionSets'));
+        return view('pages.platform-configuration.survey-question-set.show', $data);
+        // return view('pages.platform-configuration.survey-question-set.show',compact('surveyQuestionSets'));
       
     }
 
