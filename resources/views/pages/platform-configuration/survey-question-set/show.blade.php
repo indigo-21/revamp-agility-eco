@@ -13,6 +13,68 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
+            
+            
+
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-default">
+                        <div class="card-header">
+                            <div class="w-100 d-flex justify-content-between align-items-center">
+                                <div class="left">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-list mr-2"></i>
+                                        <?= $surveyQuestionSets->question_revision ?>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- /.col -->
+                                <div class="col-md-6 col-sm-6 col-12">
+                                    <div class="info-box bg-info">
+                                    <span class="info-box-icon"><i class="fas fa-comments"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text" style="font-size: 22px;">Total Questions</span>
+                                        <span class="info-box-number"><?= number_format($surveyQuestions->count(), 2);?></span>
+                                    </div>
+                                    <!-- /.info-box-content -->
+                                    </div>
+                                    <!-- /.info-box -->
+                                </div>
+                                <!-- /.col -->
+                                <!-- /.col -->
+                                <div class="col-md-6 col-sm-6 col-12">
+                                    <div class="info-box bg-info">
+                                    <span class="info-box-icon"><i class="fas fa-clipboard"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text" style="font-size: 22px;">Survey Revision</span>
+                                        <span class="info-box-number"><?= $surveyQuestionSets->question_set ?></span>
+                                        
+                                    </div>
+                                    <!-- /.info-box-content -->
+                                    </div>
+                                    <!-- /.info-box -->
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row (main row) -->
+            </div><!-- /.container-fluid -->
+
+
+
+
+
+
+
+
             <!-- Small boxes (Stat box) -->
             <div class="row">
                 <div class="col-md-12">
@@ -41,7 +103,7 @@
                                         <th>Innovation Product</th>
                                 </thead>
                                 <tbody>
-                                    @foreach ($surveyQuestionSets as $surveyQuestion)
+                                    @foreach ($surveyQuestions as $surveyQuestion)
                                         <tr>
                                             <td>{{ $surveyQuestion['question_number'] }}</td>
                                             <td>{{ $surveyQuestion['measure_cat'] }}</td>
