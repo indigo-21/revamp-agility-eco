@@ -112,7 +112,6 @@ const updatePermissions = (element) => {
     radio.first().attr("checked", canAccess);
     if(!canAccess){
         radio.attr("checked", false);
-        radio.attr("disabled", true);
     }
     
 }
