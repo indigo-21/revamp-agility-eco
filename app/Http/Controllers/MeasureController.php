@@ -77,7 +77,10 @@ class MeasureController extends Controller
      */
     public function destroy(Measure $measure)
     {
-        //
+        $measure->delete();
+
+        return redirect()->route('measure.index')
+            ->with('success', 'Measure deleted successfully');
     }
 
 

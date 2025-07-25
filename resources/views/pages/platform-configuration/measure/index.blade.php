@@ -2,6 +2,7 @@
 
 @section('importedStyles')
     @include('includes.datatables-links')
+    <link rel="stylesheet" href="{{ asset('plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
     <style>
         .vertical-center {
             vertical-align: middle !important;
@@ -13,7 +14,7 @@
         ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
         ['title' => 'Measure Configuration', 'route' => '', 'active' => 'active'],
     ]" />
-    
+
     @if (session('success'))
         <div class="container-fluid">
             <div class="alert alert-success">
@@ -66,17 +67,18 @@
                                             <td>{{ $measure->cert_required == 0 ? 'Yes' : 'No' }}</td>
                                             <td>{{ $measure->measure_min_qual }}</td>
                                             <td>
-                                                <div class="btn-group">
-                                                    <a href="{{ route('measure.edit', $measure->id) }}"
-                                                        class="btn btn-warning btn-sm">Edit</a>
-                                                    <form action="{{ route('measure.destroy', $measure->id) }}"
-                                                        method="POST" class="delete-form">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="button"
-                                                            class="btn btn-danger btn-sm delete-btn">Delete</button>
-                                                    </form>
-                                                </div>
+                                                <form action="{{ route('measure.destroy', $measure->id) }}" method="POST"
+                                                    class="delete-form">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <div class="btn-group">
+                                                        <x-button-permission type="update" :permission="$userPermission" as="a"
+                                                            :href="route('measure.edit', $measure->id)" class="btn btn-primary btn-sm"
+                                                            label="Edit" />
+                                                        <x-button-permission type="delete" :permission="$userPermission"
+                                                            class="btn btn-danger btn-sm delete-btn" label="Delete" />
+                                                    </div>
+                                                </form>
 
                                             </td>
                                         </tr>
@@ -92,6 +94,8 @@
     <!-- /.content -->
 @endsection
 @section('importedScripts')
+    <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>\
+    <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
     @include('includes.datatables-scripts')
     <script src="{{ asset('assets/js/measure-configuration.js') }}"></script>
 @endsection
