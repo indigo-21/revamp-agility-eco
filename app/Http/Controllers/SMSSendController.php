@@ -24,7 +24,7 @@ class SMSSendController extends Controller
         $message = "Hi {$pi_contact_info->firstname}, Your One-Time Password (OTP) is: {$otp} Please enter this code in the app to verify your identity. Thank you,\n";
 
         try {
-            // $vonageSmsService->sendSms($to, $message);
+            $vonageSmsService->sendSms($to, $message);
             return response()->json(['status' => 'success', 'otp' => $otp, 'message' => 'SMS sent successfully.']);
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Failed to send SMS: ' . $e->getMessage()], 500);

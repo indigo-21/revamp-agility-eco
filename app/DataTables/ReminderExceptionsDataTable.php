@@ -138,8 +138,8 @@ class ReminderExceptionsDataTable extends DataTable
             ->addTableClass('table table-bordered table-striped text-center')
             ->parameters([
                 'scrollX' => true, // Enable horizontal scrolling if needed
-                'responsive' => true,
-                'autoWidth' => false,
+                // 'responsive' => true,
+                'autoWidth' => true,
             ])
             ->selectStyleSingle()
             ->buttons([

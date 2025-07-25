@@ -31,7 +31,8 @@
                                                 style="width: 60px; height: 60px; object-fit: cover;">
                                         </div>
                                         <!-- /.widget-user-image -->
-                                        <h3 class="widget-user-username">{{ $job->propertyInspector->user->firstname }}
+                                        <h3 class="widget-user-username" data-id="{{ $job->propertyInspector->id }}">
+                                            {{ $job->propertyInspector->user->firstname }}
                                             {{ $job->propertyInspector->user->lastname }}</h3>
                                         <h6 class="widget-user-desc">{{ $job->propertyInspector->user->accountLevel->name }}
                                         </h6>

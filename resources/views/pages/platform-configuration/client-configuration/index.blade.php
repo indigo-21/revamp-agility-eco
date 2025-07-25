@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="{{ asset('plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <style>
         .vertical-center {
             vertical-align: middle !important;
@@ -17,69 +18,87 @@
         ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
         ['title' => 'Client Configuration', 'route' => '', 'active' => 'active'],
     ]" />
-    
+
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            {{-- <div class="row">
-                <div class="col-md-12">
-                    <div class="card card-primary card-outline">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card card-default">
                         <div class="card-header">
-                            <div class="w-100 d-flex justify-content-between align-items-center">
-                                <div class="left w-50">
-                                    <h3>Filter</h3>
-                                </div>
-                                <div class="right w-50">
-                                    <div class="d-flex justify-content-end align-items-center">
-                                        <button type="button" class="w-25 btn btn-white">
-                                            <i class="fa fa-plus-circle" aria-hidden="true"></i> Filter
-                                        </button>
-                                        <button type="button" class="w-25 btn btn-white">
-                                            <i class="fa fa-plus-circle" aria-hidden="true"></i> Reset
-                                        </button>
-                                    </div>
-                                </div>
+                            <h3 class="card-title">Filter</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                        class="fas fa-minus"></i></button>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                    <div class="col-sm-12 col-lg-3">
-                                        <x-select label="Client Status" name="client_status">
-                                            <option selected="selected" disabled value="">-Client Status-</option>
-                                            <option value="">-Select Client Status-</option>
-                                            <option value="1">Active</option>
-                                            <option value="0">Inactive</option>
-                                        </x-select> 
-                                    </div>
-                                    <div class="col-sm-12 col-lg-3">
+
+                        <div class="card-body" style="display: block;">
+                            <form method="GET" action="{{ route('client-configuration.index') }}" id="filterForm">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <x-select label="Client Name" name="client_name">
-                                            <option selected="selected" disabled value="">-Client Name-</option>
+                                            <option selected="selected" disabled value="">-Client Name-
+                                            </option>
                                             @foreach ($clients as $client)
-                                                <option value="{{$client->client_user_id}}">{{$client->client_name}}</option>
+                                                <option value="{{ $client->id }}"
+                                                    {{ request('client_name') == (int) $client->id ? 'selected' : '' }}>
+                                                    {{ $client->user->firstname }}</option>
                                             @endforeach
-                                        </x-select> 
-                                    </div>
-                                    <div class="col-sm-12 col-lg-3">
-                                        <x-select label="Client Type" name="client_type">
-                                            <option selected="selected" disabled value="">-Client Type-</option>
-                                            @foreach ($clients as $client)
-                                                <option value="{{$client->client_type_id}}">{{$client->client_type}}</option>
+                                        </x-select>
+                                        <x-select label="Client Type" name="client_type_id">
+                                            <option selected="selected" disabled value="">-Client Type-
+                                            </option>
+                                            @foreach ($clientTypes as $clientType)
+                                                <option value="{{ $clientType->id }}"
+                                                    {{ request('client_type_id') == $clientType->id ? 'selected' : '' }}>
+                                                    {{ $clientType->name }}</option>
                                             @endforeach
-                                        </x-select> 
-                                    </div>
-                                    <div class="col-sm-12 col-lg-3">
-                                        <x-select label="Job Type" name="job_type">
+                                        </x-select>
+
+                                        <x-select label="Job Type" name="job_type_id">
                                             <option selected="selected" disabled value="">-Job Type-</option>
                                             @foreach ($jobTypes as $jobType)
-                                                <option value="{{$jobType->id}}">{{$jobType->type}}</option>
+                                                <option value="{{ $jobType->id }}"
+                                                    {{ request('job_type_id') == $jobType->id ? 'selected' : '' }}>
+                                                    {{ $jobType->type }}</option>
                                             @endforeach
-                                        </x-select> 
+                                        </x-select>
                                     </div>
-                            </div>
+                                    <div class="col-md-6">
+                                        <div class="small-box bg-white">
+                                            <div class="inner">
+                                                <h3>{{ $clients->count() }}</h3>
+
+                                                <p>No. of Clients</p>
+                                            </div>
+                                            <div class="icon">
+                                                <i class="fas fa-handshake"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-3">
+                                        <x-radio label="Active" name="status" id="active_status" :value="1"
+                                            :checked="request('status') == '1' || !request('status')" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <x-radio label="Deactivated" name="status" id="deactive_status" :value="0"
+                                            :checked="request('status') == '0'" />
+                                    </div>
+                                </div>
+                                <div class="btn-group mt-5">
+                                    <button class="btn btn-primary btn-flat float-right" type="submit">Filter</button>
+                                    <a class="btn btn-default btn-flat float-right"
+                                        href="{{ route('client-configuration.index') }}">Reset</a>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
-            </div> --}}
+            </div>
             <!-- Small boxes (Stat box) -->
             <div class="row">
                 <div class="col-md-12">

@@ -1,7 +1,13 @@
 
 $(function () {
 
-    $('.select2').select2();
+    $('.select2').select2({
+        sorter: function(data) {
+            return data.sort(function(a, b) {
+                return a.text.localeCompare(b.text);
+            });
+        }
+    });
 
     $('#jobDateRange').daterangepicker({
         locale: {
@@ -18,42 +24,42 @@ $(function () {
         $(this).val('');
     });
 
-    $('#filterForm').on('submit', function(e) {
+    $('#filterForm').on('submit', function (e) {
         e.preventDefault();
-        
+
         // Get form data
         var formData = $(this).serialize();
-        
+
         // Get current URL and add query parameters
         var url = new URL(window.location.href);
         var params = new URLSearchParams(formData);
-        
+
         // Clear existing parameters
         url.search = '';
-        
+
         // Add new parameters
-        params.forEach(function(value, key) {
+        params.forEach(function (value, key) {
             if (value) {
                 url.searchParams.append(key, value);
             }
         });
-        
+
         // Reload the page with new parameters
         window.location.href = url.toString();
     });
 
     // Update job count when DataTable is loaded
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Wait for DataTable to be initialized
-        setTimeout(function() {
+        setTimeout(function () {
             if ($.fn.DataTable.isDataTable('#jobs-table')) {
                 var table = $('#jobs-table').DataTable();
-                
+
                 // Update count on initial load
                 updateJobCount(table);
-                
+
                 // Update count when table is redrawn (search, filter, etc.)
-                table.on('draw', function() {
+                table.on('draw', function () {
                     updateJobCount(table);
                 });
             }
@@ -62,7 +68,7 @@ $(function () {
 
     function updateJobCount(table) {
         var filteredRecords = table.page.info().recordsDisplay;
-        
+
         $('#totalNoOfJobs').text(filteredRecords);
     }
 
@@ -119,10 +125,13 @@ $(document).on('click', '.delete-btn', function (e) {
     Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
-        icon: 'warning',
+        imageUrl: '../assets/images/danger.png', // Use imageUrl instead of icon
+        imageWidth: 100, // Optional: set image width
+        imageHeight: 90, // Optional: set image height
+        imageAlt: 'Custom delete icon', // Optional: alt text for accessibility
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
         confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
         if (result.isConfirmed) {
@@ -135,10 +144,13 @@ $('#removeDuplicates').on('click', function () {
     Swal.fire({
         title: 'Are you sure?',
         text: "This will remove duplicate jobs.",
-        icon: 'warning',
+        imageUrl: '../assets/images/danger.png', // Use imageUrl instead of icon
+        imageWidth: 80, // Optional: set image width
+        imageHeight: 80, // Optional: set image height
+        imageAlt: 'Custom delete icon', // Optional: alt text for accessibility
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
         confirmButtonText: 'Yes, remove duplicates!'
     }).then((result) => {
         if (result.isConfirmed) {

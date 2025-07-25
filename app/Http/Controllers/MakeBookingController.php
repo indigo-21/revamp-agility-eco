@@ -38,10 +38,12 @@ class MakeBookingController extends Controller
     public function edit(string $job_number)
     {
         $job = Job::where('job_number', 'LIKE', "%$job_number%")->first();
+        $propertyInspector = PropertyInspector::find($job->property_inspector_id);
 
         return view('pages.booking.make-booking.book')
             ->with('job_number', $job_number)
-            ->with('job', $job);
+            ->with('job', $job)
+            ->with('propertyInspector', $propertyInspector);
     }
 
     public function book(Request $request, string $job_number)
@@ -203,6 +205,24 @@ class MakeBookingController extends Controller
 
         return redirect()->route('make-booking.index')
             ->with('success', 'Attempt made successfully.');
+    }
+
+    public function getBookedJobs(Request $request)
+    {
+        $jobs = Booking::where('booking_outcome', "Booked")
+            ->where('property_inspector_id', $request->property_inspector_id)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'title' => $item->job_number,
+                    'start' => $item->booking_date,
+                    'backgroundColor' => "#f56954",
+                    'borderColor' => "#f56954",
+                    'allDay' => true,
+                ];
+            });
+
+        return response()->json($jobs);
     }
 
 }

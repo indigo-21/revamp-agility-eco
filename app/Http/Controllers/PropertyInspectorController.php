@@ -179,4 +179,12 @@ class PropertyInspectorController extends Controller
             ->with('property_inspector', $propertyInspector)
             ->with('qrCode', $qrCode);
     }
+
+    public function piCalendar()
+    {
+        $propertyInspector = auth()->user()->propertyInspector;
+
+        return view('pages.property-inspector-portal.calendar')
+            ->with('propertyInspector', $propertyInspector);
+    }
 }

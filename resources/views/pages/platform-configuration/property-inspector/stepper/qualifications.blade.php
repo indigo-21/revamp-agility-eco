@@ -16,7 +16,7 @@
 
                 <x-file name="qualification_certificate" label="Qualification Certificate" />
 
-                <x-date name="qualification_issue" label="Qualification Issue" />
+                <x-input name="qualification_issue" label="Qualification Issue" />
 
                 <button type="button" class="btn btn-block btn-outline-primary mt-5" id="addQualifications">
                     <i class="fa fa-plus-circle" aria-hidden="true"></i> Add to table
@@ -33,7 +33,7 @@
                             <th>Issue Date</th>
                             <th>Expiry Date</th>
                             <th>Certificate</th>
-                            <th>Issue</th>
+                            <th>Qualification Issue</th>
                             <th>Action</th>
                         </tr>
                     </thead>

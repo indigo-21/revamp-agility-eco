@@ -144,6 +144,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('make-booking.closeJob');
         Route::post('make-booking/attemptMade', [MakeBookingController::class, 'attemptMade'])
             ->name('make-booking.attemptMade');
+        Route::get('make-booking/getBookedJobs', [MakeBookingController::class, 'getBookedJobs'])
+            ->name('make-booking.getBookedJobs');
     });
 
     Route::resource('restore-max-attempts', RestoreMaxAttemptController::class)
@@ -200,6 +202,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('navigation.access:pi-dashboard');
     Route::resource('sickness-holidays', SicknessHolidayController::class)
         ->middleware('navigation.access:sickness-holidays');
+    Route::get('pi-calendar', [PropertyInspectorController::class, 'piCalendar'])
+        ->name('pi-dashboard.calendar')
+        ->middleware('navigation.access:pi-dashboard');
 
     Route::resource('reports', ReportController::class)
         ->middleware('navigation.access:reports');

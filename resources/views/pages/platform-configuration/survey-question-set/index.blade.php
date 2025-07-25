@@ -94,6 +94,17 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>
+                                <i>Download the sample file to see the correct structure of the .csv file.
+                                    <a href="{{ asset('assets/files/Example Survey App Question.csv') }}" download>Sample
+                                        CSV
+                                    </a>
+                                </i>
+                            </p>
+                        </div>
+                    </div>
                     <form action=" {{ route('survey-question-set.store') }} " method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="card-body">

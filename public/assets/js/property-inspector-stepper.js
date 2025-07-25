@@ -128,17 +128,17 @@ $(function () {
     validateMeasuresFields();
     validateQualificationsFields();
 
-    $('input[name="charging_scheme_id"]').on('change', function () {
-        if ($(this).val() == 1) {
-            $("#property_visit_fee").attr('disabled', false);
-            $("#property_fee_currency").attr('disabled', false);
-            $("#payment_terms").attr('disabled', false);
-        } else {
-            $("#property_visit_fee").attr('disabled', true);
-            $("#property_fee_currency").attr('disabled', true);
-            $("#payment_terms").attr('disabled', true);
-        }
-    });
+    // $('input[name="charging_scheme_id"]').on('change', function () {
+    //     if ($(this).val() == 1) {
+    //         $("#property_visit_fee").attr('disabled', false);
+    //         $("#property_fee_currency").attr('disabled', false);
+    //         $("#payment_terms").attr('disabled', false);
+    //     } else {
+    //         $("#property_visit_fee").attr('disabled', true);
+    //         $("#property_fee_currency").attr('disabled', true);
+    //         $("#payment_terms").attr('disabled', true);
+    //     }
+    // });
 
     // STEPPER SCRIPT
     let stepIndex = 0;

@@ -19,16 +19,43 @@ $(function () {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
-            icon: 'warning',
+            imageUrl: '../assets/images/danger.png', // Use imageUrl instead of icon
+            imageWidth: 100, // Optional: set image width
+            imageHeight: 90, // Optional: set image height
+            imageAlt: 'Custom delete icon', // Optional: alt text for accessibility
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
                 form.submit();
             }
         });
+    });
+
+    $('#filterForm').on('submit', function (e) {
+        e.preventDefault();
+
+        // Get form data
+        var formData = $(this).serialize();
+
+        // Get current URL and add query parameters
+        var url = new URL(window.location.href);
+        var params = new URLSearchParams(formData);
+
+        // Clear existing parameters
+        url.search = '';
+
+        // Add new parameters
+        params.forEach(function (value, key) {
+            if (value) {
+                url.searchParams.append(key, value);
+            }
+        });
+
+        // Reload the page with new parameters
+        window.location.href = url.toString();
     });
 });
 

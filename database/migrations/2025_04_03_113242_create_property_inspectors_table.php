@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('id_badge')->nullable();
             $table->date('id_issued')->nullable();
             $table->date('id_expiry')->nullable();
-            $table->date('id_revision')->nullable();
+            $table->string('id_revision')->nullable();
             $table->string('id_location')->nullable();
             $table->date('id_return')->nullable();
             $table->string('address1')->nullable();

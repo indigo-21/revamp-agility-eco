@@ -1,16 +1,11 @@
 $(function () {
 
-    $('.date').datetimepicker({
-        format: 'YYYY-MM-DD HH:mm:ss',
-        icons: { time: 'far fa-clock' },
-    });
-
     $.ajax({
         url: '/make-booking/getBookedJobs',
         type: 'GET',
         dataType: 'json',
         data: {
-            property_inspector_id: $(".widget-user-username").data('id')
+            property_inspector_id: $("#calendar").data('id')
         },
         success: function (data) {
             var Calendar = FullCalendar.Calendar;

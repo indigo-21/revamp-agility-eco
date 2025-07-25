@@ -34,7 +34,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table id="managebookings-table" class="table table-bordered table-striped text-center">
+                                    {{-- <table id="managebookings-table" class="table table-bordered table-striped text-center">
                                         <thead>
                                             <tr>
                                                 <th>Job Number</th>
@@ -55,15 +55,23 @@
                                         <tbody>
                                             @foreach ($jobs as $job)
                                                 @php
+                                                    $jobGroup = substr(
+                                                        $job->job_number,
+                                                        0,
+                                                        strlen($job->job_number) - 3,
+                                                    );
+
                                                     $relatedJobs = \App\Models\Job::where(
                                                         'job_number',
                                                         'LIKE',
-                                                        "%{$job->job_group}%",
-                                                    )->get();
+                                                        "%{$jobGroup}%",
+                                                    )
+                                                        ->whereIn('job_status_id', [1])
+                                                        ->get();
 
                                                     $lastBooking = \App\Models\Booking::where(
                                                         'job_number',
-                                                        $job->job_group,
+                                                        $jobGroup,
                                                     )->orderBy('created_at', 'desc');
                                                 @endphp
                                                 <tr>
@@ -84,7 +92,7 @@
                                                     <td>
                                                         @foreach ($relatedJobs as $relatedJob)
                                                             <span
-                                                                class="badge badge-info">{{ $relatedJob->jobMeasure->measure->measure_cat }}</span>
+                                                                class="badge badge-info">{{ $relatedJob->jobMeasure?->measure?->measure_cat }}</span>
                                                         @endforeach
                                                     </td>
                                                     <td>{{ $job->schedule_date }}</td>
@@ -110,9 +118,8 @@
                                                                     label="Unbook" />
                                                                 <x-button-permission type="delete" :permission="$userPermission"
                                                                     class="btn btn-sm btn-danger closeJob"
-                                                                    data-job-number="{{ $job->job_group }}"
-                                                                    label="Close" data-target="#closeJob"
-                                                                    data-toggle="modal" />
+                                                                    data-job-number="{{ $job->job_group }}" label="Close"
+                                                                    data-target="#closeJob" data-toggle="modal" />
                                                                 <x-button-permission type="view" :permission="$userPermission"
                                                                     as="a" :href="route('make-booking.show', [
                                                                         'job_group' => $job->job_group,
@@ -124,7 +131,8 @@
                                                 </tr>
                                             @endforeach
                                         </tbody>
-                                    </table>
+                                    </table> --}}
+                                    {!! $dataTable->table() !!}
                                 </div>
                             </div>
                         </div>
@@ -169,6 +177,7 @@
 @endsection
 
 @section('importedScripts')
+    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
     <script>
         var toastType = @json(session('success'));
     </script>

@@ -93,5 +93,5 @@
 @endsection
 @section('importedScripts')
     @include('includes.datatables-scripts')
-    <script src="{{ asset('assets/js/installer-configuration.js') }}"></script>
+    <script src="{{ asset('assets/js/measure-configuration.js') }}"></script>
 @endsection

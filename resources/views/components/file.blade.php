@@ -7,8 +7,8 @@
             <input type="file" class="custom-file-input" id="{{ $name }}" name="{{ $name }}">
             <label class="custom-file-label" for="{{ $name }}">Choose file</label>
         </div>
-        <div class="input-group-append">
+        {{-- <div class="input-group-append">
             <span class="input-group-text">Upload</span>
-        </div>
+        </div> --}}
     </div>
 </div>

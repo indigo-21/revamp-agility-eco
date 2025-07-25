@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('client_sla_metrics', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_id')->constrained()->onDelete('cascade');
-            $table->integer('client_maximum_retries')->unsigned()->nullable()->default(12);
+            $table->integer('client_maximum_retries')->unsigned()->nullable();
             $table->string('maximum_booking_attempts')->nullable();
             $table->string('maximum_remediation_attempts')->nullable();
             $table->string('maximum_no_show')->nullable();

@@ -18,12 +18,34 @@ class ClientConfigurationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $clients = Client::all();
+        $clients = Client::with('clientKeyDetails');
+        $jobTypes = JobType::all();
+        $clientTypes = ClientType::all();
+
+        if ($request->filled('status')) {
+            $clients->whereHas('clientKeyDetails', function ($q) use ($request) {
+                $q->where('is_active', $request->status);
+            });
+        }
+
+        if ($request->filled('client_type_id')) {
+            $clients->where('client_type_id', (int) $request->client_type_id);
+        }
+
+        if ($request->filled('job_type_id')) {
+            $clients->whereHas('clientJobTypes', function ($q) use ($request) {
+                $q->where('job_type_id', (int) $request->job_type_id);
+            });
+        }
+
+        $clients = $clients->get();
 
         return view('pages.platform-configuration.client-configuration.index')
-            ->with('clients', $clients);
+            ->with('clients', $clients)
+            ->with('jobTypes', $jobTypes)
+            ->with('clientTypes', $clientTypes);
     }
 
     /**

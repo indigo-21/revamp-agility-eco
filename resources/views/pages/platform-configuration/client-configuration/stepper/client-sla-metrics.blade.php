@@ -5,9 +5,9 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">
-                <x-input type="text" name="client_maximum_retries" label="Client Maximum Retries"
+                {{-- <x-input type="text" name="client_maximum_retries" label="Client Maximum Retries"
                     value="{{ isset($client) ? $client->clientSlaMetric->client_maximum_retries : '' }}"
-                    inputformat="[0-9]" />
+                    inputformat="[0-9]" /> --}}
 
                 <x-input type="text" name="job_deadline" label="Job deadline"
                     value="{{ isset($client) ? $client->clientSlaMetric->job_deadline : '' }}" inputformat="[0-9]" />
@@ -15,11 +15,12 @@
                 <x-input type="text" name="maximum_booking_attempts" label="Maximum Booking Attemtps"
                     value="{{ isset($client) ? $client->clientSlaMetric->maximum_booking_attempts : '' }}"
                     inputformat="[0-9]" />
-            </div>
-            <div class="col-md-6">
+
                 <x-input type="text" name="maximum_remediation_attempts" label="Maximum Remediation Attemtps"
                     value="{{ isset($client) ? $client->clientSlaMetric->maximum_remediation_attempts : '' }}"
                     inputformat="[0-9]" />
+            </div>
+            <div class="col-md-6">
 
                 <x-input type="text" name="maximum_no_show" label="Maximum No Show"
                     value="{{ isset($client) ? $client->clientSlaMetric->maximum_no_show : '' }}" inputformat="[0-9]" />

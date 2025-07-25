@@ -286,7 +286,8 @@
                             <div class="col-md-12">
                                 <p>
                                     <i>Download the sample file to see the correct structure of the .csv file.
-                                        <a href="#" download="Sample_CSV.csv">Sample
+                                        <a href="{{ asset('assets/files/Example Job Import.csv') }}"
+                                            download>Sample
                                             CSV
                                         </a>
                                     </i>

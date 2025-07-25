@@ -2,6 +2,7 @@
 
 @section('importedStyles')
     @include('includes.datatables-links')
+    <link rel="stylesheet" href="{{ asset('plugins/daterangepicker/daterangepicker.css') }}">
 @endsection
 
 @section('content')
@@ -48,9 +49,9 @@
                     <!-- small box -->
                     <div class="small-box bg-success">
                         <div class="inner">
-                            <h3>{{ number_format($jobFailPercent, 2) }}<sup style="font-size: 20px">%</sup></h3>
+                            <h3>{{ $jobPending }}</h3>
 
-                            <p>Over All NC Rate</p>
+                            <p>Jobs Pending</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-stats-bars"></i>
@@ -64,9 +65,9 @@
                     <!-- small box -->
                     <div class="small-box bg-warning">
                         <div class="inner">
-                            <h3>{{ $jobPending }}</h3>
+                            <h3>{{ number_format($jobFailPercent, 2) }}<sup style="font-size: 20px">%</sup></h3>
 
-                            <p>Jobs Pending</p>
+                            <p>Over All NC Rate</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-person-add"></i>
@@ -110,6 +111,28 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
+                            <form action="{{ route('dashboard.index') }}" method="GET">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="far fa-calendar-alt"></i>
+                                                    </span>
+                                                </div>
+                                                <input type="text" class="form-control float-right" id="jobDateRange"
+                                                    name="job_date_range" value="{{ request('job_date_range') }}">
+                                            </div>
+                                            <!-- /.input group -->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-primary"> <i class="fa fa-search"></i> Search</button>
+                                    </div>
+                                </div>
+                            </form>
+
                             <table class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
@@ -147,6 +170,28 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
+                            <form action="{{ route('dashboard.index') }}" method="GET">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="far fa-calendar-alt"></i>
+                                                    </span>
+                                                </div>
+                                                <input type="text" class="form-control float-right" id="jobDateRange2"
+                                                    name="job_date_range2" value="{{ request('job_date_range2') }}">
+                                            </div>
+                                            <!-- /.input group -->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-primary"> <i class="fa fa-search"></i> Search</button>
+                                    </div>
+                                </div>
+                            </form>
+
                             <table class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
@@ -178,4 +223,10 @@
 @section('importedScripts')
     @include('includes.datatables-scripts')
     <script src="{{ asset('assets/js/global/table.js') }}"></script>
+    <!-- InputMask -->
+    <script src="{{ asset('plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('plugins/inputmask/jquery.inputmask.min.js') }}"></script>
+    <!-- date-range-picker -->
+    <script src="{{ asset('plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ asset('assets/js/dashboard.js') }}"></script>
 @endsection

@@ -25,15 +25,15 @@
                 <x-date name="id_expiry" label="ID Badge Expiry Date"
                     value="{{ isset($property_inspector) ? $property_inspector->id_expiry : '' }}" />
 
-                <x-date name="id_revision" label="ID Badge Rev"
+                <x-input name="id_revision" label="ID Badge Rev"
                     value="{{ isset($property_inspector) ? $property_inspector->id_revision : '' }}" />
 
                 <x-select label="ID Badge Location" name="id_location" :multiple="false">
-                    <option value="With Property Inspector" 
+                    <option value="With Property Inspector"
                         {{ isset($property_inspector) && $property_inspector->id_location === 'With Property Inspector' ? 'selected' : '' }}>
                         With Property Inspector
                     </option>
-                    <option value="At {{ env('EMPLOYER') }}" 
+                    <option value="At {{ env('EMPLOYER') }}"
                         {{ isset($property_inspector) && $property_inspector->id_location === 'At' . env('EMPLOYER') ? 'selected' : '' }}>
                         At {{ env('EMPLOYER') }}
                     </option>

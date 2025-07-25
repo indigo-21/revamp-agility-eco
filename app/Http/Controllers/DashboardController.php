@@ -13,8 +13,29 @@ class DashboardController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        // Parse date range if provided
+        $startDate = null;
+        $endDate = null;
+        $startDate2 = null;
+        $endDate2 = null;
+        if ($request->has('job_date_range') && !empty($request->job_date_range)) {
+            $dateRange = explode(' - ', $request->job_date_range);
+            if (count($dateRange) == 2) {
+                $startDate = $dateRange[0] . ' 00:00:00';
+                $endDate = $dateRange[1] . ' 23:59:59';
+            }
+        }
+
+        if ($request->has('job_date_range2') && !empty($request->job_date_range2)) {
+            $dateRange2 = explode(' - ', $request->job_date_range2);
+            if (count($dateRange2) == 2) {
+                $startDate2 = $dateRange2[0] . ' 00:00:00';
+                $endDate2 = $dateRange2[1] . ' 23:59:59';
+            }
+        }
+
         $jobBooked = Job::where('job_status_id', 1)->count();
         $jobPending = Job::whereIn('job_status_id', [5, 6, 7, 8, 9, 10, 25, 22])->count();
         $jobFailed = Job::where('job_status_id', 16)->count();
@@ -40,8 +61,14 @@ class DashboardController extends Controller
                 jobs.scheme_id
             ')
             ->whereIn('jobs.job_status_id', [3, 16])
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('jobs.created_at', [$startDate, $endDate]);
+            })
             ->groupBy('jobs.installer_id', 'job_measures.measure_id', 'jobs.scheme_id')
             ->havingRaw('SUM(CASE WHEN jobs.job_status_id = 16 THEN 1 ELSE 0 END) > 0')
+            // ->when(request()->has('installer_id'), function ($query) {
+            //     return $query->where('jobs.installer_id', request('installer_id'));
+            // })
             ->get()
             ->map(function ($item) {
                 return [
@@ -56,6 +83,9 @@ class DashboardController extends Controller
 
         $dashboardData2 = CompletedJob::selectRaw('COUNT(*) as answered_questions, survey_questions.nc_severity, survey_questions.question_number')
             ->join('survey_questions', 'completed_jobs.survey_question_id', '=', 'survey_questions.id')
+            ->when($startDate2 && $endDate2, function ($query) use ($startDate2, $endDate2) {
+                return $query->whereBetween('completed_jobs.created_at', [$startDate2, $endDate2]);
+            })
             ->groupBy('survey_question_id')
             ->get();
 

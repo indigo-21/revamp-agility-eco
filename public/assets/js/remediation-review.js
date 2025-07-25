@@ -86,7 +86,7 @@ $(function () {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "This will be uploaded to the remediation without any files.",
-                icon: 'warning',
+                icon: 'info',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',

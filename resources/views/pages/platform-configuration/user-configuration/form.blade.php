@@ -204,21 +204,31 @@
                                             <div class="text-danger small mb-2">{{ $message }}</div>
                                         @enderror
                                         <x-select label="Account Level" name="account_level_id" :multiple="false"
-                                            :required="true">
+                                            :required="true" :disabled="isset($user) && in_array($user->account_level_id, [4, 5])">
                                             <option selected="selected" disabled value="">- Select Account Level -
                                             </option>
-                                            @foreach ($accountLevels as $accountLevel)
-                                                <option value="{{ $accountLevel->id }}"
-                                                    {{ old('account_level_id', isset($user) ? $user->account_level_id : '') == $accountLevel->id ? 'selected' : '' }}>
-                                                    {{ $accountLevel->name }}
-                                                </option>
-                                            @endforeach
+                                            @if (in_array($user->account_level_id, [6, 7, 8]))
+                                                @foreach ($piLevels as $piLevel)
+                                                    <option value="{{ $piLevel->id }}"
+                                                        {{ old('account_level_id', isset($user) ? $user->account_level_id : '') == $piLevel->id ? 'selected' : '' }}>
+                                                        {{ $piLevel->name }}
+                                                    </option>
+                                                @endforeach
+                                            @else
+                                                @foreach ($accountLevels as $accountLevel)
+                                                    <option value="{{ $accountLevel->id }}"
+                                                        {{ old('account_level_id', isset($user) ? $user->account_level_id : '') == $accountLevel->id ? 'selected' : '' }}>
+                                                        {{ $accountLevel->name }}
+                                                    </option>
+                                                @endforeach
+                                            @endif
                                         </x-select>
                                         @error('account_level_id')
                                             <div class="text-danger small mb-2">{{ $message }}</div>
                                         @enderror
 
-                                        <x-select label="User type" name="user_type_id" :multiple="false" :required="true">
+                                        <x-select label="User type" name="user_type_id" :multiple="false" :required="true"
+                                            :disabled="isset($user) && in_array($user->user_type_id, [3, 4, 5])">
                                             <option selected="selected" disabled value="">- Select User Type -
                                             </option>
                                             @foreach ($userTypes as $userType)
@@ -238,9 +248,12 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ isset($user) ? 'Update User' : 'Create User' }}
                                 </button>
-                                <button type="button" id="resetpassword" class="btn btn-warning"
-                                    data-id="{{ $user->id }}">Reset Password</button>
-                                <a href="{{ route('user-configuration.index') }}" class="btn btn-secondary ml-2">Cancel</a>
+                                @if (isset($user))
+                                    <button type="button" id="resetpassword" class="btn btn-warning"
+                                        data-id="{{ $user->id }}">Reset Password</button>
+                                    <a href="{{ route('user-configuration.index') }}"
+                                        class="btn btn-secondary ml-2">Cancel</a>
+                                @endif
                             </div>
                         </form>
                     </div>

@@ -139,8 +139,8 @@ class JobsDataTable extends DataTable
             ->selectStyleSingle()
             ->parameters([
                 'scrollX' => true, // Enable horizontal scrolling if needed
-                'responsive' => true,
-                'autoWidth' => false,
+                // 'responsive' => true,
+                'autoWidth' => true,
             ])
             ->buttons([
                 Button::make('excel'),

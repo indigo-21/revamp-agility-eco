@@ -19,15 +19,15 @@
 
                 <x-input name="property_visit_fee" label="Property Visit Fee" type="number"
                     value="{{ isset($property_inspector) ? $property_inspector->property_visit_fee : '' }}"
-                    :disabled="true" />
+                     />
 
                 <x-input name="property_fee_currency" label="Fee Currency" value="GBP"
-                    value="{{ isset($property_inspector) ? $property_inspector->property_fee_currency : '' }}"
-                    :disabled="true" />
+                    value="{{ isset($property_inspector) ? $property_inspector->property_fee_currency : 'GBP' }}"
+                     />
 
                 <x-input name="payment_terms" label="Payment Terms(days)" type="number"
                     value="{{ isset($property_inspector) ? $property_inspector->payment_terms : '' }}"
-                    :disabled="true" />
+                     />
 
                 <x-radio-layout label="VAT Registered">
                     <div class="col-md-6">

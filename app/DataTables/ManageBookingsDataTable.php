@@ -6,7 +6,6 @@ use App\Models\Booking;
 use App\Models\Job;
 use App\Models\PropertyInspector;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
@@ -15,7 +14,7 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class MakeBookingsDataTable extends DataTable
+class ManageBookingsDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
@@ -26,7 +25,7 @@ class MakeBookingsDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('action', function ($job) {
-                return view('components.make-bookings-actions', [
+                return view('components.manage-bookings-actions', [
                     'job' => $job
                 ])->render();
             })
@@ -49,7 +48,7 @@ class MakeBookingsDataTable extends DataTable
             })
             ->addColumn('measures', function ($job) {
                 $measureData = "";
-                
+
                 // Compute job_group from job_number
                 $jobGroup = substr($job->job_number, 0, strlen($job->job_number) - 3);
 
@@ -79,7 +78,7 @@ class MakeBookingsDataTable extends DataTable
             ->addColumn('latest_comment', function ($job) {
                 // Compute job_group from job_number
                 $jobGroup = substr($job->job_number, 0, strlen($job->job_number) - 3);
-                
+
                 $lastBooking = Booking::where(
                     'job_number',
                     $jobGroup,
@@ -87,18 +86,7 @@ class MakeBookingsDataTable extends DataTable
 
                 return $lastBooking->first()->booking_notes ?? 'No comments';
             })
-            ->addColumn('last_attempt', function ($job) {
-                // Compute job_group from job_number
-                $jobGroup = substr($job->job_number, 0, strlen($job->job_number) - 3);
-                
-                $lastBooking = Booking::where(
-                    'job_number',
-                    $jobGroup,
-                )->orderBy('created_at', 'desc');
-
-                return $lastBooking->where('booking_outcome', 'Attempt Made')->first()->booking_date ?? 'No Attempts Made';
-            })
-            ->filterColumn('job_group', function($query, $keyword) {
+            ->filterColumn('job_group', function ($query, $keyword) {
                 $query->whereRaw("SUBSTRING(job_number, 1, LENGTH(job_number) - 3) LIKE ?", ["%$keyword%"]);
             })
             ->rawColumns(['action', 'job_status_id', 'measures'])
@@ -123,10 +111,9 @@ class MakeBookingsDataTable extends DataTable
 
         $propertyInspector = PropertyInspector::find(auth()->user()->propertyInspector?->id);
 
-        $query->selectRaw('*, SUBSTRING(job_number, 1, LENGTH(job_number) - 3) as job_group')
-            ->groupBy(DB::raw('SUBSTRING(job_number, 1, LENGTH(job_number) - 3)'))
-            ->whereIn('job_status_id', [25, 23])
-            ->where('close_date', null)
+        $query = Job::selectRaw('*, SUBSTRING(job_number, 1, LENGTH(job_number) - 3) as job_group')
+            ->groupBy('job_group')
+            ->where('job_status_id', 1)
             ->when($propertyInspector, function ($query) use ($propertyInspector) {
                 return $query->where('property_inspector_id', $propertyInspector->id);
             });
@@ -140,7 +127,7 @@ class MakeBookingsDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('makebookings-table')
+            ->setTableId('managebookings-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->orderBy(1)
@@ -179,9 +166,6 @@ class MakeBookingsDataTable extends DataTable
             Column::make('customer_email')->title('Owner Email'),
             Column::make('customer_contact')->title('Owner Contact Number'),
             Column::make('latest_comment')->title('Latest Comment'),
-            Column::make('last_attempt')->title('Last Attempt Made'),
-            Column::make('max_attempts')->title('Job Max Attempts'),
-            Column::make('rework_deadline')->title('Revisit'),
             Column::computed('action')
                 ->exportable(false)
                 ->printable(false)
@@ -195,6 +179,6 @@ class MakeBookingsDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'MakeBookings_' . date('YmdHis');
+        return 'ManageBookings_' . date('YmdHis');
     }
 }

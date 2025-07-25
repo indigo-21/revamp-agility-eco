@@ -79,15 +79,21 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = User::findOrFail($id);
-        $accountLevels = AccountLevel::whereNotIn('id', [4, 5, 6, 7, 8])
-            ->get();
-        $userTypes = UserType::whereIn('id', [1, 2])
+        // $accountLevels = AccountLevel::whereNotIn('id', [4, 5, 6, 7, 8])
+        //     ->get();
+        // $userTypes = UserType::whereIn('id', [1, 2])
+        //     ->get();
+
+        $accountLevels = AccountLevel::all();
+        $userTypes = UserType::all();
+        $piLevels = AccountLevel::whereIn('id', [6, 7, 8])
             ->get();
 
         return view('pages.platform-configuration.user-configuration.form')
             ->with('user', $user)
             ->with('accountLevels', $accountLevels)
-            ->with('userTypes', $userTypes);
+            ->with('userTypes', $userTypes)
+            ->with('piLevels', $piLevels);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 @section('importedStyles')
     @include('includes.datatables-links')
+    <link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
 @endsection
 
 @section('content')
@@ -47,8 +48,13 @@
                                     <b>Email</b> <a class="float-right">{{ $property_inspector->user->email }}</a>
                                 </li>
                                 <li class="list-group-item">
-                                    <b>Contact Number</b> <a class="float-right">
+                                    <b>Mobile</b> <a class="float-right">
                                         {{ $property_inspector->user->mobile }}
+                                    </a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Landline</b> <a class="float-right">
+                                        {{ $property_inspector->user->landline }}
                                     </a>
                                 </li>
                             </ul>
@@ -84,6 +90,10 @@
                                 @foreach ($property_inspector->propertyInspectorJobTypes as $piJobTypes)
                                     <span class="right badge badge-danger">{{ $piJobTypes->jobType->type }}
                                     </span>
+                                    <span class="right badge badge-info">
+                                        {{ $piJobTypes->rating }}
+                                    </span>
+                                    <br>
                                 @endforeach
                             </p>
 
@@ -121,43 +131,71 @@
                 <div class="col-lg-9 col-md-8">
                     <div class="card card-default">
                         <div class="card-header">
-                            <div class="w-100 d-flex justify-content-between align-items-center">
-                                <div class="left">
-                                    <h3 class="card-title">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                        List of Jobs
-                                    </h3>
-                                </div>
+                            <h3 class="card-title">
+                                <i class="fas fa-table"></i>
+                                List of Jobs
+                            </h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn bg-info btn-sm" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn bg-info btn-sm" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table class="table table-bordered table-striped">
+                            <div class="row mt-2 mb-4">
+                                <div class="col-md-3">
+                                    <x-radio label="Booked Jobs Only" name="jobs" id="booked_jobs" :value="1"
+                                        :checked="request('jobs') == 1" />
+                                </div>
+                                <div class="col-md-3">
+                                    <x-radio label="Allocated Jobs Only" name="jobs" id="allocated_jobs"
+                                        :value="2" :checked="request('jobs') == 2" />
+                                </div>
+                                <div class="col-md-3">
+                                    <x-radio label="Completed Jobs" name="jobs" id="completed_jobs" :value="3"
+                                        :checked="request('jobs') == 3" />
+                                </div>
+                                <div class="col-md-3">
+                                    <x-radio label="All Jobs" name="jobs" id="all_jobs" :value="4"
+                                        :checked="request('jobs') == 4 || !request('jobs')" />
+                                </div>
+                            </div>
+
+                            <table id="piListOfJobs" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>Job Number</th>
                                         <th>Status</th>
-                                        <th>Cert#</th>
-                                        <th>UMR</th>
-                                        <th>Postcode</th>
-                                        <th>Installer</th>
-                                        <th>Deadline</th>
+                                        <th>Booked Date</th>
+                                        <th>Owner Name</th>
+                                        <th>Owner Contact</th>
+                                        <th>Alternative #</th>
+                                        <th>Address</th>
+                                        <th>Post Code</th>
+                                        <th>Measure</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($property_inspector->job as $job)
                                         <tr>
                                             <td>{{ $job->job_number }}</td>
-                                            <td>
+                                            <td id="{{ $job->jobStatus->id }}">
                                                 <span class="right badge badge-{{ $job->jobStatus->color_scheme }}">
                                                     {{ $job->jobStatus->description }}
                                                 </span>
                                             </td>
-                                            <td>{{ $job->cert_no }}</td>
-                                            <td>{{ $job->jobMeasure?->umr }}</td>
+                                            <td>{{ $job->schedule_date }}</td>
+                                            <td>{{ $job->customer->customer_name }}</td>
+                                            <td>{{ $job->customer->customer_primary_tel }}</td>
+                                            <td>{{ $job->customer->customer_secondary_tel }}</td>
+                                            <td>{{ $job->property->address1 }}</td>
                                             <td>{{ $job->property->postcode }}</td>
-                                            <td>{{ $job->installer->user->firstname }}</td>
-                                            <td>{{ $job->deadline }}</td>
+                                            <td>{{ $job->jobMeasure->measure->measure_cat }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -269,5 +307,5 @@
 
 @section('importedScripts')
     @include('includes.datatables-scripts')
-    <script src="{{ asset('assets/js/property-inspector.js') }}"></script>
+    <script src="{{ asset('assets/js/property-inspector-portal.js') }}"></script>
 @endsection

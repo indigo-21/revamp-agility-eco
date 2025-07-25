@@ -6,7 +6,7 @@ $(".reinstateJob").on("click", function (e) {
     Swal.fire({
         title: 'Are you sure?',
         text: "This will reinstate the job.",
-        icon: 'warning',
+        icon: 'info',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',

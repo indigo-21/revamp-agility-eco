@@ -55,8 +55,8 @@
                                             <li class="nav-item">
                                                 <a href="{{ $sub_navigation->link ? route("{$sub_navigation->link}.index") : '#' }}"
                                                     class="nav-link {{ request()->routeIs("{$sub_navigation->link}.*") ? 'active' : '' }}">
-                                                    <i class="fa fa-{{ $sub_navigation->icon }} nav-icon"></i>
-                                                    <p>{{ $sub_navigation->name }}</p>
+                                                    <i class="fa fa-{{ $sub_navigation->icon }} nav-icon mr-3"></i>
+                                                    <p class="text-sm">{{ $sub_navigation->name }}</p>
                                                 </a>
                                             </li>
                                         @endif

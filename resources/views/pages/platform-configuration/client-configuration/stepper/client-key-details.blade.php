@@ -80,22 +80,8 @@
                         <h3>Client Job Types</h3>
                     </div>
 
-                    <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" class="job-types" name="qai_visit_duration"
-                            label="QAI Visit Duration (hours)" :disabled="!isset($client) || !$client->clientJobTypes->contains('job_type_id', 1)"
-                            value="{{ isset($client) ? $client->clientJobTypes->where('job_type_id', 1)->first()?->visit_duration : '' }}" />
-
-                        <x-input type="text" class="job-types" name="surveyor_visit_duration"
-                            label="Surveyor Visit Duration (hours)" :disabled="!isset($client) || !$client->clientJobTypes->contains('job_type_id', 2)"
-                            value="{{ isset($client) ? $client->clientJobTypes->where('job_type_id', 2)->first()?->visit_duration : '' }}" />
-
-                    </div>
-                    <div class="col-sm-12 col-lg-6">
-                        <x-input type="text" class="job-types" name="assessor_visit_duration"
-                            label="Assessor Visit Duration (hours)" :disabled="!isset($client) || !$client->clientJobTypes->contains('job_type_id', 3)"
-                            value="{{ isset($client) ? $client->clientJobTypes->where('job_type_id', 3)->first()?->visit_duration : '' }}" />
-
-                        <div class="form-group clearfix">
+                    <div class="col-md-6">
+                        <div class="form-group clearfix mb-4">
                             <label for="">Job Type</label>
                             <div class="row">
                                 @foreach ($jobTypes as $jobType)
@@ -110,6 +96,26 @@
                                 @endforeach
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-6">
+                        <x-input type="text" class="job-types" name="assessor_visit_duration"
+                            label="Assessor Visit Duration (hours)" :disabled="!isset($client) || !$client->clientJobTypes->contains('job_type_id', 3)"
+                            value="{{ isset($client) ? $client->clientJobTypes->where('job_type_id', 3)->first()?->visit_duration : '' }}" />
+
+                    </div>
+
+                    <div class="col-md 6">
+                        <x-input type="text" class="job-types" name="qai_visit_duration"
+                            label="QAI Visit Duration (hours)" :disabled="!isset($client) || !$client->clientJobTypes->contains('job_type_id', 1)"
+                            value="{{ isset($client) ? $client->clientJobTypes->where('job_type_id', 1)->first()?->visit_duration : '' }}" />
+
+                    </div>
+                    
+                    <div class="col-md 6">
+                        <x-input type="text" class="job-types" name="surveyor_visit_duration"
+                            label="Surveyor Visit Duration (hours)" :disabled="!isset($client) || !$client->clientJobTypes->contains('job_type_id', 2)"
+                            value="{{ isset($client) ? $client->clientJobTypes->where('job_type_id', 2)->first()?->visit_duration : '' }}" />
+
                     </div>
                 </div>
             </div>
