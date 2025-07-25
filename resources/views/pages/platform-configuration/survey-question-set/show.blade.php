@@ -87,7 +87,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <table id="example1" class="table table-bordered table-striped">
+                            <table class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>Question Number</th>
@@ -126,5 +126,5 @@
 
 @section('importedScripts')
     @include('includes.datatables-scripts')
-    <script src="{{ asset('assets/js/property-inspector.js') }}"></script>
+    <script src="{{ asset('assets/js/survey-question-set.js') }}"></script>
 @endsection

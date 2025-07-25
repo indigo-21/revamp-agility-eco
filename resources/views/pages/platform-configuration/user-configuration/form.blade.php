@@ -207,7 +207,7 @@
                                             :required="true" :disabled="isset($user) && in_array($user->account_level_id, [4, 5])">
                                             <option selected="selected" disabled value="">- Select Account Level -
                                             </option>
-                                            @if (in_array($user->account_level_id, [6, 7, 8]))
+                                            @if (isset($user) && in_array($user->account_level_id, [6, 7, 8]))
                                                 @foreach ($piLevels as $piLevel)
                                                     <option value="{{ $piLevel->id }}"
                                                         {{ old('account_level_id', isset($user) ? $user->account_level_id : '') == $piLevel->id ? 'selected' : '' }}>
