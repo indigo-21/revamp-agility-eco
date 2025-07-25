@@ -149,7 +149,7 @@
 
                 <div class="col-lg-9 col-md-8">
                     <div class="row">
-                        <div class="col-lg-5 col-6">
+                        <div class="col-lg-3 col-6">
                             <!-- small box -->
                             <div class="small-box bg-info">
                                 <div class="inner">
@@ -165,7 +165,7 @@
                             </div>
                         </div>
                         <!-- ./col -->
-                        <div class="col-lg-5 col-6">
+                        <div class="col-lg-3 col-6">
                             <!-- small box -->
                             <div class="small-box bg-success">
                                 <div class="inner">
@@ -180,7 +180,22 @@
                                         class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
-                        <div class="col-md-2 col-sm-6 col-2">
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-secondary">
+                                <div class="inner">
+                                    <h3>{{ $property_inspector->job->whereIn('job_status_id', [3])->count() }}</h3>
+
+                                    <p>Jobs Completed</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                                <a href="{{ route('make-booking.index') }}" class="small-box-footer">More info <i
+                                        class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-2">
                             <div class="small-box bg-warning">
                                 <div class="inner text-center">
                                     <i class="fa fa-calendar text-20"
