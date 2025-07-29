@@ -214,6 +214,13 @@
                                                         {{ $piLevel->name }}
                                                     </option>
                                                 @endforeach
+                                            @elseif (isset($user) && in_array($user->account_level_id, [1, 2, 3]))
+                                                @foreach ($adminLevels as $adminLevel)
+                                                    <option value="{{ $adminLevel->id }}"
+                                                        {{ old('account_level_id', isset($user) ? $user->account_level_id : '') == $adminLevel->id ? 'selected' : '' }}>
+                                                        {{ $adminLevel->name }}
+                                                    </option>
+                                                @endforeach
                                             @else
                                                 @foreach ($accountLevels as $accountLevel)
                                                     <option value="{{ $accountLevel->id }}"

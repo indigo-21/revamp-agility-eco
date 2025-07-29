@@ -50,6 +50,7 @@ $(function () {
                     console.log(value);
                     $('#job_type_id').append('<option value="' + value.job_type.id + '">' + value.job_type.type + '</option>');
                 });
+                $("#job_type_id").prop('disabled', false);
             },
             error: function (xhr, status, error) {
                 console.error("There was an error with the request: ", status, error);  // Handle errors

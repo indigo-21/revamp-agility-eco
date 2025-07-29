@@ -23,6 +23,7 @@
                             <th>Question Number</th>
                             <th>Question</th>
                             <th>Pass / Fail</th>
+                            <th>High / Low</th>
                             <th>Comments</th>
                             <th>Photo</th>
                             <th>Time</th>
@@ -36,6 +37,7 @@
                                     <td>{{ $completedJob->surveyQuestion->question_number }}</td>
                                     <td>{{ $completedJob->surveyQuestion->question }}</td>
                                     <td>{{ $completedJob->pass_fail }}</td>
+                                    <td>{{ $completedJob->surveyQuestion->nc_severity }}</td>
                                     <td>{{ $completedJob->comments }}</td>
                                     <td>
                                         @forelse ($completedJob->completedJobPhotos as $completedJobPhoto)

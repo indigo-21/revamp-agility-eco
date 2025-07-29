@@ -88,12 +88,15 @@ class UserController extends Controller
         $userTypes = UserType::all();
         $piLevels = AccountLevel::whereIn('id', [6, 7, 8])
             ->get();
+        $adminLevels = AccountLevel::whereIn('id', [1, 2, 3])
+            ->get();
 
         return view('pages.platform-configuration.user-configuration.form')
             ->with('user', $user)
             ->with('accountLevels', $accountLevels)
             ->with('userTypes', $userTypes)
-            ->with('piLevels', $piLevels);
+            ->with('piLevels', $piLevels)
+            ->with('adminLevels', $adminLevels);
     }
 
     /**

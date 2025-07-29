@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\FailedQuestion;
+use App\Enums\PassedQuestion;
+use App\Models\CompletedJob;
 use App\Models\Job;
 use Illuminate\Http\Request;
 
@@ -23,6 +26,10 @@ class ReportController extends Controller
             ->get();
         $jobCompleted = Job::whereIn('job_status_id', [1, 3, 16, 30, 31])
             ->get();
+        $failedQuestions = CompletedJob::whereIn('pass_fail', FailedQuestion::values())
+            ->orWhereIn('pass_fail', PassedQuestion::values())
+            ->with(['job', 'job.jobMeasure', 'job.propertyInspector.user'])
+            ->get();
 
         return view('pages.reports.index')
             ->with('jobNC', $jobNC)
@@ -30,6 +37,7 @@ class ReportController extends Controller
             ->with('jobUnbooked', $jobUnbooked)
             ->with('jobBooked', $jobBooked)
             ->with('jobPassedRemedial', $jobPassedRemedial)
-            ->with('jobCompleted', $jobCompleted);
+            ->with('jobCompleted', $jobCompleted)
+            ->with('failedQuestions', $failedQuestions);
     }
 }

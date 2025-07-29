@@ -47,6 +47,9 @@
                                         <a class="nav-link" id="passed-remedial-tab" data-toggle="pill"
                                             href="#passed-remedial" role="tab" aria-controls="passed-remedial"
                                             aria-selected="false">Passed Remedial</a>
+                                        <a class="nav-link" id="failed-questions-tab" data-toggle="pill"
+                                            href="#failed-questions" role="tab" aria-controls="failed-questions"
+                                            aria-selected="false">Failed Questions</a>
                                         {{-- <a class="nav-link" id="jobs-with-visits-tab" data-toggle="pill"
                                             href="#jobs-with-visits" role="tab" aria-controls="jobs-with-visits"
                                             aria-selected="false">Jobs with Visits</a> --}}
@@ -272,6 +275,50 @@
                                                             <td>{{ $job->booked_date ? \Carbon\Carbon::parse($job->booked_date)->format('d/m/Y') : 'N/A' }}
                                                             </td>
                                                             <td>{{ $job->scheme->short_name ?? 'N/A' }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="tab-pane fade" id="failed-questions" role="tabpanel"
+                                            aria-labelledby="failed-questions-tab">
+                                            <table class="table table-bordered table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Job Number</th>
+                                                        <th>Cert #</th>
+                                                        <th>UMR</th>
+                                                        <th>Property Inspector</th>
+                                                        <th>Measure Type</th>
+                                                        {{-- <th>Address</th>
+                                                        <th>Postcode</th> --}}
+                                                        {{-- <th>Installer</th> --}}
+                                                        <th>Question #</th>
+                                                        <th>Pass / Fail</th>
+                                                        <th>Last Comment</th>
+                                                        <th>High / Low</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($failedQuestions as $failedQuestion)
+                                                        <tr>
+                                                            <td>{{ $failedQuestion->job->job_number }}</td>
+                                                            <td>{{ $failedQuestion->job->cert_no }}</td>
+                                                            <td>{{ $failedQuestion->job->jobMeasure?->umr }}</td>
+                                                            <td>{{ $failedQuestion->job->propertyInspector?->user->firstname }}
+                                                                {{ $failedQuestion->job->propertyInspector?->user->lastname }}
+                                                            </td>
+                                                            <td>{{ $failedQuestion->job->jobMeasure->measure->measure_cat }}
+                                                            </td>
+                                                            {{-- <td>{{ $failedQuestion->job->property->address1 }}</td>
+                                                            <td>{{ $failedQuestion->job->property->postcode }}</td> --}}
+                                                            <td>{{ $failedQuestion->job->installer->user->firstname ?? 'N/A' }}
+                                                            </td>
+                                                            <td>{{ $failedQuestion->pass_fail }}</td>
+                                                            {{-- <td>{{ $failedQuestion->remediations?->where('role', 'Installer')?->last()?->comment ?? 'N/A' }}
+                                                            </td> --}}
+                                                            <td>{{ $failedQuestion->surveyQuestion->nc_severity }}</td>
+                                                            <td>{{ $failedQuestion->surveyQuestion->question_number }}</td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>

@@ -11,4 +11,9 @@ enum PassedQuestion: string
     case PassRemediation = 'Pass Remediation Overturned';
     case PassAppeal = 'Pass Appeal Overturned';
 
+    public static function values(): array
+    {
+        return array_map(fn(self $case) => $case->value, self::cases());
+    }
+
 }

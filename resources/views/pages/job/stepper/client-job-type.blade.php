@@ -13,7 +13,7 @@
                 </x-select>
             </div>
             <div class="col-sm-12 col-lg-6">
-                <x-select label="Job Type" name="job_type_id" :multiple="false">
+                <x-select label="Job Type" name="job_type_id" :multiple="false" :disabled="true">
                     <option value="" selected="selected" disabled>- Select Job Type -</option>
                 </x-select>
             </div>

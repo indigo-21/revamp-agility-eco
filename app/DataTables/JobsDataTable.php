@@ -135,7 +135,7 @@ class JobsDataTable extends DataTable
             ->setTableId('jobs-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->orderBy(1)
+            ->orderBy(0)
             ->selectStyleSingle()
             ->parameters([
                 'scrollX' => true, // Enable horizontal scrolling if needed

@@ -1,9 +1,11 @@
 $(function () {
     $("#remediationReviewTable").DataTable(
         {
+            dom: 'Bfrtip',
             responsive: true,
             autoWidth: false,
             filter: true,
+            "buttons": ["csv", "colvis"]
         }
     );
 

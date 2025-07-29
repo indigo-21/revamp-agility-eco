@@ -20,7 +20,7 @@ class MailService
             // Add BCC if needed
             if ($bcc) {
                 $message->bcc($employerEmail);
-                // ->bcc('james.zarsuelo@indigo21.com');
+                // $message->bcc([$employerEmail, 'james.zarsuelo@indigo21.com', 'christine.carillo@indigo21.com']);
             }
 
             if ($file !== null) {

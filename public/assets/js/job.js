@@ -2,8 +2,8 @@
 $(function () {
 
     $('.select2').select2({
-        sorter: function(data) {
-            return data.sort(function(a, b) {
+        sorter: function (data) {
+            return data.sort(function (a, b) {
                 return a.text.localeCompare(b.text);
             });
         }
@@ -89,6 +89,7 @@ $(function () {
                     console.log(value);
                     $('#job_type_id').append('<option value="' + value.job_type.id + '">' + value.job_type.type + '</option>');
                 });
+                $("#job_type_id").prop('disabled', false);
             },
             error: function (xhr, status, error) {
                 console.error("There was an error with the request: ", status, error);  // Handle errors
@@ -101,13 +102,13 @@ $(function () {
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 3000
+        timer: 5000
     });
 
-    if (typeof toastType !== 'undefined' && toastType === 'success') {
+    if (typeof toastType !== 'undefined' && toastType) {
         Toast.fire({
             icon: 'success',
-            title: 'Job deleted successfully'
+            title: toastType
         });
     }
 

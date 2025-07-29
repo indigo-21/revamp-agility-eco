@@ -48,7 +48,7 @@
                 </li>
                 <li class="user-footer">
 
-                    <a href="{{ route('profile.edit') }}" class="btn btn-default btn-flat">Profile</a>
+                    {{-- <a href="{{ route('profile.edit') }}" class="btn btn-default btn-flat">Profile</a> --}}
 
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

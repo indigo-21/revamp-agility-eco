@@ -230,6 +230,40 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            <div class="col-md-12">
+                                @if (session('message'))
+                                    <div class="alert alert-success">
+                                        {{ session('message') }}
+                                    </div>
+                                    <div class="progress mb-4">
+                                        <div class="progress-bar bg-primary progress-bar-striped" role="progressbar"
+                                            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
+                                            style="width: 40%">
+                                            <span class="sr-only">40% Complete (success)</span>
+                                        </div>
+                                    </div>
+                                @endif
+
+                            </div>
+
+                            {{-- <div class="col-md-4">
+                                <div class="info-box bg-info">
+                                    <span class="info-box-icon"><i class="far fa-bookmark"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Bookmarks</span>
+                                        <span class="info-box-number">30%</span>
+
+                                        <div class="progress">
+                                            <div class="progress-bar" style="width: 70%"></div>
+                                        </div>
+                                        <span class="progress-description">
+                                            70% Increase in 30 Days
+                                        </span>
+                                    </div>
+                                    <!-- /.info-box-content -->
+                                </div>
+                            </div> --}}
                             <table id="jobs-table" class="table table-bordered table-striped text-center">
                                 <thead>
                                     <tr>
@@ -286,8 +320,7 @@
                             <div class="col-md-12">
                                 <p>
                                     <i>Download the sample file to see the correct structure of the .csv file.
-                                        <a href="{{ asset('assets/files/Example Job Import.csv') }}"
-                                            download>Sample
+                                        <a href="{{ asset('assets/files/Example Job Import.csv') }}" download>Sample
                                             CSV
                                         </a>
                                     </i>
@@ -301,7 +334,7 @@
                                     @endforeach
                                 </x-select>
 
-                                <x-select label="Job Type" name="job_type_id" :multiple="false">
+                                <x-select label="Job Type" name="job_type_id" :multiple="false" :disabled="true">
                                     <option value="" selected="selected" disabled>- Select Job Type -</option>
                                 </x-select>
 
