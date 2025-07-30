@@ -33,7 +33,7 @@ class UserController extends Controller
     {
         $accountLevels = AccountLevel::whereNotIn('id', [4, 5, 6, 7, 8])
             ->get();
-        $userTypes = UserType::whereIn('id', [1, 2])
+        $userTypes = UserType::whereIn('id', [1, 2, 6])
             ->get();
 
         return view('pages.platform-configuration.user-configuration.form')

@@ -18,7 +18,8 @@ class UserTypeSeeder extends Seeder
             'Third-Party',
             'Installer',
             'Property Inspector',
-            'Client'
+            'Client',
+            'TalkOne',
         );
 
         foreach ($values as $value) {
