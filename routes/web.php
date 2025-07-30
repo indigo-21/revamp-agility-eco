@@ -55,6 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('navigation.access:job')->group(function () {
         Route::resource('job', JobController::class);
         Route::patch('job/{id}/closeJob', [JobController::class, 'closeJob']);
+        // Route::get('getQueueJobs', [JobController::class, 'getQueueJobs']);
     });
 
     // OPEN NC

@@ -25,7 +25,8 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table id="remediationReviewTable" class="table table-bordered table-striped">
+                            {!! $dataTable->table() !!}
+                            {{-- <table id="remediationReviewTable" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>Job Number</th>
@@ -67,7 +68,7 @@
                                         </tr>
                                     @endforeach
                                 </tbody>
-                            </table>
+                            </table> --}}
                         </div>
                     </div>
                 </div>
@@ -77,6 +78,7 @@
     <!-- /.content -->
 @endsection
 @section('importedScripts')
+    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
     @include('includes.datatables-scripts')
     <script src="{{ asset('assets/js/update-survey.js') }}"></script>
 @endsection

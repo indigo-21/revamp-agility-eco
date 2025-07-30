@@ -15,6 +15,16 @@ class ReportController extends Controller
         $jobNC = Job::where('job_status_id', 16)
             ->where('job_remediation_type', 'NC')
             ->get();
+
+        return view('pages.reports.index')
+            ->with('jobNC', $jobNC);
+    }
+
+    public function show(string $id)
+    {
+        $jobNC = Job::where('job_status_id', 16)
+            ->where('job_remediation_type', 'NC')
+            ->get();
         $jobCat1 = Job::where('job_status_id', 1)
             ->where('job_remediation_type', 'CAT1')
             ->get();
@@ -38,6 +48,7 @@ class ReportController extends Controller
             ->with('jobBooked', $jobBooked)
             ->with('jobPassedRemedial', $jobPassedRemedial)
             ->with('jobCompleted', $jobCompleted)
-            ->with('failedQuestions', $failedQuestions);
+            ->with('failedQuestions', $failedQuestions)
+            ->with('id', $id);
     }
 }

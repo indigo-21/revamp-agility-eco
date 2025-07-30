@@ -13,6 +13,7 @@ use App\Models\Job;
 use App\Models\JobStatus;
 use App\Models\Measure;
 use App\Models\OutwardPostcode;
+use App\Models\QueueJob;
 use App\Models\Scheme;
 use App\Models\UpdateSurvey;
 use App\Services\JobDispatcherService;
@@ -21,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
+use Response;
 
 class JobController extends Controller
 {
@@ -197,27 +199,32 @@ class JobController extends Controller
             } else {
                 // Large files - process asynchronously
                 $batchSize = $jobDataCount > 100 ? 10 : 25; // Smaller batches for very large files
-                // $batchIds = [];
+                $batchIds = [];
+
+                // Set initial queue count for progress tracking
+                session(['initial_queue_count' => $jobDataCount]);
 
                 // Split data into batches and dispatch
                 $batches = array_chunk($processedData, $batchSize);
-                // foreach ($batches as $index => $batch) {
-                //     foreach ($batch as $row) {
-                //         // $batchId = "upload_{$fileName}_{$index}_" . now()->format('YmdHis');
-                //         $this->jobDispatcherService->dispatchJob($row);
-                //         // $batchIds[] = $batchId;
-                //     }
-                // }
+                foreach ($batches as $index => $batch) {
+                    foreach ($batch as $row) {
+                        $batchId = "upload_{$fileName}_{$index}_" . now()->format('YmdHis');
+                        $this->jobDispatcherService->dispatchJob($row);
+                        $batchIds[] = $batchId;
+                    }
+                }
 
-                // Log::info("JobController: File upload queued for processing", [
-                //     'filename' => $fileName,
-                //     'records_queued' => $jobDataCount,
-                //     'batches_created' => count($batches)
-                // ]);
+                Log::info("JobController: File upload queued for processing", [
+                    'filename' => $fileName,
+                    'records_queued' => $jobDataCount,
+                    'batches_created' => count($batches),
+                    'initial_queue_count' => $jobDataCount
+                ]);
 
                 return redirect()->back()
-                    ->with('success', "Jobs queued for processing.")
-                    ->with('message', " {$jobDataCount} records will be processed asynchronously in " . count($batches) . " batches. Please wait for the job to complete since there are multiple records to process.");
+                    ->with('success', "Jobs queued for processing. {$jobDataCount} records will be processed asynchronously in " . count($batches) . " batches. Please wait for the job to complete since there are multiple records to process.")
+                    ->with('dataCount', $jobDataCount)
+                    ->with('showProgress', true);
             }
         } catch (\Exception $e) {
             Log::error("JobController: File upload failed", [
@@ -260,6 +267,109 @@ class JobController extends Controller
 
         return response()->json([
             'message' => 'Duplicate jobs removed successfully'
+        ]);
+    }
+
+    // public function getQueueJobs()
+    // {
+    //     $queueJobs = QueueJob::where('queue', 'job-allocation')
+    //         ->count();
+
+    //     return Response::json([
+    //         'queue_jobs_count' => $queueJobs
+    //     ]);
+    // }
+
+    /**
+     * Get detailed queue status for progress tracking
+     */
+    public function getQueueStatus()
+    {
+        try {
+            // Get queue jobs for job-allocation queues
+            $jobAllocationJobs = \DB::table('queue_jobs')
+                ->where('queue', 'job-allocation')
+                ->count();
+
+            $batchAllocationJobs = \DB::table('queue_jobs')
+                ->where('queue', 'job-allocation-batch')
+                ->count();
+
+            // Get failed jobs
+            $failedJobs = \DB::table('queue_failed_jobs')
+                ->where(function ($query) {
+                    $query->where('queue', 'job-allocation')
+                        ->orWhere('queue', 'job-allocation-batch');
+                })
+                ->count();
+
+            // Calculate total pending jobs
+            $totalPending = $jobAllocationJobs + $batchAllocationJobs;
+
+            // Get the initial count from session or estimate
+            $initialCount = session('initial_queue_count', $totalPending);
+
+            // If we have an initial count and current pending is less, calculate progress
+            $processed = max(0, $initialCount - $totalPending);
+            $progressPercentage = $initialCount > 0 ? round(($processed / $initialCount) * 100, 2) : 0;
+
+            // If no jobs are pending and we had an initial count, we're done
+            if ($totalPending === 0 && $initialCount > 0) {
+                $progressPercentage = 100;
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'job_allocation_pending' => $jobAllocationJobs,
+                    'batch_allocation_pending' => $batchAllocationJobs,
+                    'total_pending' => $totalPending,
+                    'failed_jobs' => $failedJobs,
+                    'initial_count' => $initialCount,
+                    'processed' => $processed,
+                    'progress_percentage' => $progressPercentage,
+                    'is_processing' => $totalPending > 0,
+                    'status' => $totalPending > 0 ? 'processing' : 'completed'
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error("JobController: Failed to get queue status", [
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to get queue status',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Set initial queue count for progress tracking
+     */
+    public function setInitialQueueCount(Request $request)
+    {
+        $count = $request->input('count', 0);
+        session(['initial_queue_count' => $count]);
+
+        return response()->json([
+            'success' => true,
+            'initial_count' => $count
+        ]);
+    }
+
+    /**
+     * Reset queue progress tracking
+     */
+    public function resetQueueProgress()
+    {
+        session()->forget('initial_queue_count');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Queue progress reset'
         ]);
     }
 }

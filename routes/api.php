@@ -3,6 +3,7 @@
 use App\Http\Controllers\api\DataSyncController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompletedJobPhotoController;
+use App\Http\Controllers\JobController;
 use App\Http\Controllers\SMSSendController;
 use App\Http\Controllers\TempSyncLogsController;
 use Illuminate\Http\Request;
@@ -20,6 +21,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/upload-completed-job-photo', [CompletedJobPhotoController::class, 'uploadCompletedJobPhoto']);
 
 });
+
+// Queue status API endpoints
+Route::get('queue-status', [JobController::class, 'getQueueStatus'])->name('queue-status');
+Route::post('queue-count', [JobController::class, 'setInitialQueueCount'])->name('queue-count');
+Route::delete('queue-progress', [JobController::class, 'resetQueueProgress'])->name('queue-reset');
 
 
 // Route::get('/db-check', function () {

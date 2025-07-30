@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/daterangepicker/daterangepicker.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/queue-progress.css') }}">
 @endsection
 
 @section('content')
@@ -231,17 +232,63 @@
                         </div>
                         <div class="card-body">
                             <div class="col-md-12">
-                                @if (session('message'))
-                                    <div class="alert alert-success">
-                                        {{ session('message') }}
+                                @if (session('success'))
+                                    <div class="alert alert-success" id="successAlert">
+                                        {{ session('success') }}
+                                        @if (session('showProgress'))
+                                            <button type="button" class="btn btn-sm btn-outline-secondary ml-2"
+                                                id="hideProgressBtn">Hide Progress</button>
+                                        @endif
                                     </div>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-primary progress-bar-striped" role="progressbar"
-                                            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"
-                                            style="width: 40%">
-                                            <span class="sr-only">40% Complete (success)</span>
+
+                                    @if (session('showProgress'))
+                                        <div id="queueProgressContainer" class="mb-4">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h6 class="mb-0">Job Processing Progress</h6>
+                                                <div class="d-flex align-items-center">
+                                                    <span id="progressText" class="text-muted mr-3">Initializing...</span>
+                                                    <button type="button" class="btn btn-sm btn-outline-primary"
+                                                        id="refreshProgressBtn">
+                                                        <i class="fas fa-sync-alt"></i> Refresh
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div class="progress mb-2" style="height: 25px;">
+                                                <div class="progress-bar bg-primary progress-bar-striped progress-bar-animated"
+                                                    role="progressbar" id="progressBar" aria-valuenow="0"
+                                                    aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                                    <span id="progressPercentage">0%</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row text-center">
+                                                <div class="col-md-3">
+                                                    <small class="text-muted">Total Jobs</small>
+                                                    <div class="font-weight-bold" id="totalJobs">
+                                                        {{ session('dataCount', 0) }}</div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <small class="text-muted">Processed</small>
+                                                    <div class="font-weight-bold text-success" id="processedJobs">0</div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <small class="text-muted">Pending</small>
+                                                    <div class="font-weight-bold text-warning" id="pendingJobs">
+                                                        {{ session('dataCount', 0) }}</div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <small class="text-muted">Failed</small>
+                                                    <div class="font-weight-bold text-danger" id="failedJobs">0</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-2">
+                                                <small class="text-muted" id="statusText">Processing jobs in
+                                                    background...</small>
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endif
                                 @endif
 
                             </div>
@@ -390,6 +437,8 @@
     {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
     <script>
         var toastType = @json(session('success'));
+        var showProgress = @json(session('showProgress', false));
+        var initialDataCount = @json(session('dataCount', 0));
     </script>
     <!-- Select2 -->
     <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>

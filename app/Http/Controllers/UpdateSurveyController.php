@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\UpdateSurveyDataTable;
 use App\Models\CompletedJob;
 use App\Models\Job;
 use Illuminate\Http\Request;
@@ -11,13 +12,16 @@ class UpdateSurveyController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(UpdateSurveyDataTable $updateSurveyDataTable)
     {
-        $jobs = Job::whereIn('job_status_id', [3, 16, 26])
-            ->get();
+        // $jobs = Job::whereIn('job_status_id', [3, 16, 26])
+        //     ->get();
 
-        return view('pages.update-survey.index')
-            ->with('jobs', $jobs);
+        // return view('pages.update-survey.index')
+        //     ->with('jobs', $jobs);
+
+        return $updateSurveyDataTable->render('pages.update-survey.index');
+
     }
 
     /**

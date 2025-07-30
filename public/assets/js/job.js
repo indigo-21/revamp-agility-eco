@@ -181,3 +181,136 @@ $('#removeDuplicates').on('click', function () {
         }
     });
 });
+
+// Queue Progress Tracking
+$(document).ready(function () {
+    let progressInterval;
+    let progressContainer = $('#queueProgressContainer');
+
+    // Start progress tracking if enabled
+    if (showProgress && progressContainer.length > 0) {
+        startProgressTracking();
+    }
+
+    // Hide progress button
+    $('#hideProgressBtn').click(function () {
+        stopProgressTracking();
+        progressContainer.hide();
+        $('#successAlert').find('#hideProgressBtn').hide();
+    });
+
+    // Refresh progress button
+    $('#refreshProgressBtn').click(function () {
+        updateProgress();
+    });
+
+    function startProgressTracking() {
+        // Initial update
+        updateProgress();
+
+        // Set up interval for updates every 3 seconds
+        progressInterval = setInterval(function () {
+            updateProgress();
+        }, 3000);
+    }
+
+    function stopProgressTracking() {
+        if (progressInterval) {
+            clearInterval(progressInterval);
+            progressInterval = null;
+        }
+    }
+
+    function updateProgress() {
+        $.ajax({
+            url: "api/queue-status",
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    updateProgressUI(response.data);
+
+                    // Stop tracking if completed
+                    if (response.data.status === 'completed') {
+                        stopProgressTracking();
+                        showCompletionMessage();
+                    }
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Failed to fetch progress:', error);
+                $('#statusText').text('Error fetching progress. Please refresh the page.');
+            }
+        });
+    }
+
+    function updateProgressUI(data) {
+        // Update progress bar
+        let percentage = Math.max(0, Math.min(100, data.progress_percentage));
+        $('#progressBar').css('width', percentage + '%');
+        $('#progressBar').attr('aria-valuenow', percentage);
+        $('#progressPercentage').text(percentage.toFixed(1) + '%');
+
+        // Update statistics
+        $('#totalJobs').text(data.initial_count || initialDataCount);
+        $('#processedJobs').text(data.processed);
+        $('#pendingJobs').text(data.total_pending);
+        $('#failedJobs').text(data.failed_jobs);
+
+        // Update status text
+        let statusText = '';
+        if (data.is_processing) {
+            statusText = `Processing ${data.total_pending} remaining jobs...`;
+            $('#progressBar').addClass('progress-bar-animated');
+        } else {
+            statusText = 'All jobs completed successfully!';
+            $('#progressBar').removeClass('progress-bar-animated');
+        }
+
+        if (data.failed_jobs > 0) {
+            statusText += ` (${data.failed_jobs} failed)`;
+        }
+
+        $('#statusText').text(statusText);
+
+        // Update progress text
+        let progressText = `${data.processed}/${data.initial_count || initialDataCount} completed`;
+        if (data.failed_jobs > 0) {
+            progressText += ` (${data.failed_jobs} failed)`;
+        }
+        $('#progressText').text(progressText);
+
+        // Change progress bar color based on status
+        if (data.failed_jobs > 0) {
+            $('#progressBar').removeClass('bg-primary bg-success').addClass('bg-warning');
+        } else if (!data.is_processing) {
+            $('#progressBar').removeClass('bg-primary bg-warning').addClass('bg-success');
+        } else {
+            $('#progressBar').removeClass('bg-warning bg-success').addClass('bg-primary');
+        }
+    }
+
+    function showCompletionMessage() {
+        // Update the alert to show completion
+        setTimeout(function () {
+            $('#successAlert').removeClass('alert-success').addClass('alert-info');
+            $('#successAlert').html(`
+                        <i class="fas fa-check-circle"></i> All jobs have been processed successfully! 
+                        <button type="button" class="btn btn-sm btn-outline-secondary ml-2" onclick="location.reload()">
+                            Refresh Page
+                        </button>
+                    `);
+
+            // Optionally refresh the DataTable
+            if (typeof window.LaravelDataTables !== 'undefined' && window.LaravelDataTables[
+                'jobs-table']) {
+                window.LaravelDataTables['jobs-table'].ajax.reload();
+            }
+        }, 1000);
+    }
+
+    // Clean up interval when page is being unloaded
+    $(window).on('beforeunload', function () {
+        stopProgressTracking();
+    });
+});
