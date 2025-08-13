@@ -9,7 +9,7 @@
             </div>
             <div class="col-12 col-md-6">
                 <x-date name="photo_expiry" label="Photo Expiry Date"
-                    value="{{ isset($property_inspector) ? $property_inspector->photo_expiry : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->photo_expiry : '' }}"/>
             </div>
         </div>
         <div class="row">
@@ -20,13 +20,13 @@
             <div class="col-12 col-md-6">
 
                 <x-date name="id_issued" label="ID Badge Issue Date"
-                    value="{{ isset($property_inspector) ? $property_inspector->id_issued : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->id_issued : '' }}" :required="true"/>
 
                 <x-date name="id_expiry" label="ID Badge Expiry Date"
-                    value="{{ isset($property_inspector) ? $property_inspector->id_expiry : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->id_expiry : '' }}" :required="true"/>
 
                 <x-input name="id_revision" label="ID Badge Rev"
-                    value="{{ isset($property_inspector) ? $property_inspector->id_revision : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->id_revision : '' }}" :required="true"/>
 
                 <x-select label="ID Badge Location" name="id_location" :multiple="false">
                     <option value="With Property Inspector"
@@ -40,7 +40,7 @@
                 </x-select>
 
                 <x-date name="id_return" label="Date ID Badge Returned"
-                    value="{{ isset($property_inspector) ? $property_inspector->id_return : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->id_return : '' }}" :required="true"/>
 
             </div>
         </div>

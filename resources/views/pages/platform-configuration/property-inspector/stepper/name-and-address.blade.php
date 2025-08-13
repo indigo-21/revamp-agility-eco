@@ -7,26 +7,26 @@
             <div class="col-12 col-md-6">
 
                 <x-input name="firstname" label="First Name"
-                    value="{{ isset($property_inspector) ? $property_inspector->user->firstname : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->user->firstname : '' }}" :required="true"/>
 
                 <x-input name="lastname" label="Last Name"
-                    value="{{ isset($property_inspector) ? $property_inspector->user->lastname : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->user->lastname : '' }}" :required="true"/>
 
                 <x-input name="mobile" label="Mobile"
-                    value="{{ isset($property_inspector) ? $property_inspector->user->mobile : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->user->mobile : '' }}" :required="true"/>
 
                 <x-input name="landline" label="Landline"
                     value="{{ isset($property_inspector) ? $property_inspector->user->landline : '' }}" />
 
                 <x-input name="email" label="Email" type="email"
-                    value="{{ isset($property_inspector) ? $property_inspector->user->email : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->user->email : '' }}" :required="true"/>
 
                 <x-input name="organisation" label="Organisation"
-                    value="{{ isset($property_inspector) ? $property_inspector->user->organisation : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->user->organisation : '' }}" :required="true"/>
             </div>
             <div class="col-12 col-md-6">
                 <x-input name="address1" label="Address 1"
-                    value="{{ isset($property_inspector) ? $property_inspector->address1 : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->address1 : '' }}" :required="true"/>
 
                 <x-input name="address2" label="Address 2"
                     value="{{ isset($property_inspector) ? $property_inspector->address2 : '' }}" />
@@ -35,13 +35,13 @@
                     value="{{ isset($property_inspector) ? $property_inspector->address3 : '' }}" />
 
                 <x-input name="city" label="City"
-                    value="{{ isset($property_inspector) ? $property_inspector->city : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->city : '' }}" :required="true"/>
 
                 <x-input name="county" label="County"
-                    value="{{ isset($property_inspector) ? $property_inspector->county : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->county : '' }}" :required="true"/>
 
                 <x-input name="postcode" label="Postcode"
-                    value="{{ isset($property_inspector) ? $property_inspector->postcode : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->postcode : '' }}" :required="true"/>
 
             </div>
         </div>

@@ -78,7 +78,8 @@
                 <div class="row">
                     <div class="col-md-12">
 
-                        <x-select label="Employment Basis" name="account_level_id" :multiple="false">
+                        <x-select label="Employment Basis" name="account_level_id" :multiple="false"
+                            :required="true">
                             <option selected="selected" disabled value="">- Employment Basis -</option>
                             @foreach ($employment_basis as $employment)
                                 <option value="{{ $employment->id }}"
@@ -89,7 +90,8 @@
                         </x-select>
 
                         <x-input name="pi_employer" label="Employer"
-                            value="{{ isset($property_inspector) ? $property_inspector->pi_employer : env('EMPLOYER') }}" />
+                            value="{{ isset($property_inspector) ? $property_inspector->pi_employer : env('EMPLOYER') }}"
+                            :required="true" />
 
                         @foreach ($job_types as $job_type)
                             <x-input name="{{ $job_type->type }}_rating" label="{{ $job_type->type }} Rating"

@@ -19,15 +19,15 @@
 
                 <x-input name="property_visit_fee" label="Property Visit Fee" type="number"
                     value="{{ isset($property_inspector) ? $property_inspector->property_visit_fee : '' }}"
-                     />
+                     :required="true"/>
 
                 <x-input name="property_fee_currency" label="Fee Currency" value="GBP"
                     value="{{ isset($property_inspector) ? $property_inspector->property_fee_currency : 'GBP' }}"
-                     />
+                     :required="true"/>
 
                 <x-input name="payment_terms" label="Payment Terms(days)" type="number"
                     value="{{ isset($property_inspector) ? $property_inspector->payment_terms : '' }}"
-                     />
+                     :required="true"/>
 
                 <x-radio-layout label="VAT Registered">
                     <div class="col-md-6">
@@ -51,7 +51,7 @@
             <div class="col-12 col-md-6">
 
                 <x-input name="registered_id_number" label="PI Registered ID Number"
-                    value="{{ isset($property_inspector) ? $property_inspector->registered_id_number : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->registered_id_number : '' }}" :required="true"/>
 
                 <x-radio-layout label="Audit Jobs">
                     <div class="col-md-6">
@@ -71,7 +71,7 @@
                     </div>
                 </x-radio-layout>
 
-                <x-select label="Postcode will visit" name="outward_postcode_id[]" :multiple="true">
+                <x-select label="Postcode will visit" name="outward_postcode_id[]" :multiple="true" >
                     @foreach ($outward_postcodes as $outward_postcode)
                         <option value="{{ $outward_postcode->id }}"
                             {{ isset($property_inspector) &&
@@ -83,7 +83,7 @@
                 </x-select>
 
                 <x-input name="hours_spent" label="Hours Spent Surveying in Typical Work Day"
-                    value="{{ isset($property_inspector) ? $property_inspector->hours_spent : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->hours_spent : '' }}" :required="true"/>
 
                 <x-radio-layout label="Work on Saturday">
                     <div class="col-md-6">
