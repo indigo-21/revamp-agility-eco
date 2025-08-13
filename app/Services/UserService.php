@@ -19,6 +19,8 @@ class UserService
         } else {
             $user = new User();
             $user->fill(['password' => $randomPassword]);
+            $user->user_type_id = $request->user_type_id;
+            $user->account_level_id = $request->account_level_id;
         }
 
         $profile_image = (new StoreImage)->store($request, 'photo', 'profile_images');
@@ -28,8 +30,6 @@ class UserService
         }
 
         $user->firstname = $request->firstname;
-        $user->user_type_id = $request->user_type_id;
-        $user->account_level_id = $request->account_level_id;
         $user->lastname = $request->lastname;
         $user->email = $request->email;
         $user->organisation = $request->organisation;
