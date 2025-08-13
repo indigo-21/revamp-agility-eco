@@ -110,4 +110,5 @@
     <script src="{{ asset('plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
     @include('includes.datatables-scripts')
     <script src="{{ asset('assets/js/job-stepper.js') }}"></script>
+    <script src="{{ asset('assets/js/global/validation.js') }}"></script>
 @endsection

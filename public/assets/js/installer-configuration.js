@@ -2,8 +2,10 @@ $(function () {
     $("#installerConfigurationTable").DataTable();
 
     // Initialize Select2 Elements only if they exist
-    if ($('.select2').length > 0) {
-        $('.select2').select2();
+    if ($('.select2bs4').length > 0) {
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
     }
 
     // Initialize Swal Toast only if Swal is defined

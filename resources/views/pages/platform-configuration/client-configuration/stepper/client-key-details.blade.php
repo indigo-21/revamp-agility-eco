@@ -3,7 +3,7 @@
         <h3 class="card-title">Client Key Details</h3>
     </div>
     <div class="card-body">
-        <div class="row">
+        <div class="row validation-row">
             <div class="col-sm-12 col-lg-12">
                 <div class="row">
                     <div class="col-sm-12 col-lg-6">
@@ -27,10 +27,10 @@
                         </x-radio-layout>
 
                         <x-input type="text" name="firstname" label="Client Name"
-                            value="{{ isset($client) ? $client->user->firstname : '' }}" />
+                            value="{{ isset($client) ? $client->user->firstname : '' }}" :required="true" />
 
                         <x-input type="text" name="client_abbrevation" label="Client Abbrevation"
-                            value="{{ isset($client) ? $client->client_abbrevation : '' }}" />
+                            value="{{ isset($client) ? $client->client_abbrevation : '' }}" :required="true" />
 
                         <x-input type="text" name="date_last_activated" label="Date Last Activated"
                             value="{{ isset($client) ? $client->date_last_activated : '' }}" :disabled="true" />
@@ -57,9 +57,9 @@
                         </x-radio-layout>
 
                         <x-input type="text" name="organisation" label="Organisation"
-                            value="{{ isset($client) ? $client->user->organisation : '' }}" />
+                            value="{{ isset($client) ? $client->user->organisation : '' }}" :required="true" />
 
-                        <x-select label="Client Type" name="client_type_id">
+                        <x-select label="Client Type" name="client_type_id" :required="true">
                             <option selected="selected" disabled value="">-Select Client Type-</option>
                             @foreach ($clientTypes as $clientType)
                                 <option
@@ -110,7 +110,7 @@
                             value="{{ isset($client) ? $client->clientJobTypes->where('job_type_id', 1)->first()?->visit_duration : '' }}" />
 
                     </div>
-                    
+
                     <div class="col-md 6">
                         <x-input type="text" class="job-types" name="surveyor_visit_duration"
                             label="Surveyor Visit Duration (hours)" :disabled="!isset($client) || !$client->clientJobTypes->contains('job_type_id', 2)"
@@ -128,20 +128,20 @@
                     </div>
                     <div class="col-sm-12 col-lg-6">
                         <x-input type="email" name="email" label="Exceptions Email"
-                            value="{{ isset($client) ? $client->user->email : '' }}" />
+                            value="{{ isset($client) ? $client->user->email : '' }}" :required="true" />
 
                         <x-input type="text" name="mobile" label="Phone Number"
-                            value="{{ isset($client) ? $client->user->mobile : '' }}" />
+                            value="{{ isset($client) ? $client->user->mobile : '' }}" :required="true" />
 
                         <x-input type="text" name="country" label="County"
-                            value="{{ isset($client) ? $client->country : '' }}" />
+                            value="{{ isset($client) ? $client->country : '' }}" :required="true" />
 
                         <x-input type="text" name="postcode" label="Postcode"
-                            value="{{ isset($client) ? $client->postcode : '' }}" />
+                            value="{{ isset($client) ? $client->postcode : '' }}" :required="true" />
                     </div>
                     <div class="col-sm-12 col-lg-6">
                         <x-input type="text" name="address1" label="Address 1"
-                            value="{{ isset($client) ? $client->address1 : '' }}" />
+                            value="{{ isset($client) ? $client->address1 : '' }}" :required="true" />
 
                         <x-input type="text" name="address2" label="Address 2"
                             value="{{ isset($client) ? $client->address2 : '' }}" />
@@ -150,7 +150,7 @@
                             value="{{ isset($client) ? $client->address3 : '' }}" />
 
                         <x-input type="text" name="city" label="City"
-                            value="{{ isset($client) ? $client->city : '' }}" />
+                            value="{{ isset($client) ? $client->city : '' }}" :required="true" />
 
                     </div>
 
@@ -162,7 +162,7 @@
                         <h3>Financial Information</h3>
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                        <x-select label="Charging Scheme" name="charging_scheme_id">
+                        <x-select label="Charging Scheme" name="charging_scheme_id" :required="true">
                             <option selected="selected" disabled value="">-Select Charging Scheme-</option>
                             @foreach ($chargingSchemes as $chargingScheme)
                                 <option value="{{ $chargingScheme->id }}"

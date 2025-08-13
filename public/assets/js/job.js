@@ -1,7 +1,7 @@
 
 $(function () {
 
-    $('.select2').select2({
+    $('.select2bs4').select2({
         sorter: function (data) {
             return data.sort(function (a, b) {
                 return a.text.localeCompare(b.text);

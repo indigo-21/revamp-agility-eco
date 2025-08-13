@@ -3,9 +3,9 @@
         <h3 class="card-title">Client & Job Type</h3>
     </div>
     <div class="card-body">
-        <div class="row">
+        <div class="row validation-row">
             <div class="col-sm-12 col-lg-6">
-                <x-select label="Client" name="client_id" :multiple="false">
+                <x-select label="Client" name="client_id" :multiple="false" :required="true">
                     <option value="" selected="selected" disabled>- Select Client -</option>
                     @foreach ($clients as $client)
                         <option value="{{ $client->id }}">{{ $client->client_abbrevation }}</option>
@@ -13,7 +13,7 @@
                 </x-select>
             </div>
             <div class="col-sm-12 col-lg-6">
-                <x-select label="Job Type" name="job_type_id" :multiple="false" :disabled="true">
+                <x-select label="Job Type" name="job_type_id" :multiple="false" :disabled="true" :required="true">
                     <option value="" selected="selected" disabled>- Select Job Type -</option>
                 </x-select>
             </div>

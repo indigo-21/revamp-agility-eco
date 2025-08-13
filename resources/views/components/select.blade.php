@@ -2,8 +2,8 @@
 
 <div class="form-group">
     <label>{{ $label }}</label>
-    <select class="form-control select2 w-100" id="{{ $id ?? $name }}" name="{{ $name }}"
-        {{ $multiple ? 'multiple' : '' }} @required($required) {{ $attributes }}>
+    <select class="form-control select2bs4 " id="{{ $id ?? $name }}"
+        name="{{ $name }}" {{ $multiple ? 'multiple' : '' }} @required($required) {{ $attributes }}>
         {{ $slot }}
     </select>
     <div class="invalid-feedback"></div>

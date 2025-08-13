@@ -91,4 +91,5 @@
     <!-- Tempusdominus Bootstrap 4 -->
     <script src="{{ asset('plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
     <script src="{{ asset('assets/js/client-configuration-form.js') }}"></script>
+    <script src="{{ asset('assets/js/global/validation.js') }}"></script>
 @endsection

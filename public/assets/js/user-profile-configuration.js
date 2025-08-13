@@ -34,7 +34,7 @@ $(function () {
 
 function initializeSelect2() {
     // Initialize Select2 with custom configuration
-    $('.select2').select2({
+    $('.select2bs4').select2({
         theme: 'bootstrap4',
         width: '100%',
         minimumResultsForSearch: Infinity // Disable search for simple dropdowns

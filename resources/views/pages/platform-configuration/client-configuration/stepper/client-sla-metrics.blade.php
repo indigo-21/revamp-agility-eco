@@ -3,31 +3,31 @@
         <h3 class="card-title">Client SLA Metrics</h3>
     </div>
     <div class="card-body">
-        <div class="row">
+        <div class="row validation-row">
             <div class="col-md-6">
                 {{-- <x-input type="text" name="client_maximum_retries" label="Client Maximum Retries"
                     value="{{ isset($client) ? $client->clientSlaMetric->client_maximum_retries : '' }}"
                     inputformat="[0-9]" /> --}}
 
                 <x-input type="text" name="job_deadline" label="Job deadline"
-                    value="{{ isset($client) ? $client->clientSlaMetric->job_deadline : '' }}" inputformat="[0-9]" />
+                    value="{{ isset($client) ? $client->clientSlaMetric->job_deadline : '' }}" inputformat="[0-9]" :required="true" />
 
                 <x-input type="text" name="maximum_booking_attempts" label="Maximum Booking Attemtps"
                     value="{{ isset($client) ? $client->clientSlaMetric->maximum_booking_attempts : '' }}"
-                    inputformat="[0-9]" />
+                    inputformat="[0-9]" :required="true" />
 
                 <x-input type="text" name="maximum_remediation_attempts" label="Maximum Remediation Attemtps"
                     value="{{ isset($client) ? $client->clientSlaMetric->maximum_remediation_attempts : '' }}"
-                    inputformat="[0-9]" />
+                    inputformat="[0-9]" :required="true" />
             </div>
             <div class="col-md-6">
 
                 <x-input type="text" name="maximum_no_show" label="Maximum No Show"
-                    value="{{ isset($client) ? $client->clientSlaMetric->maximum_no_show : '' }}" inputformat="[0-9]" />
+                    value="{{ isset($client) ? $client->clientSlaMetric->maximum_no_show : '' }}" inputformat="[0-9]" :required="true" />
 
                 <x-input type="text" name="maximum_number_appeals" label="Maximum Number of Appeals"
                     value="{{ isset($client) ? $client->clientSlaMetric->maximum_number_appeals : '' }}"
-                    inputformat="[0-9]" />
+                    inputformat="[0-9]" :required="true" />
             </div>
             <div class="col-sm-12 col-lg-6">
                 <x-client-sla-metrics title="CAT1 Remediate Notify" name="cat1_remediate_notify"

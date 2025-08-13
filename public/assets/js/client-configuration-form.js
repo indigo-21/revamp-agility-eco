@@ -3,50 +3,53 @@ $(function () {
     $('.duallistbox').bootstrapDualListbox()
 
     //Initialize Select2 Elements
-    $('.select2').select2();
+    $('.select2bs4').select2({
+        theme: 'bootstrap4'
+    })
     //End Initialize Elements Plugin
 
-    ["QAI", "Assessor", "Surveyor"].forEach(function (id) {
+    var roles = ["QAI", "Assessor", "Surveyor"];
+    roles.forEach(function (id) {
         $("#" + id).on('change', function () {
             $("#" + id.toLowerCase() + "_visit_duration").attr('disabled', !this.checked);
         });
     });
 
-    // STEPPER SCRIPT
-    let stepIndex = 0;
-    let steps = $(".step");
-    let stepNav = $(".stepper-nav")
-    let progressBar = $("#progress-bar");
-    let totalSteps = steps.length;
+    // // STEPPER SCRIPT
+    // let stepIndex = 0;
+    // let steps = $(".step");
+    // let stepNav = $(".stepper-nav")
+    // let progressBar = $("#progress-bar");
+    // let totalSteps = steps.length;
 
 
-    function updateStepper() {
-        steps.removeClass("active-step").eq(stepIndex).addClass("active-step");
-        progressBar.css("width", ((stepIndex + 1) / totalSteps) * 100 + "%");
-        progressBar.css("width", ((stepIndex + 1) / totalSteps) * 100 + "%");
-        progressBar.text("Step " + (stepIndex + 1));
-        stepNav.removeClass("btn-primary")
-            .addClass("btn-outline-primary")
-            .eq(stepIndex)
-            .removeClass("btn-outline-primary")
-            .addClass("btn-primary");
+    // function updateStepper() {
+    //     steps.removeClass("active-step").eq(stepIndex).addClass("active-step");
+    //     progressBar.css("width", ((stepIndex + 1) / totalSteps) * 100 + "%");
+    //     progressBar.css("width", ((stepIndex + 1) / totalSteps) * 100 + "%");
+    //     progressBar.text("Step " + (stepIndex + 1));
+    //     stepNav.removeClass("btn-primary")
+    //         .addClass("btn-outline-primary")
+    //         .eq(stepIndex)
+    //         .removeClass("btn-outline-primary")
+    //         .addClass("btn-primary");
 
-    }
+    // }
 
-    $(".next").click(function () {
-        if (stepIndex < totalSteps - 1) {
-            stepIndex++;
-            updateStepper();
-        }
-    });
+    // $(".next").click(function () {
+    //     if (stepIndex < totalSteps - 1) {
+    //         stepIndex++;
+    //         updateStepper();
+    //     }
+    // });
 
-    $(".prev").click(function () {
-        if (stepIndex > 0) {
-            stepIndex--;
-            updateStepper();
-        }
-    });
-    // END STEPPER SCRIPT
+    // $(".prev").click(function () {
+    //     if (stepIndex > 0) {
+    //         stepIndex--;
+    //         updateStepper();
+    //     }
+    // });
+    // // END STEPPER SCRIPT
 
     function validateMeasuresFields() {
         let measureCat = $('select[name="measure_id"]').val();

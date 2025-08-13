@@ -1,6 +1,8 @@
 $(function () {
 
-    $('.select2').select2();
+    $('.select2bs4').select2({
+        theme: 'bootstrap4'
+    })
 
     $('#property_inspector_id').on('change', function () {
 

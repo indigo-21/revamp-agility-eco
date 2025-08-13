@@ -1,150 +1,61 @@
-// FORMAT TEXT PATTERN
-// // Accept Only letters and spaces
-// onlyTextRegex = /^[a-zA-Z\s]*$/;
+$(document).ready(function () {
+    // STEPPER SCRIPT
+    let stepIndex = 0;
+    let steps = $(".step");
+    let stepNav = $(".stepper-nav")
+    let progressBar = $("#progress-bar");
+    let totalSteps = steps.length;
 
-// // Accept Only numbers
-// onlyNumberRegex = /^[0-9]*$/;
+    $('.next').on('click', function () {
+        // Get the current active step
+        const currentStep = steps.eq(stepIndex);
+        console.log('Current step:', currentStep);
+        const stepId = currentStep.attr('id');
+        let allValid = true;
+        let validationContainer = currentStep.find('.validation-row');
 
-// // Accept Allow letters, numbers, and specific special characters
-// safeSpecialRegex = /^[a-zA-Z0-9!@#&()\-]*$/;
+        if (validationContainer.length === 0) {
+            validationContainer = currentStep;
+        }
 
-function validateForm(formID){
-    let form            = $(`#${formID}`);
-    let inputContainer  = [];
-    let selectContainer = [];
-    let firstElement    = "";
-    let errorCount      = 0;
+        const selectInputs = validationContainer.find('select[required], input[required]');
+        // console.log('Validating step:', stepId, 'Found required inputs:', selectInputs.length);
 
-    if(formID){
-        form.find("input, select").each(function () {
-            let element = this;
-            let elementContainer = element.tagName !== "INPUT" ? selectContainer : inputContainer;
-            elementContainer.push(element);
-        });
-
-        inputContainer.forEach((element, index) =>{
-            const thisElement    = $(element);
-            const value          = thisElement.val();
-            const isRequired     = thisElement.attr("required");
-            const patternAttr    = thisElement.attr("inputformat") ? `^${thisElement.attr("inputformat")}+$` : false;
-            const messageElement = thisElement.closest(".form-group").find(".invalid-feedback");
-            const uniqueid       = thisElement.attr("uniqueid") || false;
-            let pattern          = patternAttr ? new RegExp(patternAttr) : false;
-
-            // Clear any previous errors
-            thisElement.removeClass("is-invalid");
-
-            if(thisElement.attr("type") === "text"){
-                errorCount++;
-                if (isRequired && value.trim() === "") {
-                    thisElement.addClass("is-invalid");
-                    messageElement.html("This field is required.");
-                    if (firstElement == "") firstElement = element;
-                } else if (pattern && !pattern.test(value) && value.trim() !== "") {
-                    if(!thisElement.attr("disabled")){
-                        thisElement.addClass("is-invalid");
-                        messageElement.html("Invalid format.");
-                        if (firstElement == "") firstElement = element;
-                    }else{
-                        errorCount--;
-                    }
-                } else{
-                    thisElement.attr("disabled") || thisElement.addClass("is-valid");
-                    messageElement.html("");
-                    errorCount--;
-                }
-            }else if(thisElement.attr("type") === "email"){
-                errorCount++;
-                pattern = new RegExp(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`);
-
-                if (isRequired && value.trim() === "") {
-                    thisElement.addClass("is-invalid");
-                    messageElement.html("This field is required.");
-                    if (firstElement == "") firstElement = element;
-                } else if (pattern && !pattern.test(value)) {
-                    thisElement.addClass("is-invalid");
-                    messageElement.html("Invalid format.");
-                    if (firstElement == "") firstElement = element;
-                } else{
-                    if(emailExist(value, uniqueid)){
-                        thisElement.addClass("is-invalid");
-                        messageElement.html("This email already Exist");
-                        if (firstElement == "") firstElement = element;
-                    }else{
-                        thisElement.addClass("is-valid");
-                        messageElement.html("");
-                        errorCount--;
-                    }
-                }
-            }else if(thisElement.attr("type") === "checkbox"){
-
+        selectInputs.each(function () {
+            if (!$(this).val() || $(this).val().trim() === '') {
+                $(this).addClass('is-invalid');
+                // console.log('Validation failed for required field: ', $(this).attr('name') || $(this).attr('id') || 'unknown field');
+                allValid = false;
+            } else {
+                $(this).removeClass('is-invalid');
             }
         });
 
-        selectContainer.forEach((element,index)=>{
-            const thisElement       = $(element);
-            const value             = thisElement.val();
-            const isRequired        = thisElement.attr("required");
-            const select2Element    = thisElement.closest(".form-group").find(".select2-selection");
-            const messageElement    = thisElement.closest(".form-group").find(".invalid-feedback");
-            
-            // Clear any previous errors
-            thisElement.removeClass("is-invalid");
-            select2Element.removeClass("has-error");
-            errorCount++;
-            if(isRequired && value === null){
-                thisElement.addClass("is-invalid");
-                select2Element.addClass("has-error");
-                messageElement.html("This field is required.");
-                if (firstElement == "") firstElement = element;
-            }else{
-                select2Element.addClass("no-error");
-                errorCount--;
-            }
-        })
-        firstElement != "" && firstElement.focus();
-    }
-    return errorCount;
-}
-
-
-function clearForm(formID){
-
-    $(`#${formID} input`).each((index, element)=>{
-        let isDisabled = $(element).attr("disabled");
-        !isDisabled && $(element).val("").removeClass("is-invalid is-valid");
-    });
-
-    $(`#${formID}`).find("select").each((index, element)=>{
-        console.log(element);
-        $(element).val("").trigger("change");
-        $(element).removeClass("is-invalid is-valid");
-        $(element).closest(".form-group").find(".select2-selection").removeClass("has-error no-error");
-    });
-    
-}
-
-function emailExist(email, uniqueid = false){
-    let data    = {email, uniqueid};
-    let result  = false;
-    $.ajax({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url:"validateEmail",
-        async: false,
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(data),
-        success: function (response) {
-           console.log(response);
-           if(response == 1){
-                result= true;
-           }
-        },
-        error: function (xhr, status, error) {
-            console.error(error);
+        // Only proceed if all fields are valid
+        if (allValid && stepIndex < totalSteps - 1) {
+            stepIndex++;
+            updateStepper();
         }
     });
-    return result
-}
+
+    function updateStepper() {
+        steps.removeClass("active-step").eq(stepIndex).addClass("active-step");
+        progressBar.css("width", ((stepIndex + 1) / totalSteps) * 100 + "%");
+        progressBar.css("width", ((stepIndex + 1) / totalSteps) * 100 + "%");
+        progressBar.text("Step " + (stepIndex + 1));
+        stepNav.removeClass("btn-primary")
+            .addClass("btn-outline-primary")
+            .eq(stepIndex)
+            .removeClass("btn-outline-primary")
+            .addClass("btn-primary");
+
+    }
+
+    $(".prev").click(function () {
+        if (stepIndex > 0) {
+            stepIndex--;
+            updateStepper();
+        }
+    });
+    // END STEPPER SCRIPT
+});

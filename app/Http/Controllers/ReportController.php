@@ -6,7 +6,10 @@ use App\Enums\FailedQuestion;
 use App\Enums\PassedQuestion;
 use App\Models\CompletedJob;
 use App\Models\Job;
+use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use Response;
 
 class ReportController extends Controller
 {

@@ -8,7 +8,7 @@
                 <div class="form-group">
                     <label>List of Installers</label>
 
-                    <select class="duallistbox" multiple="multiple" name="client_installers[]">
+                    <select class="duallistbox is-invalid" multiple="multiple" name="client_installers[]">
                         @foreach ($installers as $installer)
                             <option value="{{ $installer->id }}"
                                 {{ isset($client) && $client->clientInstallers->contains('installer_id', $installer->id) ? 'selected' : '' }}>
