@@ -103,12 +103,11 @@ $(function () {
         let formMethod = clientForm.attr('method');
         let formData = new FormData(clientForm[0]);
 
-        $('#clientMeasureTable tbody tr').each(function (index) {
-            let rowData = $(this).find('td').map(function () {
-                return $(this).text().trim();
-            }).get();
-
-            if (rowData.length > 0) {
+        let tableData = clientMeasureTable.rows().data().toArray();
+        
+        tableData.forEach(function(rowData, index) {
+            // Skip the last column (Delete button)
+            if (rowData.length > 3) {
                 formData.append(`measures[${index}][measure_cat]`, rowData[0]);
                 formData.append(`measures[${index}][measure_fee_value]`, rowData[1]);
                 formData.append(`measures[${index}][measure_fee_currency]`, rowData[2]);

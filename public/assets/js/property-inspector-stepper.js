@@ -195,44 +195,62 @@ $(function () {
         let formMethod = propertyInspectorForm.attr('method');
         let formData = new FormData(propertyInspectorForm[0]);
 
-        $('#measuresTable tbody tr').each(function (index) {
-            let rowData = $(this).find('td').map(function () {
-                return $(this).text().trim();
-            }).get();
-
-            // Retrieve the file object from the corresponding file input
-            let fileInput = $(this).find(`input[type="file"].hidden-file-name-${rowData[0]}`)[0];
-            let file = fileInput ? fileInput.files[0] : null;
-
+        // Use DataTables API to get ALL measures data, not just visible rows
+        let measuresData = measuresTable.rows().data().toArray();
+        
+        measuresData.forEach(function(rowData, index) {
             if (rowData.length > 0) {
-                formData.append(`measures[${index}][measure_cat]`, rowData[0]);
-                formData.append(`measures[${index}][measure_fee_value]`, rowData[1]);
-                formData.append(`measures[${index}][measure_fee_currency]`, rowData[2]);
-                formData.append(`measures[${index}][measure_expiry_date]`, rowData[3]);
+                // Extract text content from HTML elements if needed
+                let measureCat = typeof rowData[0] === 'string' ? rowData[0].replace(/<[^>]*>/g, '').trim() : rowData[0];
+                let feeValue = typeof rowData[1] === 'string' ? rowData[1].replace(/<[^>]*>/g, '').trim() : rowData[1];
+                let feeCurrency = typeof rowData[2] === 'string' ? rowData[2].replace(/<[^>]*>/g, '').trim() : rowData[2];
+                let expiryDate = typeof rowData[3] === 'string' ? rowData[3].replace(/<[^>]*>/g, '').trim() : rowData[3];
+                
+                formData.append(`measures[${index}][measure_cat]`, measureCat);
+                formData.append(`measures[${index}][measure_fee_value]`, feeValue);
+                formData.append(`measures[${index}][measure_fee_currency]`, feeCurrency);
+                formData.append(`measures[${index}][measure_expiry_date]`, expiryDate);
 
-                if (file) {
-                    formData.append(`measures[${index}][measure_certificate]`, file);
+                // Try to find the file input in the HTML content
+                if (typeof rowData[4] === 'string' && rowData[4].includes('hidden-file-name-')) {
+                    let fileInputClass = rowData[4].match(/hidden-file-name-([^"]*)/);
+                    if (fileInputClass && fileInputClass[1]) {
+                        let fileInput = $(`.hidden-file-name-${fileInputClass[1]}`)[0];
+                        let file = fileInput ? fileInput.files[0] : null;
+                        if (file) {
+                            formData.append(`measures[${index}][measure_certificate]`, file);
+                        }
+                    }
                 }
             }
         });
 
-        $('#qualificationsTable tbody tr').each(function (index) {
-            let rowData = $(this).find('td').map(function () {
-                return $(this).text().trim();
-            }).get();
-
-            // Retrieve the file object from the corresponding file input
-            let fileInput = $(this).find(`input[type="file"].hidden-file-name-${rowData[0].replace(/\s+/g, '')}`)[0];
-            let file = fileInput ? fileInput.files[0] : null;
-
+        // Use DataTables API to get ALL qualifications data, not just visible rows
+        let qualificationsData = qualificationsTable.rows().data().toArray();
+        
+        qualificationsData.forEach(function(rowData, index) {
             if (rowData.length > 0) {
-                formData.append(`qualifications[${index}][qualification_name]`, rowData[0]);
-                formData.append(`qualifications[${index}][qualification_issue_date]`, rowData[1]);
-                formData.append(`qualifications[${index}][qualification_expiry_date]`, rowData[2]);
-                formData.append(`qualifications[${index}][qualification_issue]`, rowData[4]); // Assuming 4th is issue
+                // Extract text content from HTML elements if needed
+                let qualificationName = typeof rowData[0] === 'string' ? rowData[0].replace(/<[^>]*>/g, '').trim() : rowData[0];
+                let issueDate = typeof rowData[1] === 'string' ? rowData[1].replace(/<[^>]*>/g, '').trim() : rowData[1];
+                let expiryDate = typeof rowData[2] === 'string' ? rowData[2].replace(/<[^>]*>/g, '').trim() : rowData[2];
+                let issue = typeof rowData[4] === 'string' ? rowData[4].replace(/<[^>]*>/g, '').trim() : rowData[4];
+                
+                formData.append(`qualifications[${index}][qualification_name]`, qualificationName);
+                formData.append(`qualifications[${index}][qualification_issue_date]`, issueDate);
+                formData.append(`qualifications[${index}][qualification_expiry_date]`, expiryDate);
+                formData.append(`qualifications[${index}][qualification_issue]`, issue);
 
-                if (file) {
-                    formData.append(`qualifications[${index}][qualification_certificate]`, file);
+                // Try to find the file input in the HTML content
+                if (typeof rowData[3] === 'string' && rowData[3].includes('hidden-file-name-')) {
+                    let fileInputClass = rowData[3].match(/hidden-file-name-([^"]*)/);
+                    if (fileInputClass && fileInputClass[1]) {
+                        let fileInput = $(`.hidden-file-name-${fileInputClass[1]}`)[0];
+                        let file = fileInput ? fileInput.files[0] : null;
+                        if (file) {
+                            formData.append(`qualifications[${index}][qualification_certificate]`, file);
+                        }
+                    }
                 }
             }
         });
