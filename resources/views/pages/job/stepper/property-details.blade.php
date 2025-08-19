@@ -34,7 +34,7 @@
 
                 <x-input name="address2" label="Property Address 2" type="text" value="" />
 
-                <x-input name="address" label="Property Address 3" type="text" value="" />
+                <x-input name="address3" label="Property Address 3" type="text" value="" />
 
                 <x-input name="city" label="Property City" type="text" value="" :required="true"/>
 
@@ -47,8 +47,6 @@
                 <x-input name="customer_email" label="Customer Email" type="email" value="" :required="true"/>
 
                 <x-input name="customer_primary_tel" label="Customer Primary Tel" type="number" value="" :required="true"/>
-
-                <x-input name="customer_secondary_tel" label="Customer Secondary Tel" type="number" value="" />
 
                 <x-input name="customer_secondary_tel" label="Customer Secondary Tel" type="number" value="" />
 
