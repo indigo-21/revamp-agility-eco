@@ -4,6 +4,7 @@ use App\Http\Controllers\api\DataSyncController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompletedJobPhotoController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\PropertyInspectorController;
 use App\Http\Controllers\SMSSendController;
 use App\Http\Controllers\TempSyncLogsController;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/fetch-data', [DataSyncController::class, 'fetchData']);
     Route::post('/store-query', [TempSyncLogsController::class, 'storeQuery']);
     Route::post('/upload-completed-job-photo', [CompletedJobPhotoController::class, 'uploadCompletedJobPhoto']);
-
+    Route::get('/get-property-inspector', [PropertyInspectorController::class, 'searchPropertyInspector']);
 });
 
 // Queue status API endpoints

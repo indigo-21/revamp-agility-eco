@@ -90,7 +90,50 @@ class DataSyncController extends Controller
         $tableName = (new $model)->getTable();
         $columns = Schema::getColumnListing($tableName);
 
-        $data = $model::select($columns)->get()->map(function ($item) use ($columns) {
+        // Build the query
+        $query = $model::select($columns);
+
+        // Apply filtering based on property_inspector_id for jobs and related tables
+        if ($request->has('property_inspector_id')) {
+            $propertyInspectorId = $request->property_inspector_id;
+            
+            switch ($request->table) {
+                case 'jobs':
+                    // Filter jobs by property_inspector_id
+                    $query->where('property_inspector_id', $propertyInspectorId);
+                    break;
+                    
+                case 'properties':
+                    // Filter properties that belong to jobs assigned to this property inspector
+                    $query->whereIn('job_id', function ($subQuery) use ($propertyInspectorId) {
+                        $subQuery->select('id')
+                                ->from('jobs')
+                                ->where('property_inspector_id', $propertyInspectorId);
+                    });
+                    break;
+                    
+                case 'customers':
+                    // Filter customers that belong to jobs assigned to this property inspector
+                    $query->whereIn('job_id', function ($subQuery) use ($propertyInspectorId) {
+                        $subQuery->select('id')
+                                ->from('jobs')
+                                ->where('property_inspector_id', $propertyInspectorId);
+                    });
+                    break;
+                    
+                case 'job_measures':
+                    // Filter job_measures that belong to jobs assigned to this property inspector
+                    $query->whereIn('job_id', function ($subQuery) use ($propertyInspectorId) {
+                        $subQuery->select('id')
+                                ->from('jobs')
+                                ->where('property_inspector_id', $propertyInspectorId);
+                    });
+                    break;
+            }
+        }
+
+        // Execute the query and format the data
+        $data = $query->get()->map(function ($item) use ($columns) {
             return collect($columns)->mapWithKeys(function ($col) use ($item) {
                 $value = $item->$col;
 

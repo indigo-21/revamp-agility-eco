@@ -51,7 +51,7 @@ class SendQueuedSmsCommand extends Command
                         continue; // Skip if template not found
                     }
                     $email = $job->installer->user->email;
-                    $subject = $failedJobTemplate->subject;
+                    $subject = $job->job_remediation_type . ' - ' . $failedJobTemplate->subject;
 
                     $data = [
                         '_INSTALLER_NAME_' => $job->installer->user->firstname . ' ' . $job->installer->user->lastname,
@@ -64,7 +64,7 @@ class SendQueuedSmsCommand extends Command
                         '_HOUSENAME_NUMBER_' => $job->property->house_flat_prefix,
                         '_ADDRESS_LINE_1_' => $job->property->address1,
                         '_POSTCODE_' => $job->property->postcode,
-                        '_LINK_' => $appUrl,
+                        '_LINK_' => '<a href="' . $appUrl . '">' . $appUrl . '</a>',
                     ];
 
                     $template = $failedJobTemplate->content;
@@ -81,7 +81,7 @@ class SendQueuedSmsCommand extends Command
                         continue; // Skip if template not found
                     }
                     $email = $job->installer->user->email;
-                    $subject = $passedJobTemplate->subject;
+                    $subject = 'Passed - ' . $passedJobTemplate->subject;
 
                     $data = [
                         '_INSTALLER_NAME_' => $job->installer->user->firstname . ' ' . $job->installer->user->lastname,
@@ -94,7 +94,7 @@ class SendQueuedSmsCommand extends Command
                         '_HOUSENAME_NUMBER_' => $job->property->house_flat_prefix,
                         '_ADDRESS_LINE_1_' => $job->property->address1,
                         '_POSTCODE_' => $job->property->postcode,
-                        '_LINK_' => $appUrl,
+                        '_LINK_' => '<a href="' . $appUrl . '">' . $appUrl . '</a>',
                     ];
 
                     $template = $passedJobTemplate->content;
