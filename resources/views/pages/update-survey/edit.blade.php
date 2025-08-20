@@ -2,6 +2,8 @@
 @section('importedStyles')
     @include('includes.datatables-links')
     <link rel="stylesheet" href="{{ asset('plugins/dropzone/min/dropzone.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 @endsection
 @section('content')
     <x-title-breadcrumbs title="Update Survey" :breadcrumbs="[
@@ -187,5 +189,6 @@
 @endsection
 @section('importedScripts')
     @include('includes.datatables-scripts')
+    <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('assets/js/update-survey.js') }}"></script>
 @endsection

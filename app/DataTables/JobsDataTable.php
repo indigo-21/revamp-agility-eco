@@ -2,6 +2,7 @@
 
 namespace App\DataTables;
 
+use App\Models\Booking;
 use App\Models\Job;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
@@ -51,6 +52,18 @@ class JobsDataTable extends DataTable
             })
             ->addColumn('reminder', function ($job) {
                 return $job->sent_reminder === 1 ? 'Yes' : 'No';
+            })
+            ->addColumn('invoice_status_id', function ($job) {
+                return $job->invoiceStatus?->name ?? 'N/A';
+            })
+            ->addColumn('booked_date', function ($job) {
+                $jobGroup = substr($job->job_number, 0, strlen($job->job_number) - 3);
+
+                $booking = Booking::where('job_number', 'LIKE', "%{$jobGroup}%")
+                    ->where('booking_outcome', 'Booked')
+                    ->latest();
+
+                return $booking->exists() ? $booking->first()->booking_date : 'N/A';
             })
             ->setRowId('id');
     }
@@ -183,7 +196,8 @@ class JobsDataTable extends DataTable
             Column::make('job_remediation_type'),
             Column::make('close_date'),
             Column::make('deadline'),
-            Column::make('invoice_status'),
+            Column::make('invoice_status_id')
+                ->title('Invoice Status'),
             Column::computed('reminder')
                 ->title('28-Reminder'),
             Column::computed('action')

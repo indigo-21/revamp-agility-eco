@@ -23,7 +23,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <div class="card card-default">
                         <div class="card-header">
                             <h3 class="card-title">Filter</h3>
@@ -37,7 +37,7 @@
                             <form method="GET" action="{{ route('client-configuration.index') }}" id="filterForm">
                                 @csrf
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-7">
                                         <x-select label="Client Name" name="client_name">
                                             <option selected="selected" disabled value="">-Client Name-
                                             </option>
@@ -66,7 +66,7 @@
                                             @endforeach
                                         </x-select>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="offset-md-1 col-md-4">
                                         <div class="small-box bg-white">
                                             <div class="inner">
                                                 <h3>{{ $clients->count() }}</h3>

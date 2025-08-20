@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountReconciliationController;
 use App\Http\Controllers\CompletedJobController;
 use App\Http\Controllers\CompletedJobPhotoController;
 use App\Http\Controllers\DashboardController;
@@ -188,6 +189,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('navigation.access:automated-email-passed');
     Route::resource('reminder-chaser', EmailTemplateController::class)
         ->middleware('navigation.access:reminder-chaser');
+
+    // ACCOUNT RECONCILIATION
+    Route::resource('account-reconciliation', AccountReconciliationController::class)
+        ->middleware('navigation.access:account-reconciliation');
 
     Route::get('client/search-job-types', [JobController::class, 'searchClient'])->middleware('navigation.access:job');
     Route::get('get-property-inspector', [PropertyInspectorController::class, 'searchPropertyInspector'])->middleware('navigation.access:job');

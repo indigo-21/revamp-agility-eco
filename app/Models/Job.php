@@ -73,6 +73,11 @@ class Job extends Model
             ->groupBy('created_at');
     }
 
+    public function invoiceStatus(): BelongsTo
+    {
+        return $this->belongsTo(InvoiceStatus::class);
+    }
+
     public function getRelatedBookingsAttribute()
     {
         $baseJobNumber = preg_replace('/-\d+$/', '', $this->job_number);

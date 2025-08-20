@@ -11,6 +11,10 @@ $(function () {
 
 });
 
+$('.select2bs4').select2({
+    theme: 'bootstrap4'
+})
+
 
 $(".editComments").on('click', function () {
     const { id, comments } = $(this).data('completed-job-data');

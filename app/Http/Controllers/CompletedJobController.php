@@ -74,6 +74,7 @@ class CompletedJobController extends Controller
             $job->last_update = now();
             $job->close_date = now();
             $job->rework_deadline = null;
+            $job->invoice_status_id = 1;
 
             $job->save();
 
@@ -108,6 +109,7 @@ class CompletedJobController extends Controller
         } else {
             $job->last_update = now();
             $job->job_remediation_type = "NC";
+            $job->invoice_status_id = null;
 
             if ($request->pass_fail === "Non-Compliant") {
                 $job->job_status_id = 16;
