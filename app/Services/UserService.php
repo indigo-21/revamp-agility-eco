@@ -93,7 +93,7 @@ class UserService
                 _APP_NAME_ AMI Support Team</p>
             ';
 
-            (new MailService)->sendEmail($subject, $template, $request->email, $data);
+            (new MailService)->sendEmail($subject, $template, $request->email, $data, true);
         }
 
         return $user;
