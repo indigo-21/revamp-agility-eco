@@ -58,7 +58,7 @@ class UserService
             $template = '
                 <h2>Welcome to _APP_NAME_, _NAME_!</h2>
 
-                <p>Your account has been successfully created. Below is your temporary password:</p>
+                <p>Your account has been successfully created and you will need to login within the next 24 hours. Below is your temporary password:</p>
 
                 <ul>
                     <li><strong>Username (Email):</strong> _EMAIL_</li>
@@ -87,10 +87,10 @@ class UserService
                 <p>If the button doesn`t work, copy and paste this link into your browser:</p>
                 <p><a href="_PASSWORD_LINK_">_PASSWORD_LINK_</a></p>
 
-                <p>If you have any questions or need help accessing your account, feel free to contact our support team.</p>
+                <p>If you have left this for more than 24 hours, please use the <strong>Username (Email)</strong> above and click on "Forgot your password" button to create a new password. If you have any questions or need help accessing your account, feel free to contact our support team.</p>
 
                 <p>Best regards,<br>
-                _APP_NAME_</p>
+                _APP_NAME_ AMI Support Team</p>
             ';
 
             (new MailService)->sendEmail($subject, $template, $request->email, $data);
