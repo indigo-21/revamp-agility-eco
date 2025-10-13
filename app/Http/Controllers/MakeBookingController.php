@@ -209,8 +209,17 @@ class MakeBookingController extends Controller
 
     public function getBookedJobs(Request $request)
     {
-        $jobs = Booking::where('booking_outcome', "Booked")
+        // Get the latest booking id for each job_number for this inspector
+        $latestIds = Booking::selectRaw('MAX(id) as id')
+            ->where('booking_outcome', 'Booked')
             ->where('property_inspector_id', $request->property_inspector_id)
+            ->groupBy('job_number')
+            ->pluck('id')
+            ->toArray();
+
+        // Fetch only those latest booking rows
+        $jobs = Booking::whereIn('id', $latestIds)
+            ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($item) {
                 return [
