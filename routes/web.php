@@ -217,4 +217,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 });
 
+Route::get('/privacy-policy', function () {
+    return view('privacy-policy');
+})->name('privacy-policy');
+
 require __DIR__ . '/auth.php';
