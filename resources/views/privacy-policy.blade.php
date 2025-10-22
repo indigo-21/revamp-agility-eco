@@ -79,13 +79,10 @@
                     </ul>
                     <p class="mt-2 text-black/70 dark:text-slate-400">If you have any privacy-related inquiries or would like to exercise your rights, please contact us at: <a href="mailto:support@contactone.net" class="underline text-sky-600 dark:text-sky-400">support@contactone.net</a></p>
 
-                    <h2 id="children" class="text-xl font-semibold text-black dark:text-slate-100 mt-3">6. Children’s Privacy</h2>
-                    <p class="text-black dark:text-slate-100 mb-4">The AMI Surveyors App is intended for users aged 13 years and over. We do not knowingly collect personal data from children under 13 years of age; if we become aware that such data has been collected, we will take steps to delete it in accordance with applicable law.</p>
-
-                    <h2 id="changes" class="text-xl font-semibold text-black dark:text-slate-100 mt-3">7. Changes to This Policy</h2>
+                    <h2 id="changes" class="text-xl font-semibold text-black dark:text-slate-100 mt-3">6. Changes to This Policy</h2>
                     <p class="text-black dark:text-slate-100 mb-4">We may update this Privacy Policy from time to time. Any material changes will be posted to this document with an updated "Effective Date".</p>
 
-                    <h2 id="contact" class="text-xl font-semibold text-black dark:text-slate-100 mt-3">8. Contact Us</h2>
+                    <h2 id="contact" class="text-xl font-semibold text-black dark:text-slate-100 mt-3">7. Contact Us</h2>
                     <p class="text-black dark:text-slate-100 mb-3">If you have questions regarding this Privacy Policy or our data practices, please contact:</p>
                     <address class="not-italic mt-4 text-black/70 dark:text-slate-400">
                         ContactOne<br>
