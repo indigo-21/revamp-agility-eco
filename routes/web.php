@@ -221,14 +221,4 @@ Route::get('/privacy-policy', function () {
     return view('privacy-policy');
 })->name('privacy-policy');
 
-Route::get('/migrate-db', function () {
-    Artisan::call('migrate');
-    return 'Database migrated successfully.';
-})->name('migrate-db');
-
-Route::get('/seed-db', function () {
-    Artisan::call('db:seed');
-    return 'Database seeded successfully.';
-})->name('seed-db');
-
 require __DIR__ . '/auth.php';
