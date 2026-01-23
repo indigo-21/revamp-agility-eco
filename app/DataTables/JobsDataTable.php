@@ -65,6 +65,76 @@ class JobsDataTable extends DataTable
 
                 return $booking->exists() ? $booking->first()->booking_date : 'N/A';
             })
+
+            ->filterColumn('job_status_id', function ($query, $keyword) {
+                $query->whereHas('jobStatus', function ($q) use ($keyword) {
+                    $q->where('description', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('propertyInspector', function ($query, $keyword) {
+                $query->whereHas('propertyInspector.user', function ($q) use ($keyword) {
+                    $q->whereRaw("concat(firstname, ' ', lastname) like ?", ["%{$keyword}%"])
+                        ->orWhere('firstname', 'like', "%{$keyword}%")
+                        ->orWhere('lastname', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('installer', function ($query, $keyword) {
+                $query->whereHas('installer.user', function ($q) use ($keyword) {
+                    $q->whereRaw("concat(firstname, ' ', lastname) like ?", ["%{$keyword}%"])
+                        ->orWhere('firstname', 'like', "%{$keyword}%")
+                        ->orWhere('lastname', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('postcode', function ($query, $keyword) {
+                $query->whereHas('property', function ($q) use ($keyword) {
+                    $q->where('postcode', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('umr', function ($query, $keyword) {
+                $query->whereHas('jobMeasure', function ($q) use ($keyword) {
+                    $q->where('umr', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('invoice_status_id', function ($query, $keyword) {
+                $query->whereHas('invoiceStatus', function ($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+
+            ->filterColumn('job_status_id', function ($query, $keyword) {
+                $query->whereHas('jobStatus', function ($q) use ($keyword) {
+                    $q->where('description', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('propertyInspector', function ($query, $keyword) {
+                $query->whereHas('propertyInspector.user', function ($q) use ($keyword) {
+                    $q->whereRaw("concat(firstname, ' ', lastname) like ?", ["%{$keyword}%"])
+                        ->orWhere('firstname', 'like', "%{$keyword}%")
+                        ->orWhere('lastname', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('installer', function ($query, $keyword) {
+                $query->whereHas('installer.user', function ($q) use ($keyword) {
+                    $q->whereRaw("concat(firstname, ' ', lastname) like ?", ["%{$keyword}%"])
+                        ->orWhere('firstname', 'like', "%{$keyword}%")
+                        ->orWhere('lastname', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('postcode', function ($query, $keyword) {
+                $query->whereHas('property', function ($q) use ($keyword) {
+                    $q->where('postcode', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('umr', function ($query, $keyword) {
+                $query->whereHas('jobMeasure', function ($q) use ($keyword) {
+                    $q->where('umr', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('invoice_status_id', function ($query, $keyword) {
+                $query->whereHas('invoiceStatus', function ($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
             ->setRowId('id');
     }
 
@@ -78,7 +148,7 @@ class JobsDataTable extends DataTable
         $request = request();
 
         $query = $model->newQuery()
-            ->with(['jobMeasure', 'jobStatus', 'propertyInspector.user', 'property', 'installer.user', 'client']);
+            ->with(['jobMeasure', 'jobStatus', 'propertyInspector.user', 'property', 'installer.user', 'client', 'invoiceStatus']);
 
         // Apply filters based on request parameters
         if ($request->filled('job_status_id')) {
@@ -150,16 +220,17 @@ class JobsDataTable extends DataTable
             ->minifiedAjax()
             ->orderBy(0)
             ->selectStyleSingle()
+            ->dom('Bfrtip')
             ->parameters([
                 'scrollX' => true, // Enable horizontal scrolling if needed
                 // 'responsive' => true,
                 'autoWidth' => true,
             ])
             ->buttons([
-                Button::make('excel'),
+                // Button::make('excel'),
                 Button::make('csv'),
-                Button::make('pdf'),
-                Button::make('print'),
+                // Button::make('pdf'),
+                // Button::make('print'),
                 // Button::make('reset'),
                 // Button::make('reload')
             ]);
@@ -182,22 +253,27 @@ class JobsDataTable extends DataTable
             Column::make('cert_no'),
             Column::computed('umr')
                 ->title('UMR')
-                ->orderable(true),
+                ->orderable(true)
+                ->searchable(true),
             Column::computed('job_status_id')
-                ->title('Status'),
+                ->title('Status')
+                ->searchable(true),
             Column::computed('propertyInspector')
                 ->title('Property Inspector')
                 ->orderable(true)
                 ->searchable(true),
             Column::computed('booked_date'),
-            Column::computed('postcode'),
-            Column::computed('installer'),
+            Column::computed('postcode')
+                ->searchable(true),
+            Column::computed('installer')
+                ->searchable(true),
             Column::make('rework_deadline'),
             Column::make('job_remediation_type'),
             Column::make('close_date'),
             Column::make('deadline'),
             Column::make('invoice_status_id')
-                ->title('Invoice Status'),
+                ->title('Invoice Status')
+                ->searchable(true),
             Column::computed('reminder')
                 ->title('28-Reminder'),
             Column::computed('action')

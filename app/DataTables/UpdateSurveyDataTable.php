@@ -129,7 +129,7 @@ class UpdateSurveyDataTable extends DataTable
 
             // Column::make('add your columns'),
             // Column::make('created_at'),
-            // Column::make('updated_at'),
+               // Column::make('updated_at'),
         ];
     }
 

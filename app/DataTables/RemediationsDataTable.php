@@ -101,6 +101,7 @@ class RemediationsDataTable extends DataTable
             ->minifiedAjax()
             ->orderBy(1)
             ->addTableClass('table table-bordered table-striped text-center')
+            ->dom('Bfrtip')
             ->parameters([
                 'scrollX' => true, // Enable horizontal scrolling if needed
                 // 'responsive' => true,
@@ -108,10 +109,10 @@ class RemediationsDataTable extends DataTable
             ])
             ->selectStyleSingle()
             ->buttons([
-                Button::make('excel'),
+                // Button::make('excel'),
                 Button::make('csv'),
-                Button::make('pdf'),
-                Button::make('print'),
+                // Button::make('pdf'),
+                // Button::make('print'),
                 // Button::make('reset'),
                 // Button::make('reload')
             ]);
