@@ -76,7 +76,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($completedJobs as $completedJob)
-                                        @if ($completedJob->remediations->last()?->role == 'Installer')
+                                        @if (strtolower($completedJob->remediations->last()?->role) == 'installer')
                                             <tr>
                                                 <td>
                                                     {{ $completedJob->job->job_number }}{{ $completedJob->surveyQuestion->question_number }}
@@ -85,10 +85,10 @@
                                                     {{ $completedJob->surveyQuestion->nc_severity }}
                                                 </td>
                                                 <td>
-                                                    {{ $completedJob->remediations->where('role', 'Agent')->last()?->comment }}
+                                                    {{ $completedJob->remediations->whereIn('role', ['AGENT', 'Agent'])->last()?->comment }}
                                                 </td>
                                                 <td>
-                                                    {{ $completedJob->remediations->where('role', 'Installer')->last()?->comment }}
+                                                    {{ $completedJob->remediations->whereIn('role', ['Installer', 'INSTALLER'])->last()?->comment }}
                                                 </td>
                                                 <td>
                                                     <a href="{{ route('remediation-review.edit', $completedJob->id) }}"
