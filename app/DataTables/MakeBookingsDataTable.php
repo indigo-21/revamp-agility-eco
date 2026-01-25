@@ -85,7 +85,7 @@ class MakeBookingsDataTable extends DataTable
                     $jobGroup,
                 )->orderBy('created_at', 'desc');
 
-                return $lastBooking->first()->booking_notes ?? 'No comments';
+                return $lastBooking->first()?->booking_notes ?? 'No comments';
             })
             ->addColumn('last_attempt', function ($job) {
                 // Compute job_group from job_number
@@ -96,12 +96,12 @@ class MakeBookingsDataTable extends DataTable
                     $jobGroup,
                 )->orderBy('created_at', 'desc');
 
-                return $lastBooking->where('booking_outcome', 'Attempt Made')->first()->booking_date ?? 'No Attempts Made';
+                return $lastBooking->where('booking_outcome', 'Attempt Made')->first()?->booking_date ?? 'No Attempts Made';
             })
             ->filterColumn('job_group', function($query, $keyword) {
                 $query->whereRaw("SUBSTRING(job_number, 1, LENGTH(job_number) - 3) LIKE ?", ["%$keyword%"]);
             })
-            ->rawColumns(['action', 'job_status_id', 'measures'])
+            ->rawColumns(['action', 'job_status_id', 'measures', 'latest_comment', 'last_attempt'])
             ->setRowId('id');
     }
 

@@ -46,10 +46,39 @@ class UpdateSurveyDataTable extends DataTable
                 return $job->installer?->user?->firstname ?? 'N/A';
             })
             ->addColumn('address', function ($job) {
-                return $job->property?->address1 ?? 'N/A';
+                return $job->property?->address1 ? $job->property?->address1 . ' ' . $job->property?->address2 . ' ' . $job->property?->address3 : 'N/A';
             })
             ->addColumn('postcode', function ($job) {
                 return $job->property?->postcode ?? 'N/A';
+            })
+            ->filterColumn('address', function ($query, $keyword) {
+                $query->whereHas('property', function ($q) use ($keyword) {
+                    $q->where('address1', 'like', "%{$keyword}%")
+                        ->orWhere('address2', 'like', "%{$keyword}%")
+                        ->orWhere('address3', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('propertyInspector', function ($query, $keyword) {
+                $query->whereHas('propertyInspector.user', function ($q) use ($keyword) {
+                    $q->where('firstname', 'like', "%{$keyword}%")
+                        ->orWhere('lastname', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('installer', function ($query, $keyword) {
+                $query->whereHas('installer.user', function ($q) use ($keyword) {
+                    $q->where('firstname', 'like', "%{$keyword}%")
+                        ->orWhere('lastname', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('measure', function ($query, $keyword) {
+                $query->whereHas('jobMeasure.measure', function ($q) use ($keyword) {
+                    $q->where('measure_cat', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('umr', function ($query, $keyword) {
+                $query->whereHas('jobMeasure', function ($q) use ($keyword) {
+                    $q->where('umr', 'like', "%{$keyword}%");
+                });
             })
             ->rawColumns(['job_status_id', 'action'])
             ->setRowId('id');
@@ -64,7 +93,7 @@ class UpdateSurveyDataTable extends DataTable
     {
         $query = $model->newQuery();
 
-        $query = $query->whereIn('job_status_id', [3, 16, 26]);
+        $query = $query->where('invoice_status_id', 2);
 
         return $query;
     }
@@ -129,7 +158,7 @@ class UpdateSurveyDataTable extends DataTable
 
             // Column::make('add your columns'),
             // Column::make('created_at'),
-               // Column::make('updated_at'),
+            // Column::make('updated_at'),
         ];
     }
 
