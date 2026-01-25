@@ -49,8 +49,8 @@
                                         <tr>
                                             <td>{{ $job->job_number }}</td>
                                             <td>
-                                                {{ $job->propertyInspector->user->firstname }}
-                                                {{ $job->propertyInspector->user->lastname }}
+                                                {{ $job->propertyInspector?->user->firstname }}
+                                                {{ $job->propertyInspector?->user->lastname }}
                                             </td>
                                             <td>{{ $job->first_visit_by }}</td>
                                             <td>{{ $job->last_update }}</td>
