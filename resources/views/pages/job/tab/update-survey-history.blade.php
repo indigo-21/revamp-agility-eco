@@ -28,10 +28,10 @@
                         <!-- /.user-block -->
                         <p>
                             <strong>Question Number:</strong>
-                            {{ $updateSurvey->completedJob->surveyQuestion->question_number }}
+                            {{ $updateSurvey->completedJob?->surveyQuestion?->question_number }}
                             <br>
                             <strong>Question:</strong>
-                            {{ $updateSurvey->completedJob->surveyQuestion->question }}
+                            {{ $updateSurvey->completedJob?->surveyQuestion?->question }}
                             <br>
                             <strong>Update Outcome:</strong>
                             {!! $updateSurvey->update_outcome !!}
