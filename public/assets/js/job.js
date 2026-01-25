@@ -223,7 +223,7 @@ $(document).ready(function () {
 
     function updateProgress() {
         $.ajax({
-            url: "api/queue-status",
+            url: "/api/queue-status",
             method: 'GET',
             dataType: 'json',
             success: function (response) {
