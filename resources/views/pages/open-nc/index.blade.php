@@ -195,7 +195,7 @@
                                                     <td>{{ $job->job_remediation_type }}</td>
                                                     <td>{{ $job->close_date }}</td>
                                                     <td>{{ $job->deadline }}</td>
-                                                    <td>{{ $job->invoice_status }}</td>
+                                                    <td>{{ $job->invoiceStatus->name }}</td>
                                                     <td>
                                                         <div class="btn-group">
                                                             <x-button-permission type="view" :permission="$userPermission"

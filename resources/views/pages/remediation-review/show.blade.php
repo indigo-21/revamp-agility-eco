@@ -35,9 +35,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-4">
                     <div class="callout callout-info">
-                        <p>The measures that you installed and lodged with <b>{{ env('EMPLOYER') }}</b> having
+                        Measure CAT <br/>
+                        <strong>{{ $job->jobMeasure->measure->measure_cat }}</strong>
+                        {{-- <p>The measures that you installed and lodged with <b>{{ env('EMPLOYER') }}</b> having
                             certificate
                             number
                             <b>{{ $job->cert_no }}</b> and Unique Measure Reference (UMR)
@@ -58,7 +60,37 @@
                             etc. Once all evidence has been uploaded for a particular question click on "Submit".
                             For
                             security reasones onlu files of type PDF and JPG can be uploaded. Max file size is: 50MB
-                        </p>
+                        </p> --}}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="callout callout-info">
+                        Non-Compliance Type <br/>
+                        <strong>{{ $job->job_remediation_type }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="callout callout-info">
+                        UMR <br/>
+                        <strong>{{ $job->jobMeasure->umr }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="callout callout-info">
+                        Inspection Date <br/>
+                        <strong>{{ $job->first_visit_by }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="callout callout-info">
+                        Cert # <br/>
+                        <strong>{{ $job->cert_no }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="callout callout-info">
+                        Remediation Deadline <br/>
+                        <strong>{{ $job->rework_deadline }}</strong>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -71,6 +103,8 @@
                                         <th>Non-Comliance Type</th>
                                         <th>Auditor Comments</th>
                                         <th>Installer Comments</th>
+                                        {{-- <th>Number of Appeal</th>
+                                        <th>Remediation Attempts</th> --}}
                                         <th>Action</th>
                                     </tr>
                                 </thead>

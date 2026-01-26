@@ -62,7 +62,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $surveyQuestionSet['question_revision'] }}</td>
                                             <td>{{ $surveyQuestionSet['updated_at'] }}</td>
-                                            <td>{{ $surveyQuestionSet['question_set'] }}</td>
+                                            <td>{{ $surveyQuestionSet['question_set_file'] }}</td>
                                             <td>
                                                 <x-button-permission type="view" :permission="$userPermission" as="a"
                                                     :href="route(

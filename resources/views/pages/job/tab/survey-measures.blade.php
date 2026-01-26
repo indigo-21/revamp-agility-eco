@@ -4,12 +4,12 @@
     </div>
     <div class="col-md-6">
         <x-job-details label="Survey Question Set" value="{{ $job->scheme?->surveyQuestionSet->question_revision }}" />
-        <x-job-details label="Revision Number" value="{{ $job->scheme?->surveyQuestionSet->question_set }}" />
+        <x-job-details label="Revision Number" value="{{ $job->scheme?->surveyQuestionSet->question_set_file }}" />
         <x-job-details label="Survey Question Last Update" value="{{ $job->scheme?->surveyQuestionSet->created_at }}" />
         <x-job-details label="PI Registered Number" value="{{ $job->propertyInspector?->registered_id_number }}" />
     </div>
     <div class="col-md-6">
-        <x-job-details label="Date Survey" value="{{ $job->first_visit_by }}" />
+        <x-job-details label="Date Survey" value="{{ $job->schedule_date }}" />
         <x-job-details label="Measure CAT" value="{{ $job->jobMeasure->measure->measure_cat }}" />
         <x-job-details label="Certificate Expiry"
             value="{{ $job->propertyInspector?->propertyInspectorMeasures->where('measure_id', $job->jobMeasure->measure_id)->first()?->expiry }}" />
@@ -41,9 +41,11 @@
                                     <td>{{ $completedJob->comments }}</td>
                                     <td>
                                         @forelse ($completedJob->completedJobPhotos as $completedJobPhoto)
-                                            <img src="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}"
-                                                alt="" width="50" height="70"
-                                                style="object-fit: cover; margin: 5px;">
+                                            <a href="#" class="open-image-modal" data-img="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}">
+                                                <img src="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}"
+                                                    alt="" width="50" height="70"
+                                                    style="object-fit: cover; margin: 5px;">
+                                            </a>
                                         @empty
                                             <span class="badge badge-warning">No Photo</span>
                                         @endforelse
@@ -59,3 +61,31 @@
         </div>
     </div>
 </div>
+
+<!-- Image preview modal -->
+<div class="modal fade" id="imagePreviewModal" tabindex="-1" role="dialog" aria-labelledby="imagePreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imagePreviewModalLabel">Image Preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="" id="imagePreviewModalImg" class="img-fluid" alt="Preview">
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+    <script>
+        $(document).on('click', '.open-image-modal', function (e) {
+            e.preventDefault();
+            var src = $(this).data('img');
+            $('#imagePreviewModalImg').attr('src', src);
+            $('#imagePreviewModal').modal('show');
+        });
+    </script>
+@endpush

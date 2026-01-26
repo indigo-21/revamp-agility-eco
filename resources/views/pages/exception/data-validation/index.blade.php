@@ -148,7 +148,7 @@
                                             <td>{{ $job->jobMeasure?->measure?->measure_cat ?: 'No Measure' }}</td>
                                             <td>{{ $job->installer?->user->firstname ?: 'No Installer' }}</td>
                                             <td>{{ $job->scheme?->short_name ?: 'No Scheme' }}</td>
-                                            <td>{{ $job->property->postcode }}</td>
+                                            <td>{{ $job->property?->postcode }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

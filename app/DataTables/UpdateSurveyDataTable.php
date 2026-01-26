@@ -145,7 +145,7 @@ class UpdateSurveyDataTable extends DataTable
                 ->title('UMR'),
             Column::make('propertyInspector')
                 ->title('Property Inspector'),
-            Column::make('schedule_date')
+            Column::make('first_visit_by')
                 ->title('Inspection Date'),
             Column::make('installer'),
             Column::make('address'),

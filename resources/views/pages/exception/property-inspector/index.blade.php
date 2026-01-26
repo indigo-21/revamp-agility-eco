@@ -134,7 +134,7 @@
                                             <td>{{ $job->duration }}</td>
                                             <td class="text-center">
                                                 <x-button-permission type="create" :permission="$userPermission" as="a"
-                                                    :href="route('property-inspector-exception.show', $job->job_group)" class="btn btn-primary btn-sm" label="View" />
+                                                    :href="route('property-inspector-exception.show', $job->job_group)" class="btn btn-primary btn-sm" label="Allocate" />
                                             </td>
                                         </tr>
                                     @endforeach

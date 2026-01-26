@@ -39,6 +39,7 @@ class DashboardController extends Controller
         $jobBooked = Job::where('job_status_id', 1)->count();
         $jobPending = Job::whereIn('job_status_id', [5, 6, 7, 8, 9, 10, 25, 22])->count();
         $jobFailed = Job::where('job_status_id', 16)->count();
+        $inspectionCompleted = Job::whereIn('job_status_id', [3, 4, 16, 30, 31, 26])->count();
         $totalJobs = Job::count();
         $jobFailPercent = $totalJobs > 0 ? ($jobFailed / $totalJobs) * 100 : 0;
 
@@ -95,7 +96,8 @@ class DashboardController extends Controller
             ->with('jobFailed', $jobFailed)
             ->with('jobFailPercent', $jobFailPercent)
             ->with('dashboardData', $dashboardData)
-            ->with('dashboardData2', $dashboardData2);
+            ->with('dashboardData2', $dashboardData2)
+            ->with('inspectionCompleted', $inspectionCompleted);
     }
 
     /**

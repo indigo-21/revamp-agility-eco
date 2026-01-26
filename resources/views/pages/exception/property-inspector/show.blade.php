@@ -110,6 +110,42 @@
                             <p>Please select a property inspector to allocate on this Job.</p>
                         </div>
                     </div>
+
+                    @if(isset($job))
+                        <div class="mt-3">
+                            <div class="card card-info">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Job Details</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Job Number:</strong> {{ $job->job_number ?? 'N/A' }}</p>
+                                            <p><strong>Job Status:</strong> {{ $job->jobStatus?->description ?? 'N/A' }}</p>
+                                            <p><strong>Client:</strong> {{ $job->client?->user?->firstname ? $job->client->user->firstname . ' ' . $job->client->user->lastname : 'N/A' }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Job Duration:</strong> {{ $job->duration ?? 'N/A' }}</p>
+                                            <p><strong>Measure(s):</strong>
+                                                @if($job->jobMeasure?->measure)
+                                                    {{ $job->jobMeasure->measure->measure_cat ?? 'N/A' }}
+                                                @else
+                                                    N/A
+                                                @endif
+                                            </p>
+                                            <p><strong>Address:</strong>
+                                                @if($job->property)
+                                                    {{ trim(($job->property->house_flat_prefix ?? '') . ' ' . ($job->property->address1 ?? '') . ' ' . ($job->property->city ?? '') . ' ' . ($job->property->postcode ?? '')) ?: 'N/A' }}
+                                                @else
+                                                    N/A
+                                                @endif
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
             </div>

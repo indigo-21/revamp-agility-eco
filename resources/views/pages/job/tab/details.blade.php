@@ -6,10 +6,10 @@
         <x-job-details label="Client" value="{{ $job->client->user->firstname }}" />
         <x-job-details label="Client Cert#" value="{{ $job->cert_no }}" />
         <x-job-details label="Client UMR" value="{{ $job->jobMeasure->umr }}" />
-        <x-job-details label="Installer" value="{{ $job->lodged_by_name }}" />
-        <x-job-details label="Installer TMLN" value="{{ $job->lodged_by_tmln }}" />
-        <x-job-details label="Sub-Installer" value="{{ $job->installer?->user->firstname }}" />
-        <x-job-details label="Sub-Installer TMLN" value="{{ $job->sub_installer_tmln }}" />
+        <x-job-details label="Installer" value="{!! $job->installer?->user->firstname !!}" />
+        <x-job-details label="Installer TMLN" value="{{ $job->sub_installer_tmln }}" />
+        <x-job-details label="Sub-Installer" value="{{ $job->lodged_by_name }}" />
+        <x-job-details label="Sub-Installer TMLN" value="{{ $job->lodged_by_tmln }}" />
     </div>
 
     <div class="col-md-6">
@@ -17,7 +17,9 @@
             <h3>Property Address</h3>
         </div>
         <x-job-details label="Address"
-            value=" {{ $job->property->address1 }} 
+            value=" 
+            {{ $job->property->house_flat_prefix }}
+            {{ $job->property->address1 }} 
             {{ $job->property->address2 }} 
             {{ $job->property->address3 }}" />
         <x-job-details label="City" value="{{ $job->property->city }}" />

@@ -35,7 +35,7 @@
                                 </li>
                                 <li class="list-group-item">
                                     <b>Survey Question Set</b> <a
-                                        class="float-right">{{ $job->scheme->surveyQuestionSet->question_set }}</a>
+                                        class="float-right">{{ $job->scheme->surveyQuestionSet->question_set_file }}</a>
                                 </li>
                                 <li class="list-group-item">
                                     <b>Revision Number</b> <a
