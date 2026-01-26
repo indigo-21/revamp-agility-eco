@@ -51,7 +51,7 @@
                                             @foreach ($survey_question_set as $question_set)
                                                 <option value="{{ $question_set->id }}"
                                                     {{ isset($scheme) && $scheme->survey_question_set_id === $question_set->id ? 'selected' : '' }}>
-                                                    {{ $question_set->question_set }}
+                                                    {{ $question_set->question_revision }}
                                                 </option>
                                             @endforeach
                                         </x-select>

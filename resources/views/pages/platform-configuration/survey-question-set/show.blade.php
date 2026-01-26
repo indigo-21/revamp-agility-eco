@@ -50,7 +50,7 @@
 
                                         <div class="info-box-content">
                                             <span class="info-box-text">Survey Revision</span>
-                                            <span class="info-box-number">{{ $surveyQuestionSets->question_set }}</span>
+                                            <span class="info-box-number">{{ $surveyQuestionSets->question_set_file }}</span>
 
                                         </div>
                                         <!-- /.info-box-content -->

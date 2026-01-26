@@ -107,6 +107,10 @@ class ReminderExceptionsDataTable extends DataTable
             'remediation'
         ]);
 
+        // Add a computed job_group column (first part of job_number) so actions/components
+        // that expect `job_group` can build routes correctly.
+        $query->selectRaw('*, SUBSTRING(job_number, 1, LENGTH(job_number) - 3) as job_group');
+
         $query->whereIn('job_status_id', [16, 26])
             ->whereHas('completedJobs', function ($q) {
                 $q->whereIn('pass_fail', FailedQuestion::values())

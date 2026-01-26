@@ -55,7 +55,7 @@
                                                 {{ $scheme->long_name }}
                                             </td>
                                             <td>
-                                                {{ $scheme->surveyQuestionSet->question_set }}
+                                                {{ $scheme->surveyQuestionSet->question_revision }}
                                             </td>
                                             <td>
                                                 {{ $scheme->description }}

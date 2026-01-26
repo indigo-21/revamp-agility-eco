@@ -45,7 +45,7 @@ class RemediationsDataTable extends DataTable
                 return $job->jobMeasure?->measure?->measure_cat ?? 'N/A';
             })
             ->addColumn('address', function ($job) {
-                return $job->property?->address1 ?? 'N/A';
+                return ($job->property?->house_flat_prefix ?? '') . ' ' . ($job->property?->address1 ?? '');
             })
             ->addColumn('postcode', function ($job) {
                 return $job->property?->postcode ?? 'N/A';
@@ -142,7 +142,7 @@ class RemediationsDataTable extends DataTable
             Column::make('postcode'),
             Column::make('job_remediation_type')
                 ->title('Non-Compliance Type'),
-            Column::make('schedule_date')
+            Column::make('first_visit_by')
                 ->title('Inspection Date'),
             Column::make('remediation_date')
                 ->title('Evidence Submission Date'),

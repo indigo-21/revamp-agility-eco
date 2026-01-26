@@ -42,7 +42,7 @@
                                         class="float-right">{{ $job->scheme->surveyQuestionSet->question_revision }}</a>
                                 </li>
                                 <li class="list-group-item">
-                                    <b>Date of Survey</b> <a class="float-right">{{ $job->schedule_date }}</a>
+                                    <b>Date of Survey</b> <a class="float-right">{{ $job->first_visit_by }}</a>
                                 </li>
                                 <li class="list-group-item">
                                     <b>Property Inspector</b> <a class="float-right">

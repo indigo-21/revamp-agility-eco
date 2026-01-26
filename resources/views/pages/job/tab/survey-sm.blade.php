@@ -37,11 +37,28 @@
                                     <td>{{ $completedJob->comments }}</td>
                                     <td>
                                         @forelse ($completedJob->completedJobPhotos as $completedJobPhoto)
-                                            <a href="#" class="open-image-modal" data-img="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}">
+                                            <button type="button" class="btn p-0" data-toggle="modal" data-target="#imageModal-{{ $completedJobPhoto->id }}" aria-label="Open image" onclick="$('#imageModal-{{ $completedJobPhoto->id }}').modal('show');">
                                                 <img src="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}"
                                                     alt="" width="50" height="70"
                                                     style="object-fit: cover; margin: 5px;">
-                                            </a>
+                                            </button>
+
+                                            <!-- Modal for this image -->
+                                            <div class="modal fade" id="imageModal-{{ $completedJobPhoto->id }}" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel-{{ $completedJobPhoto->id }}" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="imageModalLabel-{{ $completedJobPhoto->id }}">Image Preview</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body text-center">
+                                                            <img src="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}" class="img-fluid" alt="Preview">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @empty
                                             <span class="badge badge-warning">No Photo</span>
                                         @endforelse
@@ -58,30 +75,4 @@
     </div>
 </div>
 
-<!-- Image preview modal -->
-<div class="modal fade" id="imagePreviewModal" tabindex="-1" role="dialog" aria-labelledby="imagePreviewModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="imagePreviewModalLabel">Image Preview</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center">
-                <img src="" id="imagePreviewModalImg" class="img-fluid" alt="Preview">
-            </div>
-        </div>
-    </div>
-</div>
-
-@push('scripts')
-    <script>
-        $(document).on('click', '.open-image-modal', function (e) {
-            e.preventDefault();
-            var src = $(this).data('img');
-            $('#imagePreviewModalImg').attr('src', src);
-            $('#imagePreviewModal').modal('show');
-        });
-    </script>
-@endpush
+<!-- modals for each image are rendered inline above; no custom scripts required -->

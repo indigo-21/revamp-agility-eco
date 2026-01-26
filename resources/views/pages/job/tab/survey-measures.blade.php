@@ -79,13 +79,11 @@
     </div>
 </div>
 
-@push('scripts')
-    <script>
-        $(document).on('click', '.open-image-modal', function (e) {
-            e.preventDefault();
-            var src = $(this).data('img');
-            $('#imagePreviewModalImg').attr('src', src);
-            $('#imagePreviewModal').modal('show');
-        });
-    </script>
-@endpush
+<script>
+    $(document).on('click', '.open-image-modal', function (e) {
+        e.preventDefault();
+        var src = $(this).data('img');
+        $('#imagePreviewModalImg').attr('src', src);
+        $('#imagePreviewModal').modal('show');
+    });
+</script>
