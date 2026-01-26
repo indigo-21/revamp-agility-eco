@@ -28,8 +28,7 @@ class ReportController extends Controller
         $jobNC = Job::where('job_status_id', 16)
             ->where('job_remediation_type', 'NC')
             ->get();
-        $jobCat1 = Job::where('job_status_id', 1)
-            ->where('job_remediation_type', 'CAT1')
+        $jobCat1 = Job::where('job_remediation_type', 'CAT1')
             ->get();
         $jobUnbooked = Job::where('job_status_id', 25)
             ->get();
