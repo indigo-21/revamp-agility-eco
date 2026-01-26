@@ -39,6 +39,6 @@
             <h3>Job Financials</h3>
         </div>
         <x-job-details label="Job Close Date" value="{{ $job->close_date }}" />
-        <x-job-details label="Job Invoice Status" value="{{ $job->invoiceStatus->name }}" />
+        <x-job-details label="Job Invoice Status" value="{{ $job->invoiceStatus?->name }}" />
     </div>
 </div>
