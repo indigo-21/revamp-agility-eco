@@ -41,7 +41,7 @@
                         <p>
                             <strong>Outcome: </strong>{{ $booking->booking_outcome }}
                             <br>
-                            <strong>Comment: </strong>{{ $booking->booking_notes }}
+                            <strong>Comment: </strong>{!! $booking->booking_notes !!}
                         </p>
                     </div>
                     <!-- /.post -->
