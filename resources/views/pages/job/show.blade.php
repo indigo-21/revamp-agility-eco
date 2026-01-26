@@ -127,4 +127,5 @@
 @section('importedScripts')
     @include('includes.datatables-scripts')
     <script src="{{ asset('assets/js/global/table.js') }}"></script>
+    <script src="{{ asset('assets/js/show-modal-image.js') }}"></script>
 @endsection

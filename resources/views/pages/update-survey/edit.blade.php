@@ -89,8 +89,10 @@
                                             <td>
                                                 @forelse ($completedJob->completedJobPhotos as $completedJobPhoto)
                                                     <img src="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}"
-                                                        alt="" width="50" height="70"
-                                                        style="object-fit: cover; margin: 5px;">
+                                                        alt="Completed job photo" width="50" height="70"
+                                                        class="survey-photo-thumb"
+                                                        data-full="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}"
+                                                        style="object-fit: cover; margin: 5px; cursor: pointer;">
                                                 @empty
                                                     <span class="badge badge-warning">No Photo</span>
                                                 @endforelse
@@ -185,10 +187,28 @@
         <!-- /.row (main row) -->
         </div><!-- /.container-fluid -->
     </section>
+    <div class="modal fade" id="surveyPhotoModal" tabindex="-1" role="dialog" aria-labelledby="surveyPhotoModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="surveyPhotoModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="surveyPhotoModalImage" src="" alt="Selected photo" class="w-100">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- /.content -->
 @endsection
 @section('importedScripts')
     @include('includes.datatables-scripts')
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('assets/js/update-survey.js') }}"></script>
+    <script src="{{ asset('assets/js/show-modal-image.js') }}"></script>
 @endsection

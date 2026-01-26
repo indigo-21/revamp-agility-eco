@@ -41,11 +41,11 @@
                                     <td>{{ $completedJob->comments }}</td>
                                     <td>
                                         @forelse ($completedJob->completedJobPhotos as $completedJobPhoto)
-                                            <a href="#" class="open-image-modal" data-img="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}">
-                                                <img src="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}"
-                                                    alt="" width="50" height="70"
-                                                    style="object-fit: cover; margin: 5px;">
-                                            </a>
+                                            <img src="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}"
+                                                alt="Completed job photo" width="50" height="70"
+                                                class="survey-photo-thumb"
+                                                data-full="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}"
+                                                style="object-fit: cover; margin: 5px; cursor: pointer;">
                                         @empty
                                             <span class="badge badge-warning">No Photo</span>
                                         @endforelse
@@ -79,11 +79,4 @@
     </div>
 </div>
 
-<script>
-    $(document).on('click', '.open-image-modal', function (e) {
-        e.preventDefault();
-        var src = $(this).data('img');
-        $('#imagePreviewModalImg').attr('src', src);
-        $('#imagePreviewModal').modal('show');
-    });
-</script>
+
