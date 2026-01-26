@@ -23,13 +23,13 @@
                     <td>{{ $job->jobMeasure?->umr }}</td>
                     <td>{{ $job->propertyInspector?->user->firstname }}
                         {{ $job->propertyInspector?->user->lastname }}</td>
-                    <td>{{ $job->property->address1 }}</td>
-                    <td>{{ $job->property->postcode }}</td>
-                    <td>{{ $job->jobMeasure->measure->measure_cat }}</td>
-                    <td>{{ $job->installer->user->firstname ?? 'N/A' }}</td>
+                    <td>{{ $job->property?->address1 }}</td>
+                    <td>{{ $job->property?->postcode }}</td>
+                    <td>{{ $job->jobMeasure?->measure?->measure_cat }}</td>
+                    <td>{{ $job->installer?->user?->firstname ?? 'N/A' }}</td>
                     <td>{{ $job->booked_date ? \Carbon\Carbon::parse($job->booked_date)->format('d/m/Y') : 'N/A' }}
                     </td>
-                    <td>{{ $job->scheme->short_name ?? 'N/A' }}</td>
+                    <td>{{ $job->scheme?->short_name ?? 'N/A' }}</td>
                 </tr>
             @endforeach
         </tbody>
