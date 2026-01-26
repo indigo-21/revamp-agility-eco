@@ -2,6 +2,7 @@
 
 namespace App\DataTables;
 
+use App\DataTables\Concerns\ExportsAllRows;
 use App\Models\Booking;
 use App\Models\Job;
 use App\Models\PropertyInspector;
@@ -16,6 +17,8 @@ use Yajra\DataTables\Services\DataTable;
 
 class ManageBookingsDataTable extends DataTable
 {
+    use ExportsAllRows;
+
     /**
      * Build the DataTable class.
      *
@@ -132,17 +135,19 @@ class ManageBookingsDataTable extends DataTable
             ->minifiedAjax()
             ->orderBy(1)
             ->selectStyleSingle()
+                        ->dom('Blfrtip')
             ->addTableClass('table table-bordered table-striped text-center')
             ->parameters([
                 'scrollX' => true, // Enable horizontal scrolling if needed
                 // 'responsive' => true,
                 'autoWidth' => true,
+                'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                'pageLength' => 10,
             ])
             ->buttons([
-                Button::make('excel'),
-                Button::make('csv'),
-                Button::make('pdf'),
-                Button::make('print'),
+                Button::make('csv')
+                    ->text('CSV')
+                    ->action($this->exportAllAction('csv')),
                 // Button::make('reset'),
                 // Button::make('reload')
             ]);

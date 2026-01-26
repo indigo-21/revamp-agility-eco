@@ -2,6 +2,7 @@
 
 namespace App\DataTables;
 
+use App\DataTables\Concerns\ExportsAllRows;
 use App\Models\Booking;
 use App\Models\Job;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
@@ -15,6 +16,8 @@ use Yajra\DataTables\Services\DataTable;
 
 class JobsDataTable extends DataTable
 {
+    use ExportsAllRows;
+
     /**
      * Build the DataTable class.
      *
@@ -32,14 +35,16 @@ class JobsDataTable extends DataTable
                 return $job->jobMeasure?->umr ?? 'N/A';
             })
             ->addColumn('job_status_id', function ($job) {
-                return '<span class="right badge badge-' . ($job->jobStatus->color_scheme ?? 'secondary') . '">' .
-                    ($job->jobStatus->description ?? 'N/A') .
+                return '<span class="right badge badge-' . ($job->jobStatus?->color_scheme ?? 'secondary') . '">' .
+                    ($job->jobStatus?->description ?? 'N/A') .
                     '</span>';
             })
             ->rawColumns(['job_status_id', 'action'])
             ->addColumn('propertyInspector', function ($job) {
-                return $job->propertyInspector?->user->firstname . ' ' .
-                    $job->propertyInspector?->user->lastname;
+                $firstname = $job->propertyInspector?->user?->firstname;
+                $lastname = $job->propertyInspector?->user?->lastname;
+
+                return trim(($firstname ?? '') . ' ' . ($lastname ?? '')) ?: 'N/A';
             })
             ->addColumn('booked_date', function ($job) {
                 return $job->bookings ?? 'N/A';
@@ -57,6 +62,10 @@ class JobsDataTable extends DataTable
                 return $job->invoiceStatus?->name ?? 'N/A';
             })
             ->addColumn('booked_date', function ($job) {
+                if (empty($job->job_number) || strlen($job->job_number) < 3) {
+                    return 'N/A';
+                }
+
                 $jobGroup = substr($job->job_number, 0, strlen($job->job_number) - 3);
 
                 $booking = Booking::where('job_number', 'LIKE', "%{$jobGroup}%")
@@ -220,15 +229,19 @@ class JobsDataTable extends DataTable
             ->minifiedAjax()
             ->orderBy(0)
             ->selectStyleSingle()
-            ->dom('Bfrtip')
+            ->dom('Blfrtip')
             ->parameters([
                 'scrollX' => true, // Enable horizontal scrolling if needed
                 // 'responsive' => true,
                 'autoWidth' => true,
+                'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                'pageLength' => 10,
             ])
             ->buttons([
                 // Button::make('excel'),
-                Button::make('csv'),
+                Button::make('csv')
+                    ->text('CSV')
+                    ->action("function (e, dt, node, config) {\n    var params = dt.ajax.params();\n    var urlParams = new URLSearchParams(window.location.search);\n\n    params.search = params.search || {};\n    params.search.value = dt.search() || '';\n    params.search.regex = false;\n\n    params.columns = params.columns || [];\n    params.columns.forEach(function (col, idx) {\n        col.search = col.search || {};\n        col.search.value = dt.column(idx).search() || '';\n        col.search.regex = false;\n    });\n\n    urlParams.forEach(function (value, key) {\n        params[key] = value;\n    });\n\n    var form = $('<form>', {\n        method: 'POST',\n        action: '".route('job.export.csv.post')."'\n    });\n\n    var token = $('meta[name=\"csrf-token\"]').attr('content');\n    if (token) {\n        form.append($('<input>', { type: 'hidden', name: '_token', value: token }));\n    }\n\n    var appendInputs = function (prefix, value) {\n        if (Array.isArray(value)) {\n            value.forEach(function (v, i) {\n                appendInputs(prefix + '[' + i + ']', v);\n            });\n            return;\n        }\n\n        if (value !== null && typeof value === 'object') {\n            Object.keys(value).forEach(function (k) {\n                appendInputs(prefix + '[' + k + ']', value[k]);\n            });\n            return;\n        }\n\n        form.append($('<input>', { type: 'hidden', name: prefix, value: value }));\n    };\n\n    Object.keys(params).forEach(function (key) {\n        appendInputs(key, params[key]);\n    });\n\n    $('body').append(form);\n    form.submit();\n}"),
                 // Button::make('pdf'),
                 // Button::make('print'),
                 // Button::make('reset'),

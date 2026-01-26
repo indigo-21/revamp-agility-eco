@@ -2,6 +2,7 @@
 
 namespace App\DataTables;
 
+use App\DataTables\Concerns\ExportsAllRows;
 use App\Models\Booking;
 use App\Models\Job;
 use App\Models\PropertyInspector;
@@ -15,8 +16,12 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
+
 class MakeBookingsDataTable extends DataTable
 {
+    use ExportsAllRows;
+
+
     /**
      * Build the DataTable class.
      *
@@ -49,7 +54,7 @@ class MakeBookingsDataTable extends DataTable
             })
             ->addColumn('measures', function ($job) {
                 $measureData = "";
-                
+
                 // Compute job_group from job_number
                 $jobGroup = substr($job->job_number, 0, strlen($job->job_number) - 3);
 
@@ -79,7 +84,7 @@ class MakeBookingsDataTable extends DataTable
             ->addColumn('latest_comment', function ($job) {
                 // Compute job_group from job_number
                 $jobGroup = substr($job->job_number, 0, strlen($job->job_number) - 3);
-                
+
                 $lastBooking = Booking::where(
                     'job_number',
                     $jobGroup,
@@ -145,17 +150,19 @@ class MakeBookingsDataTable extends DataTable
             ->minifiedAjax()
             ->orderBy(1)
             ->selectStyleSingle()
+            ->dom('Blfrtip')
             ->addTableClass('table table-bordered table-striped text-center')
             ->parameters([
                 'scrollX' => true, // Enable horizontal scrolling if needed
                 // 'responsive' => true,
                 'autoWidth' => true,
+                'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                'pageLength' => 10,
             ])
             ->buttons([
-                Button::make('excel'),
-                Button::make('csv'),
-                Button::make('pdf'),
-                Button::make('print'),
+                Button::make('csv')
+                    ->text('CSV')
+                    ->action($this->exportAllAction('csv')),
                 // Button::make('reset'),
                 // Button::make('reload')
             ]);

@@ -56,6 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('navigation.access:job')->group(function () {
         Route::resource('job', JobController::class);
         Route::patch('job/{id}/closeJob', [JobController::class, 'closeJob']);
+        Route::post('job/export/csv', [JobController::class, 'exportCsv'])->name('job.export.csv.post');
         // Route::get('getQueueJobs', [JobController::class, 'getQueueJobs']);
     });
 
@@ -100,6 +101,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // UPDATE SURVEY
     Route::middleware('navigation.access:make-booking')->group(function () {
         Route::resource('update-survey', UpdateSurveyController::class);
+        Route::post('update-survey/export/csv', [UpdateSurveyController::class, 'exportCsv'])
+            ->name('update-survey.export.csv');
         Route::post('upload-survey-photo', [CompletedJobPhotoController::class, 'updateSurveyPhoto'])
             ->name('upload-survey-photo');
         Route::post('delete-survey-photo', [CompletedJobPhotoController::class, 'deleteSurveyPhoto'])

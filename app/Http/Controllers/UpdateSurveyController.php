@@ -77,4 +77,94 @@ class UpdateSurveyController extends Controller
     {
         //
     }
+
+    /**
+     * Export update survey jobs to CSV using current filters.
+     */
+    public function exportCsv(Request $request, UpdateSurveyDataTable $updateSurveyDataTable)
+    {
+        set_time_limit(0);
+
+        $query = $updateSurveyDataTable->query(new Job())
+            ->with([
+                'jobMeasure.measure',
+                'jobStatus',
+                'propertyInspector.user',
+                'installer.user',
+                'property',
+            ]);
+
+        $dataTable = $updateSurveyDataTable->dataTable($query);
+
+        if (method_exists($dataTable, 'skipPaging')) {
+            $dataTable->skipPaging();
+        }
+
+        if (method_exists($dataTable, 'getFilteredQuery')) {
+            $query = $dataTable->getFilteredQuery();
+        }
+
+        $filename = 'UpdateSurvey_' . now()->format('YmdHis') . '.csv';
+
+        return response()->streamDownload(function () use ($query) {
+            $handle = fopen('php://output', 'w');
+
+            $headers = [
+                'Job Number',
+                'Status',
+                'Measure',
+                'Cert#',
+                'UMR',
+                'Property Inspector',
+                'Inspection Date',
+                'Installer',
+                'Address',
+                'Postcode',
+            ];
+
+            fputcsv($handle, $headers);
+
+            $writeRows = function ($jobs) use ($handle) {
+                foreach ($jobs as $job) {
+                    $propertyInspector = trim(($job->propertyInspector?->user?->firstname ?? '') . ' ' . ($job->propertyInspector?->user?->lastname ?? ''));
+                    $propertyInspector = $propertyInspector !== '' ? $propertyInspector : 'N/A';
+
+                    $installer = trim(($job->installer?->user?->firstname ?? '') . ' ' . ($job->installer?->user?->lastname ?? ''));
+                    $installer = $installer !== '' ? $installer : 'N/A';
+
+                    fputcsv($handle, [
+                        $job->job_number,
+                        $job->jobStatus?->description ?? 'N/A',
+                        $job->jobMeasure?->measure?->measure_cat ?? 'N/A',
+                        $job->cert_no,
+                        $job->jobMeasure?->umr ?? 'N/A',
+                        $propertyInspector,
+                        $job->schedule_date,
+                        $installer,
+                        $job->property?->address1 ?? 'N/A',
+                        $job->property?->postcode ?? 'N/A',
+                    ]);
+                }
+            };
+
+            if ($query instanceof \Illuminate\Support\Enumerable) {
+                $writeRows(collect($query)->sortBy('id'));
+                fclose($handle);
+                return;
+            }
+
+            if ($query instanceof \Illuminate\Database\Eloquent\Builder || $query instanceof \Illuminate\Database\Query\Builder) {
+                $query->orderBy('id')->chunk(1000, function ($jobs) use ($writeRows) {
+                    $writeRows($jobs);
+                });
+                fclose($handle);
+                return;
+            }
+
+            $writeRows(collect($query)->sortBy('id'));
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv',
+        ]);
+    }
 }

@@ -23,6 +23,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Response;
+use Illuminate\Support\Facades\DB;
 
 class JobController extends Controller
 {
@@ -127,6 +128,115 @@ class JobController extends Controller
         $job->delete();
 
         return redirect()->back()->with('success', 'Job deleted successfully');
+    }
+
+    /**
+     * Export jobs to CSV using current filters.
+     */
+    public function exportCsv(Request $request, JobsDataTable $jobsDataTable)
+    {
+        set_time_limit(0);
+
+        $query = $jobsDataTable->query(new Job());
+
+        $dataTable = $jobsDataTable->dataTable($query);
+
+        if (method_exists($dataTable, 'skipPaging')) {
+            $dataTable->skipPaging();
+        }
+
+        if (method_exists($dataTable, 'getFilteredQuery')) {
+            $query = $dataTable->getFilteredQuery();
+        }
+
+
+        Log::info('Jobs CSV export params', [
+            'search' => $request->input('search.value'),
+            'columns' => $request->input('columns'),
+            'request' => $request->all(),
+        ]);
+
+        $filename = 'Jobs_' . now()->format('YmdHis') . '.csv';
+
+        return response()->streamDownload(function () use ($query) {
+            $handle = fopen('php://output', 'w');
+
+            $headers = [
+                'Job ID',
+                'Job Number',
+                'Cert#',
+                'UMR',
+                'Job Status',
+                'Property Inspector',
+                'Booked Date',
+                'Postcode',
+                'Installer',
+                'Remediation Deadline',
+                'NC Level',
+                'Close Date',
+                'Deadline',
+                'Invoice Status',
+                '28-Reminder',
+            ];
+
+            fputcsv($handle, $headers);
+
+            $writeRows = function ($jobs) use ($handle) {
+                foreach ($jobs as $job) {
+                    $jobGroup = substr($job->job_number, 0, max(strlen($job->job_number) - 3, 0));
+
+                    $bookingDate = 'N/A';
+                    if (! empty($jobGroup)) {
+                        $booking = Booking::where('job_number', 'LIKE', "%{$jobGroup}%")
+                            ->where('booking_outcome', 'Booked')
+                            ->latest()
+                            ->first();
+
+                        if ($booking) {
+                            $bookingDate = $booking->booking_date;
+                        }
+                    }
+
+                    fputcsv($handle, [
+                        $job->id,
+                        $job->job_number,
+                        $job->cert_no,
+                        $job->jobMeasure?->umr ?? 'N/A',
+                        $job->jobStatus?->description ?? 'N/A',
+                        trim(($job->propertyInspector?->user?->firstname ?? '') . ' ' . ($job->propertyInspector?->user?->lastname ?? '')),
+                        $bookingDate,
+                        $job->property?->postcode ?? 'N/A',
+                        $job->installer?->user?->firstname ?? 'N/A',
+                        $job->rework_deadline,
+                        $job->job_remediation_type,
+                        $job->close_date,
+                        $job->deadline,
+                        $job->invoiceStatus?->name ?? 'N/A',
+                        $job->sent_reminder === 1 ? 'Yes' : 'No',
+                    ]);
+                }
+            };
+
+            if ($query instanceof \Illuminate\Support\Enumerable) {
+                $sorted = collect($query)->sortBy('id');
+                $writeRows($sorted);
+                return;
+            }
+
+            if ($query instanceof \Illuminate\Database\Eloquent\Builder || $query instanceof \Illuminate\Database\Query\Builder) {
+                $query->orderBy('id')->chunk(1000, function ($jobs) use ($writeRows) {
+                    $writeRows($jobs);
+                });
+                return;
+            }
+
+            $jobs = collect($query)->sortBy('id');
+            $writeRows($jobs);
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv',
+        ]);
     }
 
     public function upload(Request $request)
@@ -287,16 +397,16 @@ class JobController extends Controller
     {
         try {
             // Get queue jobs for job-allocation queues
-            $jobAllocationJobs = \DB::table('queue_jobs')
+            $jobAllocationJobs = DB::table('queue_jobs')
                 ->where('queue', 'job-allocation')
                 ->count();
 
-            $batchAllocationJobs = \DB::table('queue_jobs')
+            $batchAllocationJobs = DB::table('queue_jobs')
                 ->where('queue', 'job-allocation-batch')
                 ->count();
 
             // Get failed jobs
-            $failedJobs = \DB::table('queue_failed_jobs')
+            $failedJobs = DB::table('queue_failed_jobs')
                 ->where(function ($query) {
                     $query->where('queue', 'job-allocation')
                         ->orWhere('queue', 'job-allocation-batch');

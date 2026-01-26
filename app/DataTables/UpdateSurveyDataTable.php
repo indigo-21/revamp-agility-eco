@@ -51,35 +51,6 @@ class UpdateSurveyDataTable extends DataTable
             ->addColumn('postcode', function ($job) {
                 return $job->property?->postcode ?? 'N/A';
             })
-            ->filterColumn('address', function ($query, $keyword) {
-                $query->whereHas('property', function ($q) use ($keyword) {
-                    $q->where('address1', 'like', "%{$keyword}%")
-                        ->orWhere('address2', 'like', "%{$keyword}%")
-                        ->orWhere('address3', 'like', "%{$keyword}%");
-                });
-            })
-            ->filterColumn('propertyInspector', function ($query, $keyword) {
-                $query->whereHas('propertyInspector.user', function ($q) use ($keyword) {
-                    $q->where('firstname', 'like', "%{$keyword}%")
-                        ->orWhere('lastname', 'like', "%{$keyword}%");
-                });
-            })
-            ->filterColumn('installer', function ($query, $keyword) {
-                $query->whereHas('installer.user', function ($q) use ($keyword) {
-                    $q->where('firstname', 'like', "%{$keyword}%")
-                        ->orWhere('lastname', 'like', "%{$keyword}%");
-                });
-            })
-            ->filterColumn('measure', function ($query, $keyword) {
-                $query->whereHas('jobMeasure.measure', function ($q) use ($keyword) {
-                    $q->where('measure_cat', 'like', "%{$keyword}%");
-                });
-            })
-            ->filterColumn('umr', function ($query, $keyword) {
-                $query->whereHas('jobMeasure', function ($q) use ($keyword) {
-                    $q->where('umr', 'like', "%{$keyword}%");
-                });
-            })
             ->rawColumns(['job_status_id', 'action'])
             ->setRowId('id');
     }
@@ -108,18 +79,23 @@ class UpdateSurveyDataTable extends DataTable
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->orderBy(0)
+            ->dom('Blfrtip')
             ->addTableClass('table table-bordered table-striped text-center')
             ->parameters([
                 'scrollX' => true, // Enable horizontal scrolling if needed
                 // 'responsive' => true,
                 'autoWidth' => false,
+                'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                'pageLength' => 10,
             ])
             ->selectStyleSingle()
             ->buttons([
-                Button::make('excel'),
-                Button::make('csv'),
-                Button::make('pdf'),
-                Button::make('print'),
+                // Button::make('excel'),
+                Button::make('csv')
+                    ->text('CSV')
+                    ->action("function (e, dt, node, config) {\n    var params = dt.ajax.params();\n\n    params.search = params.search || {};\n    params.search.value = dt.search() || '';\n    params.search.regex = false;\n\n    params.columns = params.columns || [];\n    params.columns.forEach(function (col, idx) {\n        col.search = col.search || {};\n        col.search.value = dt.column(idx).search() || '';\n        col.search.regex = false;\n    });\n\n    var form = $('<form>', {\n        method: 'POST',\n        action: '".route('update-survey.export.csv')."'\n    });\n\n    var token = $('meta[name=\"csrf-token\"]').attr('content');\n    if (token) {\n        form.append($('<input>', { type: 'hidden', name: '_token', value: token }));\n    }\n\n    var appendInputs = function (prefix, value) {\n        if (Array.isArray(value)) {\n            value.forEach(function (v, i) {\n                appendInputs(prefix + '[' + i + ']', v);\n            });\n            return;\n        }\n\n        if (value !== null && typeof value === 'object') {\n            Object.keys(value).forEach(function (k) {\n                appendInputs(prefix + '[' + k + ']', value[k]);\n            });\n            return;\n        }\n\n        form.append($('<input>', { type: 'hidden', name: prefix, value: value }));\n    };\n\n    Object.keys(params).forEach(function (key) {\n        appendInputs(key, params[key]);\n    });\n\n    $('body').append(form);\n    form.submit();\n}"),
+                // Button::make('pdf'),
+                // Button::make('print'),
                 // Button::make('reset'),
                 // Button::make('reload')
             ]);
