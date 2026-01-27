@@ -10,9 +10,9 @@
     </div>
     <div class="col-md-6">
         <x-job-details label="Date Survey" value="{{ $job->schedule_date }}" />
-        <x-job-details label="Measure CAT" value="{{ $job->jobMeasure->measure->measure_cat }}" />
+        <x-job-details label="Measure CAT" value="{{ $job->jobMeasure?->measure->measure_cat }}" />
         <x-job-details label="Certificate Expiry"
-            value="{{ $job->propertyInspector?->propertyInspectorMeasures->where('measure_id', $job->jobMeasure->measure_id)->first()?->expiry }}" />
+            value="{{ $job->propertyInspector?->propertyInspectorMeasures->where('measure_id', $job->jobMeasure?->measure_id)->first()?->expiry }}" />
     </div>
     <div class="col-md-12">
         <div class="card">
