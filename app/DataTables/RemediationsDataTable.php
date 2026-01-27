@@ -66,6 +66,11 @@ class RemediationsDataTable extends DataTable
             ->addColumn('postcode', function ($job) {
                 return $job->property?->postcode ?? 'N/A';
             })
+            ->filterColumn('postcode', function ($query, $keyword) {
+                $query->whereHas('property', function ($q) use ($keyword) {
+                    $q->where('postcode', 'like', "%{$keyword}%");
+                });
+            })
             ->addColumn('remediation_date', function ($job) {
                 return $job->remediation->last()?->created_at;
             })
