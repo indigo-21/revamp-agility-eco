@@ -55,8 +55,13 @@ class PropertyInspectorJobAllocationService
             return null;
         }
 
-        self::getClientInstallers($request, $measure, $notFirmAvailable);
+        // Postcode is the priority: only inspectors in the postcode pool proceed.
         self::postcodeLogic($postcode);
+        if ($this->property_inspector->count() == 0) {
+            return null;
+        }
+
+        self::getClientInstallers($request, $measure, $notFirmAvailable);
         self::jobTypeLogic($request);
         self::jobMeasureLogic($measure);
         self::availabilityLogic($request, $measure);
@@ -130,8 +135,13 @@ class PropertyInspectorJobAllocationService
             return in_array($accountLevel, [7, 8]);
         });
 
-        if ($client_installers && $property_inspector_pool->count() == 0) {
-            self::PIAllocationProcess($request, $measure, true);
+        // If client requires firm PI (account level 6) but none are available in the current pool,
+        // fall back to non-firm (7/8) within the same pool.
+        if ($client_installers && !$notFirmAvailable && $property_inspector_pool->count() == 0) {
+            $property_inspector_pool = $this->property_inspector->filter(function ($property_inspector) {
+                $accountLevel = $property_inspector->user->account_level_id;
+                return in_array($accountLevel, [7, 8]);
+            });
         }
 
         if ($property_inspector_pool->count() == 1) {
@@ -153,6 +163,11 @@ class PropertyInspectorJobAllocationService
             }
             return false;
         });
+
+        if ($property_inspector_pool->count() == 0) {
+            $this->property_inspector = collect();
+            return;
+        }
 
         if ($property_inspector_pool->count() == 1) {
             self::allocateJob($property_inspector_pool->first());
