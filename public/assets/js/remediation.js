@@ -3,9 +3,17 @@ $(function () {
         theme: 'bootstrap4'
     })
 
-    $(".closeJob").on("click", function () {
+    $(document).on("click", ".closeJob", function () {
+        const actionUrl = $(this).data('url');
         const jobId = $(this).data('id');
 
-        $('.remediation-form').attr('action', '/remediation-review/' + jobId);
+        if (actionUrl) {
+            $('.remediation-form').attr('action', actionUrl);
+            return;
+        }
+
+        if (jobId) {
+            $('.remediation-form').attr('action', '/remediation-review/' + jobId);
+        }
     });
 });
