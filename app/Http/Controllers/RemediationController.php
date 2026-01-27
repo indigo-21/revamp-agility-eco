@@ -13,10 +13,15 @@ class RemediationController extends Controller
     {
 
         $remediation = (new RemediationService)->store($request);
-        
+
+        $redirect = $request->jobId
+            ? route('remediation-review.show', $request->jobId)
+            : null;
+
         return response()->json([
             'message' => 'Remediation created successfully',
             'remediation' => $remediation,
+            'redirect' => $redirect,
         ], 201);
     }
 }
