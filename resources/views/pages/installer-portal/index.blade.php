@@ -58,7 +58,7 @@
                                             </td>
                                             <td>{{ $job->property->postcode }}</td>
                                             <td>{{ $job->job_remediation_type }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($job->schedule_date)->format('M d Y') }}
+                                            <td>{{ \Carbon\Carbon::parse($job->first_visit_by)->format('M d Y') }}
                                             </td>
                                             <td>{{ \Carbon\Carbon::parse($job->rework_deadline)->format('M d Y') }}
                                             </td>

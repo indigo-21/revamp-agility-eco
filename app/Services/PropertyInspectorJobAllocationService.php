@@ -17,7 +17,7 @@ class PropertyInspectorJobAllocationService
     public function __construct()
     {
         $property_inspectors = PropertyInspector::where('is_active', 1)
-            ->where('id_expiry', '>=', now())
+            // ->where('id_expiry', '>=', now())
             ->get();
 
         $this->property_inspector = $property_inspectors;
@@ -157,7 +157,8 @@ class PropertyInspectorJobAllocationService
 
         $property_inspector_pool = $this->property_inspector->filter(function ($property_inspector) use ($measure_data) {
             foreach ($property_inspector->propertyInspectorMeasures as $inspector_job_measure) {
-                if ($inspector_job_measure->measure_id == $measure_data->id && $inspector_job_measure->expiry >= now()) {
+                // if ($inspector_job_measure->measure_id == $measure_data->id && $inspector_job_measure->expiry >= now()) {
+                if ($inspector_job_measure->measure_id == $measure_data->id ) {
                     return true;
                 }
             }
