@@ -41,6 +41,22 @@ class RemediationsDataTable extends DataTable
             ->addColumn('installer', function ($job) {
                 return $job->installer?->user?->firstname ?? 'N/A';
             })
+            ->filterColumn('umr', function ($query, $keyword) {
+                $query->whereHas('jobMeasure', function ($q) use ($keyword) {
+                    $q->where('umr', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('installer', function ($query, $keyword) {
+                $query->whereHas('installer', function ($installerQ) use ($keyword) {
+                    $installerQ->whereHas('user', function ($userQ) use ($keyword) {
+                        $userQ->where(function ($subQ) use ($keyword) {
+                            $subQ->where('firstname', 'like', "%{$keyword}%")
+                                ->orWhere('lastname', 'like', "%{$keyword}%")
+                                ->orWhere('email', 'like', "%{$keyword}%");
+                        });
+                    });
+                });
+            })
             ->addColumn('measure', function ($job) {
                 return $job->jobMeasure?->measure?->measure_cat ?? 'N/A';
             })
@@ -69,7 +85,11 @@ class RemediationsDataTable extends DataTable
     {
         $query = $model->newQuery()->with([
             'completedJobs',
-            'remediation'
+            'remediation',
+            'jobStatus',
+            'jobMeasure.measure',
+            'installer.user',
+            'property'
         ]);
 
         $query->whereIn('job_status_id', [16, 26])

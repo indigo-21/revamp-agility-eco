@@ -53,8 +53,7 @@
                             @include('includes.upload-image')
                             <input type="hidden" id="completedJobId" name="completedJobId" value="{{ $completedJob->id }}">
                             <input type="hidden" id="jobId" name="jobId" value="{{ $completedJob->job_id }}">
-                            <button class="btn btn-primary mt-4 float-right start" type="submit">Submit
-                                Remediation</button>
+                            <button class="btn btn-primary mt-4 float-right start" type="submit">Add Comments</button>
                         </div>
                     </div>
 
