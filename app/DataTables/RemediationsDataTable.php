@@ -101,16 +101,20 @@ class RemediationsDataTable extends DataTable
             ->minifiedAjax()
             ->orderBy(1)
             ->addTableClass('table table-bordered table-striped text-center')
-            ->dom('Bfrtip')
+            ->dom('Blfrtip')
             ->parameters([
                 'scrollX' => true, // Enable horizontal scrolling if needed
                 // 'responsive' => true,
                 'autoWidth' => true,
+                 'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                'pageLength' => 10,
             ])
             ->selectStyleSingle()
             ->buttons([
                 // Button::make('excel'),
-                Button::make('csv'),
+                Button::make('csv')
+                    ->text('CSV')
+                    ->action("function (e, dt, node, config) {\n    var params = dt.ajax.params();\n\n    params.search = params.search || {};\n    params.search.value = dt.search() || '';\n    params.search.regex = false;\n\n    params.columns = params.columns || [];\n    params.columns.forEach(function (col, idx) {\n        col.search = col.search || {};\n        col.search.value = dt.column(idx).search() || '';\n        col.search.regex = false;\n    });\n\n    var form = $('<form>', {\n        method: 'POST',\n        action: '".route('remediation-review.export.csv')."'\n    });\n\n    var token = $('meta[name=\"csrf-token\"]').attr('content');\n    if (token) {\n        form.append($('<input>', { type: 'hidden', name: '_token', value: token }));\n    }\n\n    var appendInputs = function (prefix, value) {\n        if (Array.isArray(value)) {\n            value.forEach(function (v, i) {\n                appendInputs(prefix + '[' + i + ']', v);\n            });\n            return;\n        }\n\n        if (value !== null && typeof value === 'object') {\n            Object.keys(value).forEach(function (k) {\n                appendInputs(prefix + '[' + k + ']', value[k]);\n            });\n            return;\n        }\n\n        form.append($('<input>', { type: 'hidden', name: prefix, value: value }));\n    };\n\n    Object.keys(params).forEach(function (key) {\n        appendInputs(key, params[key]);\n    });\n\n    $('body').append(form);\n    form.submit();\n}"),
                 // Button::make('pdf'),
                 // Button::make('print'),
                 // Button::make('reset'),

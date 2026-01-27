@@ -84,6 +84,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // REMEDIATION
     Route::resource('remediation-review', RemediationReviewController::class)
         ->middleware('navigation.access:remediation-review');
+    Route::post('remediation-review/export/csv', [RemediationReviewController::class, 'exportCsv'])
+        ->name('remediation-review.export.csv')
+        ->middleware('navigation.access:remediation-review');
     Route::resource('remediation-reinstate', RemediationReinstateController::class)
         ->middleware('navigation.access:remediation-reinstate');
     Route::resource('reminder-exception', ReminderExceptionController::class)

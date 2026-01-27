@@ -8,6 +8,7 @@ use App\Models\CompletedJob;
 use App\Models\Job;
 use App\Models\JobStatus;
 use App\Models\Remediation;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class RemediationReviewController extends Controller
@@ -54,6 +55,107 @@ class RemediationReviewController extends Controller
     public function store(Request $request)
     {
         //
+    }
+
+    /**
+     * Export remediation review jobs to CSV using current filters.
+     */
+    public function exportCsv(Request $request, RemediationsDataTable $remediationsDataTable)
+    {
+        set_time_limit(0);
+
+        $query = $remediationsDataTable->query(new Job())
+            ->with([
+                'jobMeasure.measure',
+                'jobStatus',
+                'installer.user',
+                'property',
+                'remediation',
+            ]);
+
+        $dataTable = $remediationsDataTable->dataTable($query);
+
+        if (method_exists($dataTable, 'skipPaging')) {
+            $dataTable->skipPaging();
+        }
+
+        if (method_exists($dataTable, 'getFilteredQuery')) {
+            $query = $dataTable->getFilteredQuery();
+        }
+
+        $filename = 'Remediations_' . now()->format('YmdHis') . '.csv';
+
+        return response()->streamDownload(function () use ($query) {
+            $handle = fopen('php://output', 'w');
+
+            $headers = [
+                'Job Number',
+                'Status',
+                'Cert#',
+                'UMR',
+                'Installer',
+                'Measure',
+                'Address',
+                'Postcode',
+                'Non-Compliance Type',
+                'Inspection Date',
+                'Evidence Submission Date',
+                'Rework Deadline',
+                'Reinspect Deadline',
+            ];
+
+            fputcsv($handle, $headers);
+
+            $writeRows = function ($jobs) use ($handle) {
+                foreach ($jobs as $job) {
+                    $installer = trim(($job->installer?->user?->firstname ?? '') . ' ' . ($job->installer?->user?->lastname ?? ''));
+                    $installer = $installer !== '' ? $installer : 'N/A';
+
+                    $address = trim(($job->property?->house_flat_prefix ?? '') . ' ' . ($job->property?->address1 ?? ''));
+                    $address = $address !== '' ? $address : 'N/A';
+
+                    $remediationDate = $job->remediation->last()?->created_at;
+                    $reinspectDeadline = $remediationDate
+                        ? Carbon::parse($remediationDate)->addDays(21)->format('Y-m-d H:i:s')
+                        : 'N/A';
+
+                    fputcsv($handle, [
+                        $job->job_number,
+                        $job->jobStatus?->description ?? 'N/A',
+                        $job->cert_no,
+                        $job->jobMeasure?->umr ?? 'N/A',
+                        $installer,
+                        $job->jobMeasure?->measure?->measure_cat ?? 'N/A',
+                        $address,
+                        $job->property?->postcode ?? 'N/A',
+                        $job->job_remediation_type ?? 'N/A',
+                        $job->first_visit_by ?? 'N/A',
+                        $remediationDate ?? 'N/A',
+                        $job->rework_deadline ?? 'N/A',
+                        $reinspectDeadline,
+                    ]);
+                }
+            };
+
+            if ($query instanceof \Illuminate\Support\Enumerable) {
+                $writeRows(collect($query)->sortBy('id'));
+                fclose($handle);
+                return;
+            }
+
+            if ($query instanceof \Illuminate\Database\Eloquent\Builder || $query instanceof \Illuminate\Database\Query\Builder) {
+                $query->orderBy('id')->chunk(1000, function ($jobs) use ($writeRows) {
+                    $writeRows($jobs);
+                });
+                fclose($handle);
+                return;
+            }
+
+            $writeRows(collect($query)->sortBy('id'));
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv',
+        ]);
     }
 
     /**

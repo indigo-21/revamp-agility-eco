@@ -237,4 +237,24 @@
     <!-- Tempusdominus Bootstrap 4 -->
     <script src="{{ asset('plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
     <script src="{{ asset('assets/js/job.js') }}"></script>
+    <script>
+        $(function () {
+            $('#example1').DataTable({
+                responsive: true,
+                autoWidth: false,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                pageLength: 10,
+                dom: 'Blfrtip',
+                buttons: [
+                    {
+                        extend: 'csvHtml5',
+                        text: 'CSV',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
 @endsection
