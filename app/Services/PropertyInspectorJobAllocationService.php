@@ -14,6 +14,9 @@ class PropertyInspectorJobAllocationService
 {
     public $property_inspector;
 
+    private static ?int $lastAllocatedPropertyInspectorId = null;
+    private static ?string $lastAllocatedCertNo = null;
+
     public function __construct()
     {
         $property_inspectors = PropertyInspector::where('is_active', 1)
@@ -31,11 +34,13 @@ class PropertyInspectorJobAllocationService
             ->where('cert_no', $request->cert_no)
             ->get();
 
-
         if ($job_pi_allocated->count() > 0) {
             if ($job_pi_allocated->first()->propertyInspector) {
                 $this->property_inspector = $job_pi_allocated->first()->propertyInspector;
                 self::allocateJob($this->property_inspector);
+
+                self::$lastAllocatedPropertyInspectorId = $this->property_inspector->first()?->id;
+                self::$lastAllocatedCertNo = (string) $request->cert_no;
 
                 return $this->property_inspector;
             }
@@ -59,9 +64,32 @@ class PropertyInspectorJobAllocationService
         self::lowestNumberOfAllocatedLogic($request);
 
         if ($this->property_inspector->count() > 1) {
-            // get random property inspector from the pool
-            $random_property_inspector = $this->property_inspector->random();
+            // get random property inspector from the pool.
+            // If the previous job in this PHP process used a PI with a different cert_no,
+            // prefer selecting a different PI while still keeping the same pipeline above.
+            $candidate_pool = $this->property_inspector;
+
+            if (
+                self::$lastAllocatedPropertyInspectorId !== null
+                && self::$lastAllocatedCertNo !== null
+                && (string) $request->cert_no !== self::$lastAllocatedCertNo
+            ) {
+                $candidate_pool_without_previous = $candidate_pool
+                    ->reject(fn($property_inspector) => $property_inspector->id === self::$lastAllocatedPropertyInspectorId)
+                    ->values();
+
+                if ($candidate_pool_without_previous->count() > 0) {
+                    $candidate_pool = $candidate_pool_without_previous;
+                }
+            }
+
+            $random_property_inspector = $candidate_pool->random();
             self::allocateJob($random_property_inspector);
+        }
+
+        if ($this->property_inspector && $this->property_inspector->count() > 0) {
+            self::$lastAllocatedPropertyInspectorId = $this->property_inspector->first()?->id;
+            self::$lastAllocatedCertNo = (string) $request->cert_no;
         }
 
         return $this->property_inspector ?? null;
