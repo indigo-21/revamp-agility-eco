@@ -28,7 +28,7 @@
                     <!-- small box -->
                     <div class="small-box bg-info">
                         <div class="inner">
-                            <h3>{{ $jobs->where('job_status_id', 16)->where('job_remediation_type', 'Cat1')->where('deadline', '<', now())->count() }}
+                            <h3>{{ $jobs->where('job_status_id', 16)->whereIn('job_remediation_type', ['Cat1', 'CAT1'])->where('deadline', '<', now())->count() }}
                             </h3>
 
                             <p>Measures with Overdue CAT1 responses</p>
@@ -45,7 +45,7 @@
                     <!-- small box -->
                     <div class="small-box bg-success">
                         <div class="inner">
-                            <h3>{{ $jobs->where('job_status_id', 16)->where('job_remediation_type', 'Cat1')->count() }}
+                            <h3>{{ $jobs->where('job_status_id', 16)->whereIn('job_remediation_type', ['Cat1', 'CAT1'])->count() }}
                             </h3>
 
                             <p>Measures with Outstanding CAT1 responses</p>

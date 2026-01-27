@@ -54,7 +54,7 @@
                                             <td>{{ $job->cert_no }}</td>
                                             <td>{{ $job->jobMeasure->umr }}</td>
                                             <td>{{ $job->jobMeasure->measure->measure_cat }}</td>
-                                            <td>{{ $job->property->address1 }} {{ $job->property->city }}
+                                            <td>{{ $job->property->house_flat_prefix }} {{ $job->property->address1 }} {{ $job->property->city }}
                                             </td>
                                             <td>{{ $job->property->postcode }}</td>
                                             <td>{{ $job->job_remediation_type }}</td>

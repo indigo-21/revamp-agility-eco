@@ -267,12 +267,12 @@
                                                 </span>
                                             </td>
                                             <td>{{ $job->schedule_date }}</td>
-                                            <td>{{ $job->customer->customer_name }}</td>
-                                            <td>{{ $job->customer->customer_primary_tel }}</td>
-                                            <td>{{ $job->customer->customer_secondary_tel }}</td>
-                                            <td>{{ $job->property->address1 }}</td>
-                                            <td>{{ $job->property->postcode }}</td>
-                                            <td>{{ $job->jobMeasure->measure->measure_cat }}</td>
+                                            <td>{{ $job->customer?->customer_name }}</td>
+                                            <td>{{ $job->customer?->customer_primary_tel }}</td>
+                                            <td>{{ $job->customer?->customer_secondary_tel }}</td>
+                                            <td>{{ $job->property?->address1 }}</td>
+                                            <td>{{ $job->property?->postcode }}</td>
+                                            <td>{{ $job->jobMeasure?->measure->measure_cat }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
