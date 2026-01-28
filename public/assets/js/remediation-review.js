@@ -162,6 +162,7 @@ $(function () {
 
 $(".remediation").on("click", function () {
     const buttonText = $(this).text().trim();
+    const value = $(this).data("value");
 
     Swal.fire({
         title: "Are you sure?",
