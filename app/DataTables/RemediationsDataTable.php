@@ -177,8 +177,18 @@ class RemediationsDataTable extends DataTable
                         // Case 1: No remediations at all
                         $subQ->whereHas('remediations', function ($q2) {
                             $q2->where(function ($query) {
-                                $query->whereIn('role', ['Installer', 'INSTALLER'])
-                                    ->orWhereNull('role');
+                                // Keep existing inclusion: latest remediation from Installer / INSTALLER / null role
+                                $query->where(function ($innerQ) {
+                                    $innerQ->whereIn('role', ['Installer', 'INSTALLER'])
+                                        ->orWhereNull('role');
+                                })
+                                // Additionally include: latest remediation from Agent / AGENT where comment is NOT exactly
+                                // "Agent updated the survey" (so longer agent messages are still shown).
+                                ->orWhere(function ($innerQ) {
+                                    $innerQ->whereIn('role', ['Agent', 'AGENT'])
+                                        ->whereNotNull('comment')
+                                        ->where('comment', '!=', 'Agent updated the survey');
+                                });
                             })
                                 ->whereRaw('id = (SELECT id FROM remediations WHERE completed_job_id = completed_jobs.id ORDER BY created_at DESC LIMIT 1)');
                         });

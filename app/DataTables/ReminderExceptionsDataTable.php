@@ -196,7 +196,7 @@ class ReminderExceptionsDataTable extends DataTable
                         // Case 1: No remediations at all
                         $subQ->whereHas('remediations', function ($q2) {
                             $q2->where(function ($query) {
-                                $query->where('role', 'Installer')
+                                $query->whereIn('role', ['Installer', 'INSTALLER'])
                                     ->orWhereNull('role');
                             })
                                 ->whereRaw('id = (SELECT id FROM remediations WHERE completed_job_id = completed_jobs.id ORDER BY created_at DESC LIMIT 1)');

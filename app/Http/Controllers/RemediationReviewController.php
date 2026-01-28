@@ -151,7 +151,11 @@ class RemediationReviewController extends Controller
                 return;
             }
 
-            $writeRows(collect($query)->sortBy('id'));
+            $jobs = $query instanceof \Illuminate\Support\Enumerable
+                ? collect($query)
+                : (is_array($query) ? collect($query) : collect());
+
+            $writeRows($jobs->sortBy('id'));
             fclose($handle);
         }, $filename, [
             'Content-Type' => 'text/csv',
@@ -164,7 +168,13 @@ class RemediationReviewController extends Controller
     public function show(string $id)
     {
         $job = Job::findOrFail($id);
-        $completedJobs = CompletedJob::where('job_id', $job->id)
+        $completedJobs = CompletedJob::with([
+            'job',
+            'surveyQuestion',
+            'remediations' => function ($q) {
+                $q->orderBy('created_at');
+            },
+        ])->where('job_id', $job->id)
             ->whereIn('pass_fail', FailedQuestion::values())
             ->get();
 
