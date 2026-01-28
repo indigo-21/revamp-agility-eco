@@ -6,6 +6,7 @@ use App\DataTables\Concerns\ExportsAllRows;
 use App\Models\Booking;
 use App\Models\Job;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
@@ -108,6 +109,75 @@ class JobsDataTable extends DataTable
                 $query->whereHas('invoiceStatus', function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%");
                 });
+            })
+
+            ->orderColumn('umr', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('job_measures')
+                        ->select('umr')
+                        ->whereColumn('job_measures.job_id', 'jobs.id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('job_status_id', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('job_statuses')
+                        ->select('description')
+                        ->whereColumn('job_statuses.id', 'jobs.job_status_id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('propertyInspector', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('users')
+                        ->selectRaw("concat(users.firstname, ' ', users.lastname)")
+                        ->join('property_inspectors', 'property_inspectors.user_id', '=', 'users.id')
+                        ->whereColumn('property_inspectors.id', 'jobs.property_inspector_id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('postcode', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('properties')
+                        ->select('postcode')
+                        ->whereColumn('properties.job_id', 'jobs.id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('installer', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('users')
+                        ->selectRaw("concat(users.firstname, ' ', users.lastname)")
+                        ->join('installers', 'installers.user_id', '=', 'users.id')
+                        ->whereColumn('installers.id', 'jobs.installer_id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('invoice_status_id', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('invoice_statuses')
+                        ->select('name')
+                        ->whereColumn('invoice_statuses.id', 'jobs.invoice_status_id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('reminder', function ($query, $order) {
+                $query->orderBy('sent_reminder', $order);
+            })
+            ->orderColumn('booked_date', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('bookings')
+                        ->selectRaw('MAX(booking_date)')
+                        ->where('booking_outcome', 'Booked')
+                        ->whereRaw("bookings.job_number LIKE CONCAT('%', SUBSTRING(jobs.job_number, 1, LENGTH(jobs.job_number) - 3), '%')"),
+                    $order
+                );
             })
 
             ->filterColumn('job_status_id', function ($query, $keyword) {

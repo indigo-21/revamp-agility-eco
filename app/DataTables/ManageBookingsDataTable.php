@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Job;
 use App\Models\PropertyInspector;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
@@ -89,6 +90,74 @@ class ManageBookingsDataTable extends DataTable
 
                 return $lastBooking->first()->booking_notes ?? 'No comments';
             })
+            ->orderColumn('job_status_id', function ($query, $order) {
+                $query->orderBy('job_status_id', $order);
+            })
+            ->orderColumn('property_inspector_id', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('users')
+                        ->selectRaw("concat(users.firstname, ' ', users.lastname)")
+                        ->join('property_inspectors', 'property_inspectors.user_id', '=', 'users.id')
+                        ->whereColumn('property_inspectors.id', 'jobs.property_inspector_id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('postcode', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('properties')
+                        ->select('postcode')
+                        ->whereColumn('properties.job_id', 'jobs.id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('address', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('properties')
+                        ->select('address1')
+                        ->whereColumn('properties.job_id', 'jobs.id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('installer', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('users')
+                        ->selectRaw("concat(users.firstname, ' ', users.lastname)")
+                        ->join('installers', 'installers.user_id', '=', 'users.id')
+                        ->whereColumn('installers.id', 'jobs.installer_id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('customer_name', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('customers')
+                        ->select('customer_name')
+                        ->whereColumn('customers.job_id', 'jobs.id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('customer_email', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('customers')
+                        ->select('customer_email')
+                        ->whereColumn('customers.job_id', 'jobs.id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('customer_contact', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('customers')
+                        ->select('customer_primary_tel')
+                        ->whereColumn('customers.job_id', 'jobs.id')
+                        ->limit(1),
+                    $order
+                );
+            })
             ->filterColumn('job_group', function ($query, $keyword) {
                 $query->whereRaw("SUBSTRING(job_number, 1, LENGTH(job_number) - 3) LIKE ?", ["%$keyword%"]);
             })
@@ -165,12 +234,12 @@ class ManageBookingsDataTable extends DataTable
             Column::make('postcode')->title('Postcode'),
             Column::make('address')->title('Address'),
             Column::make('installer')->title('Installer'),
-            Column::make('measures')->title('Measures'),
+            Column::make('measures')->title('Measures')->orderable(false),
             Column::make('first_visit_by')->title('Job First Visit By'),
             Column::make('customer_name')->title('Owner Name'),
             Column::make('customer_email')->title('Owner Email'),
             Column::make('customer_contact')->title('Owner Contact Number'),
-            Column::make('latest_comment')->title('Latest Comment'),
+            Column::make('latest_comment')->title('Latest Comment')->orderable(false),
             Column::computed('action')
                 ->exportable(false)
                 ->printable(false)

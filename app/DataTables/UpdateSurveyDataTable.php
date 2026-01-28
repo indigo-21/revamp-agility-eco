@@ -4,6 +4,7 @@ namespace App\DataTables;
 
 use App\Models\Job;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
@@ -61,6 +62,72 @@ class UpdateSurveyDataTable extends DataTable
             })
             ->addColumn('postcode', function ($job) {
                 return $job->property?->postcode ?? 'N/A';
+            })
+            ->orderColumn('measure', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('measures')
+                        ->select('measure_cat')
+                        ->join('job_measures', 'job_measures.measure_id', '=', 'measures.id')
+                        ->whereColumn('job_measures.job_id', 'jobs.id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('umr', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('job_measures')
+                        ->select('umr')
+                        ->whereColumn('job_measures.job_id', 'jobs.id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('job_status_id', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('job_statuses')
+                        ->select('description')
+                        ->whereColumn('job_statuses.id', 'jobs.job_status_id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('propertyInspector', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('users')
+                        ->selectRaw("concat(users.firstname, ' ', users.lastname)")
+                        ->join('property_inspectors', 'property_inspectors.user_id', '=', 'users.id')
+                        ->whereColumn('property_inspectors.id', 'jobs.property_inspector_id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('installer', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('users')
+                        ->selectRaw("concat(users.firstname, ' ', users.lastname)")
+                        ->join('installers', 'installers.user_id', '=', 'users.id')
+                        ->whereColumn('installers.id', 'jobs.installer_id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('address', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('properties')
+                        ->select('address1')
+                        ->whereColumn('properties.job_id', 'jobs.id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('postcode', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('properties')
+                        ->select('postcode')
+                        ->whereColumn('properties.job_id', 'jobs.id')
+                        ->limit(1),
+                    $order
+                );
             })
             ->rawColumns(['job_status_id', 'action'])
             ->setRowId('id');

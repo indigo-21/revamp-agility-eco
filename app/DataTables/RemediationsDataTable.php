@@ -7,6 +7,7 @@ use App\Models\Job;
 use App\Models\Remediation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
@@ -77,6 +78,78 @@ class RemediationsDataTable extends DataTable
             ->addColumn('reinspect_deadline', function ($job) {
                 return Carbon::parse($job->remediation->last()?->created_at)->addDays(21)->format('Y-m-d H:i:s');
             })
+            ->orderColumn('umr', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('job_measures')
+                        ->select('umr')
+                        ->whereColumn('job_measures.job_id', 'jobs.id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('installer', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('users')
+                        ->selectRaw("concat(users.firstname, ' ', users.lastname)")
+                        ->join('installers', 'installers.user_id', '=', 'users.id')
+                        ->whereColumn('installers.id', 'jobs.installer_id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('measure', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('measures')
+                        ->select('measure_cat')
+                        ->join('job_measures', 'job_measures.measure_id', '=', 'measures.id')
+                        ->whereColumn('job_measures.job_id', 'jobs.id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('address', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('properties')
+                        ->select('address1')
+                        ->whereColumn('properties.job_id', 'jobs.id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('postcode', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('properties')
+                        ->select('postcode')
+                        ->whereColumn('properties.job_id', 'jobs.id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('job_status_id', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('job_statuses')
+                        ->select('description')
+                        ->whereColumn('job_statuses.id', 'jobs.job_status_id')
+                        ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('remediation_date', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('remediations')
+                        ->selectRaw('MAX(created_at)')
+                        ->whereColumn('remediations.job_id', 'jobs.id'),
+                    $order
+                );
+            })
+            ->orderColumn('reinspect_deadline', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('remediations')
+                        ->selectRaw('DATE_ADD(MAX(created_at), INTERVAL 21 DAY)')
+                        ->whereColumn('remediations.job_id', 'jobs.id'),
+                    $order
+                );
+            })
             ->rawColumns(['job_status_id', 'action'])
             ->setRowId('id');
     }
@@ -104,7 +177,7 @@ class RemediationsDataTable extends DataTable
                         // Case 1: No remediations at all
                         $subQ->whereHas('remediations', function ($q2) {
                             $q2->where(function ($query) {
-                                $query->where('role', 'Installer')
+                                $query->whereIn('role', ['Installer', 'INSTALLER'])
                                     ->orWhereNull('role');
                             })
                                 ->whereRaw('id = (SELECT id FROM remediations WHERE completed_job_id = completed_jobs.id ORDER BY created_at DESC LIMIT 1)');
