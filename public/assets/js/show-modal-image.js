@@ -1,11 +1,16 @@
     document.addEventListener('DOMContentLoaded', function () {
-        $(document).on('click', '.survey-photo-thumb', function () {
-            var fullSrc = $(this).data('full');
-            $('#surveyPhotoModalImage').attr('src', fullSrc);
-            $('#surveyPhotoModal').modal('show');
-        });
+        $(document).on('click', '.survey-photo-thumb', function (event) {
+            event.preventDefault();
+            var fullSrc = $(this).data('full') || $(this).attr('src');
+            if (!fullSrc) {
+                return;
+            }
 
-        $('#surveyPhotoModal').on('hidden.bs.modal', function () {
-            $('#surveyPhotoModalImage').attr('src', '');
+            if ($('#surveyPhotoModal').length) {
+                $('#surveyPhotoModalImage').attr('src', fullSrc);
+                $('#surveyPhotoModal').modal('show');
+            } else {
+                window.open(fullSrc, '_blank');
+            }
         });
     });

@@ -41,11 +41,11 @@
                                     <td>{{ $completedJob->comments }}</td>
                                     <td>
                                         @forelse ($completedJob->completedJobPhotos as $completedJobPhoto)
-                                            <img src="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}"
-                                                alt="Completed job photo" width="50" height="70"
-                                                class="survey-photo-thumb"
-                                                data-full="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}"
-                                                style="object-fit: cover; margin: 5px; cursor: pointer;">
+                                             <img src="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}"
+                                                        alt="Completed job photo" width="50" height="70"
+                                                        class="survey-photo-thumb"
+                                                        data-full="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}"
+                                                        style="object-fit: cover; margin: 5px; cursor: pointer;">
                                         @empty
                                             <span class="badge badge-warning">No Photo</span>
                                         @endforelse
@@ -57,23 +57,6 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Image preview modal -->
-<div class="modal fade" id="imagePreviewModal" tabindex="-1" role="dialog" aria-labelledby="imagePreviewModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="imagePreviewModalLabel">Image Preview</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center">
-                <img src="" id="imagePreviewModalImg" class="img-fluid" alt="Preview">
             </div>
         </div>
     </div>

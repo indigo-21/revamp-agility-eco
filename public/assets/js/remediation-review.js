@@ -161,16 +161,16 @@ $(function () {
 });
 
 $(".remediation").on("click", function () {
-    const value = $(this).data("value");
+    const buttonText = $(this).text().trim();
 
     Swal.fire({
         title: "Are you sure?",
-        text: "This will be marked as remediation.",
+        text: "The remediation history will be with " + buttonText,
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, mark as remediation!",
+        confirmButtonText: "Submit",
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajaxSetup({
