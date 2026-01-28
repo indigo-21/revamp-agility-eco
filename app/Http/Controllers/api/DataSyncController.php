@@ -129,7 +129,54 @@ class DataSyncController extends Controller
                                 ->where('property_inspector_id', $propertyInspectorId);
                     });
                     break;
+
+                case 'completed_jobs':
+                    // Filter completed_jobs that belong to jobs assigned to this property inspector
+                    $query->whereIn('job_id', function ($subQuery) use ($propertyInspectorId) {
+                        $subQuery->select('id')
+                                ->from('jobs')
+                                ->where('property_inspector_id', $propertyInspectorId);
+                    });
+                    break;
+
+                case 'completed_job_photos':
+                    // Filter completed_job_photos that belong to completed_jobs for jobs assigned to this property inspector
+                    $query->whereIn('completed_job_id', function ($subQuery) use ($propertyInspectorId) {
+                        $subQuery->select('id')
+                                ->from('completed_jobs')
+                                ->whereIn('job_id', function ($q2) use ($propertyInspectorId) {
+                                    $q2->select('id')
+                                       ->from('jobs')
+                                       ->where('property_inspector_id', $propertyInspectorId);
+                                });
+                    });
+                    break;
             }
+        }
+
+        // Apply optional delta-sync and pagination parameters
+        $lastSyncedAt = $request->input('last_synced_at');
+        $limit = $request->input('limit');
+        $offset = $request->input('offset');
+
+        // If the table has an `updated_at` column and the client provided a last_synced_at,
+        // return only rows updated after that timestamp.
+        if ($lastSyncedAt && Schema::hasColumn($tableName, 'updated_at')) {
+            try {
+                $parsed = \Carbon\Carbon::parse($lastSyncedAt);
+                $query->where('updated_at', '>', $parsed);
+            } catch (\Exception $e) {
+                // If parsing fails, ignore delta filter and return full set (caller should ensure format)
+            }
+        }
+
+        // Apply pagination if provided to avoid returning extremely large result sets
+        if ($limit) {
+            $query->limit((int) $limit);
+        }
+
+        if ($offset) {
+            $query->offset((int) $offset);
         }
 
         // Execute the query and format the data

@@ -45,8 +45,19 @@ class UpdateSurveyDataTable extends DataTable
             ->addColumn('installer', function ($job) {
                 return $job->installer?->user?->firstname ?? 'N/A';
             })
+            ->filterColumn('installer', function ($query, $keyword) {
+                $query->whereHas('installer', function ($installerQ) use ($keyword) {
+                    $installerQ->whereHas('user', function ($userQ) use ($keyword) {
+                        $userQ->where(function ($subQ) use ($keyword) {
+                            $subQ->where('firstname', 'like', "%{$keyword}%")
+                                ->orWhere('lastname', 'like', "%{$keyword}%")
+                                ->orWhere('email', 'like', "%{$keyword}%");
+                        });
+                    });
+                });
+            })
             ->addColumn('address', function ($job) {
-                return $job->property?->address1 ? $job->property?->address1 . ' ' . $job->property?->address2 . ' ' . $job->property?->address3 : 'N/A';
+                return ($job->property?->house_flat_prefix ?? '') . ' ' . ($job->property?->address1 ?? '') . ' ' . ($job->property?->address2 ?? '') . ' ' . ($job->property?->address3 ?? '');
             })
             ->addColumn('postcode', function ($job) {
                 return $job->property?->postcode ?? 'N/A';
@@ -62,7 +73,13 @@ class UpdateSurveyDataTable extends DataTable
      */
     public function query(Job $model): QueryBuilder
     {
-        $query = $model->newQuery();
+        $query = $model->newQuery()->with([
+            'jobMeasure.measure',
+            'jobStatus',
+            'propertyInspector.user',
+            'installer.user',
+            'property',
+        ]);
 
         $query = $query->where('invoice_status_id', 2);
 
