@@ -139,7 +139,7 @@ class UpdateSurveyController extends Controller
                         $job->cert_no,
                         $job->jobMeasure?->umr ?? 'N/A',
                         $propertyInspector,
-                        $job->schedule_date,
+                        $job->first_visit_by ?? 'N/A',
                         $installer,
                         $job->property?->address1 ?? 'N/A',
                         $job->property?->postcode ?? 'N/A',
