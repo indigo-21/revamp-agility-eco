@@ -9,6 +9,9 @@ enum FailedQuestion: string
     case NCResubmitRemediation = 'NC Resubmit Remediation';
     case Cat1ResubmitAppeal = 'Cat1 Resubmit Appeal';
     case NCResubmitAppeal = 'NC Resubmit Appeal';
+    case FailNCRemediation = 'Fail NC Remediation';
+    case FailNCAppeal = 'Fail NC Appeal';
+
     // case Cat1ReinspectRemediation = 'Cat1 Reinspect Remediation';
     // case NCReinspectRemediation = 'NC Reinspect Remediation';
 

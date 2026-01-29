@@ -72,9 +72,6 @@ class RemediationsDataTable extends DataTable
                     $q->where('postcode', 'like', "%{$keyword}%");
                 });
             })
-            ->addColumn('inspection_date', function ($job) {
-                return $job->completedJobs->first()->created_at ?? 'N/A';
-            })
             ->addColumn('remediation_date', function ($job) {
                 return $job->remediation->last()?->created_at;
             })
@@ -180,18 +177,8 @@ class RemediationsDataTable extends DataTable
                         // Case 1: No remediations at all
                         $subQ->whereHas('remediations', function ($q2) {
                             $q2->where(function ($query) {
-                                // Keep existing inclusion: latest remediation from Installer / INSTALLER / null role
-                                $query->where(function ($innerQ) {
-                                    $innerQ->whereIn('role', ['Installer', 'INSTALLER'])
-                                        ->orWhereNull('role');
-                                })
-                                // Additionally include: latest remediation from Agent / AGENT where comment is NOT exactly
-                                // "Agent updated the survey" (so longer agent messages are still shown).
-                                ->orWhere(function ($innerQ) {
-                                    $innerQ->whereIn('role', ['Agent', 'AGENT'])
-                                        ->whereNotNull('comment')
-                                        ->where('comment', '!=', 'Agent updated the survey');
-                                });
+                                $query->whereIn('role', ['Installer', 'INSTALLER'])
+                                    ->orWhereNull('role');
                             })
                                 ->whereRaw('id = (SELECT id FROM remediations WHERE completed_job_id = completed_jobs.id ORDER BY created_at DESC LIMIT 1)');
                         });
@@ -257,7 +244,7 @@ class RemediationsDataTable extends DataTable
             Column::make('postcode'),
             Column::make('job_remediation_type')
                 ->title('Non-Compliance Type'),
-            Column::make('inspection_date')
+            Column::make('first_visit_by')
                 ->title('Inspection Date'),
             Column::make('remediation_date')
                 ->title('Evidence Submission Date'),
