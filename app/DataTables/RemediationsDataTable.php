@@ -72,6 +72,9 @@ class RemediationsDataTable extends DataTable
                     $q->where('postcode', 'like', "%{$keyword}%");
                 });
             })
+            ->addColumn('inspection_date', function ($job) {
+                return $job->completedJobs->first()->created_at ?? 'N/A';
+            })
             ->addColumn('remediation_date', function ($job) {
                 return $job->remediation->last()?->created_at;
             })
@@ -254,7 +257,7 @@ class RemediationsDataTable extends DataTable
             Column::make('postcode'),
             Column::make('job_remediation_type')
                 ->title('Non-Compliance Type'),
-            Column::make('first_visit_by')
+            Column::make('inspection_date')
                 ->title('Inspection Date'),
             Column::make('remediation_date')
                 ->title('Evidence Submission Date'),

@@ -46,6 +46,9 @@ class UpdateSurveyDataTable extends DataTable
             ->addColumn('installer', function ($job) {
                 return $job->installer?->user?->firstname ?? 'N/A';
             })
+            ->addColumn('inspection_date', function ($job) {
+                return $job->completedJobs->first()->created_at ?? 'N/A';
+            })
             ->filterColumn('installer', function ($query, $keyword) {
                 $query->whereHas('installer', function ($installerQ) use ($keyword) {
                     $installerQ->whereHas('user', function ($userQ) use ($keyword) {
@@ -129,6 +132,14 @@ class UpdateSurveyDataTable extends DataTable
                     $order
                 );
             })
+            ->orderColumn('inspection_date', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('completed_jobs')
+                        ->selectRaw('MIN(created_at)')
+                        ->whereColumn('completed_jobs.job_id', 'jobs.id'),
+                    $order
+                );
+            })
             ->rawColumns(['job_status_id', 'action'])
             ->setRowId('id');
     }
@@ -146,6 +157,9 @@ class UpdateSurveyDataTable extends DataTable
             'propertyInspector.user',
             'installer.user',
             'property',
+            'completedJobs' => function ($q) {
+                $q->orderBy('created_at', 'asc');
+            },
         ]);
 
         $query = $query->where('invoice_status_id', 2);
@@ -205,7 +219,7 @@ class UpdateSurveyDataTable extends DataTable
                 ->title('UMR'),
             Column::make('propertyInspector')
                 ->title('Property Inspector'),
-            Column::make('first_visit_by')
+            Column::make('inspection_date')
                 ->title('Inspection Date'),
             Column::make('installer'),
             Column::make('address'),
