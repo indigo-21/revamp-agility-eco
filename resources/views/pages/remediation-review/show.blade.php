@@ -110,22 +110,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($completedJobs as $completedJob)
-                                        @php
-                                            $lastRemediation = $completedJob->remediations->last();
-                                            $lastRole = strtolower($lastRemediation?->role ?? '');
-                                            $lastComment = trim((string) ($lastRemediation?->comment ?? ''));
-
-                                            $includeRow =
-                                                ($lastRole === 'installer' || $lastRole === '')
-                                                || ($lastRole === 'agent' && $lastComment !== 'Agent updated the survey');
-
-                                            $auditorComment = $completedJob->remediations
-                                                ->whereIn('role', ['AGENT', 'Agent'])
-                                                ->filter(fn($r) => trim((string) ($r->comment ?? '')) !== 'Agent updated the survey')
-                                                ->last()?->comment;
-                                        @endphp
-
-                                        @if ($includeRow)
+                                        @if (strtolower($completedJob->remediations->last()?->role) == 'installer')
                                             <tr>
                                                 <td>
                                                     {{ $completedJob->job->job_number }}{{ $completedJob->surveyQuestion->question_number }}
@@ -134,7 +119,7 @@
                                                     {{ $completedJob->surveyQuestion->nc_severity }}
                                                 </td>
                                                 <td>
-                                                    {{ $auditorComment }}
+                                                    {{ $completedJob->remediations->whereIn('role', ['AGENT', 'Agent'])->last()?->comment }}
                                                 </td>
                                                 <td>
                                                     {{ $completedJob->remediations->whereIn('role', ['Installer', 'INSTALLER'])->last()?->comment }}
