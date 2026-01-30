@@ -38,7 +38,7 @@
                     value="{{ isset($property_inspector) ? $property_inspector->city : '' }}" :required="true"/>
 
                 <x-input name="county" label="County"
-                    value="{{ isset($property_inspector) ? $property_inspector->county : '' }}" :required="true"/>
+                    value="{{ isset($property_inspector) ? $property_inspector->county : '' }}" />
 
                 <x-input name="postcode" label="Postcode"
                     value="{{ isset($property_inspector) ? $property_inspector->postcode : '' }}" :required="true"/>

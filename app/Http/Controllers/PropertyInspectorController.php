@@ -63,7 +63,7 @@ class PropertyInspectorController extends Controller
             ],
         ]);
 
-        $request->user_type_id = 4; // Property Inspector
+        $request->merge(['user_type_id' => 4]); // Property Inspector
 
         $user = (new UserService)->store($request);
 

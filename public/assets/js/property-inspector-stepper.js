@@ -1,5 +1,41 @@
 $(function () {
 
+    function setImagePreview({ inputSelector, imgSelector, placeholderSelector, metaSelector, label }) {
+        let input = document.querySelector(inputSelector);
+        if (!input) {
+            return;
+        }
+
+        input.addEventListener('change', function () {
+            let img = document.querySelector(imgSelector);
+            let placeholder = document.querySelector(placeholderSelector);
+            let meta = document.querySelector(metaSelector);
+
+            if (!img || !placeholder || !meta) {
+                return;
+            }
+
+            let file = input.files && input.files.length ? input.files[0] : null;
+
+            if (!file) {
+                let existingLocation = meta.getAttribute('data-existing-location') || '';
+                if (existingLocation) {
+                    placeholder.style.display = 'none';
+                    img.style.display = '';
+                } else {
+                    img.style.display = 'none';
+                    placeholder.style.display = '';
+                }
+                return;
+            }
+
+            img.src = URL.createObjectURL(file);
+            img.style.display = '';
+            placeholder.style.display = 'none';
+            meta.textContent = `Selected: ${file.name}`;
+        });
+    }
+
     // Initialize DataTables
     let measuresTable = $('#measuresTable').DataTable();
     let qualificationsTable = $('#qualificationsTable').DataTable();
@@ -177,6 +213,22 @@ $(function () {
     // // END STEPPER SCRIPT
 
     bsCustomFileInput.init();
+
+    setImagePreview({
+        inputSelector: '#photo',
+        imgSelector: '#photoPreviewImg',
+        placeholderSelector: '#photoPreviewPlaceholder',
+        metaSelector: '#photoPreviewMeta',
+        label: 'Photo'
+    });
+
+    setImagePreview({
+        inputSelector: '#id_badge',
+        imgSelector: '#idBadgePreviewImg',
+        placeholderSelector: '#idBadgePreviewPlaceholder',
+        metaSelector: '#idBadgePreviewMeta',
+        label: 'ID Badge'
+    });
 
     //Date picker
     $('.date').datetimepicker({

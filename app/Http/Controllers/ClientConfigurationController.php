@@ -81,8 +81,10 @@ class ClientConfigurationController extends Controller
             ],
         ]);
 
-        $request->user_type_id = 5; // Client
-        $request->account_level_id = 4; // Client
+        $request->merge([
+            'user_type_id' => 5, // Client
+            'account_level_id' => 4, // Client
+        ]);
 
         // dd($request->all());
 
