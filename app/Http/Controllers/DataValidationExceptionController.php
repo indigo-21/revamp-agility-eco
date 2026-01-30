@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Exception;
+use App\Models\Exception as DataException;
 use App\Models\Installer;
 use App\Models\Job;
 use App\Models\JobMeasure;
@@ -39,11 +39,28 @@ class DataValidationExceptionController extends Controller
      */
     public function store(Request $request)
     {
-        foreach ($request->jobNumbers as $jobNumber) {
+        $jobNumbers = $request->input('jobNumbers');
+
+        if (!is_array($jobNumbers) || count($jobNumbers) === 0) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Please select at least one job to reimport.',
+            ], 422);
+        }
+
+        $missingJobs = [];
+
+        foreach ($jobNumbers as $jobNumber) {
             $job = Job::where('job_number', $jobNumber)->first();
-            $job->postcode = $job->property->postcode;
-            $job->customer_primary_tel = $job->customer->customer_primary_tel;
-            $exceptions = Exception::where('cert_no', $job->cert_no)
+
+            if (!$job) {
+                $missingJobs[] = $jobNumber;
+                continue;
+            }
+
+            $job->postcode = $job->property?->postcode;
+            $job->customer_primary_tel = $job->customer?->customer_primary_tel;
+            $exceptions = DataException::where('cert_no', $job->cert_no)
                 ->where('job_status_id', $job->job_status_id)
                 ->when($job->jobMeasure, function ($query) use ($job) {
                     $query->where('umr', $job->jobMeasure->umr);
@@ -51,18 +68,22 @@ class DataValidationExceptionController extends Controller
                 ->get();
 
 
-            foreach ($exceptions as $key => $exception) {
+            foreach ($exceptions as $key => $dataException) {
 
-                if ($job->job_status_id == $exception->job_status_id) {
-                    switch ($exception->job_status_id) {
+                if ($job->job_status_id == $dataException->job_status_id) {
+                    switch ($dataException->job_status_id) {
                         case 8:
-                            $measure_cat = ["measure_cat" => $exception->value];
+                            $measure_cat = ["measure_cat" => $dataException->value];
                             $getMeasure = (new JobService)->getMeasure($measure_cat);
 
                             if ($getMeasure) {
 
-                                $measure_data = JobMeasure::where('umr', $exception->umr)
+                                $measure_data = JobMeasure::where('umr', $dataException->umr)
                                     ->first();
+
+                                if (!$measure_data) {
+                                    break;
+                                }
 
                                 $measure_data->measure_id = $getMeasure->id;
 
@@ -75,7 +96,7 @@ class DataValidationExceptionController extends Controller
                                 ];
 
                                 (new JobService)->update($job, $measure);
-                                $exception->delete();
+                                DataException::where('id', $dataException->id)->delete();
                             }
 
                             break;
@@ -83,11 +104,15 @@ class DataValidationExceptionController extends Controller
                         case 7:
 
                             $installer = Installer::with('user')
-                                ->whereHas('user', function ($query) use ($exception) {
-                                    $query->where('firstname', $exception->value);
+                                ->whereHas('user', function ($query) use ($dataException) {
+                                    $query->where('firstname', $dataException->value);
                                 })->first();
 
                             if ($installer) {
+                                if (!$job->jobMeasure?->measure) {
+                                    break;
+                                }
+
                                 $measure = [
                                     "measure_cat" => $job->jobMeasure->measure->measure_cat,
                                     'umr' => $job->jobMeasure->umr,
@@ -97,14 +122,18 @@ class DataValidationExceptionController extends Controller
                                 $job->installer_id = $installer?->id;
 
                                 (new JobService)->update($job, $measure);
-                                $exception->delete();
+                                DataException::where('id', $dataException->id)->delete();
                             }
 
                             break;
                         case 9:
-                            $scheme_data = Scheme::where('short_name', $exception->value)->first();
+                            $scheme_data = Scheme::where('short_name', $dataException->value)->first();
 
                             if ($scheme_data) {
+                                if (!$job->jobMeasure?->measure) {
+                                    break;
+                                }
+
                                 $measure = [
                                     "measure_cat" => $job->jobMeasure->measure->measure_cat,
                                     'umr' => $job->jobMeasure->umr,
@@ -116,7 +145,7 @@ class DataValidationExceptionController extends Controller
 
                                 $result = (new JobService)->update($job, $measure);
                                 // $test[] = $result;
-                                $exception->delete();
+                                DataException::where('id', $dataException->id)->delete();
                             }
 
 
@@ -131,10 +160,17 @@ class DataValidationExceptionController extends Controller
         }
         // return response()->json($test);
 
+        $message = 'Data validation exceptions processed successfully.';
+        if (count($missingJobs) > 0) {
+            $message .= ' Missing jobs: ' . implode(', ', array_slice($missingJobs, 0, 10));
+            if (count($missingJobs) > 10) {
+                $message .= '...';
+            }
+        }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Data validation exceptions processed successfully.'
+            'message' => $message,
         ]);
     }
 
