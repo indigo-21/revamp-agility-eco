@@ -36,15 +36,15 @@ class DashboardController extends Controller
             }
         }
 
-        $jobBooked = Job::where('job_status_id', 1)->count();
-        $jobPending = Job::whereIn('job_status_id', [5, 6, 7, 8, 9, 10, 25, 22])->count();
-        $jobFailed = Job::where('job_status_id', 16)->count();
-        $inspectionCompleted = Job::whereIn('job_status_id', [3, 4, 16, 30, 31, 26])->count();
-        $totalJobs = Job::count();
+        $jobBooked = Job::firmDataOnly()->where('job_status_id', 1)->count();
+        $jobPending = Job::firmDataOnly()->whereIn('job_status_id', [5, 6, 7, 8, 9, 10, 25, 22])->count();
+        $jobFailed = Job::firmDataOnly()->where('job_status_id', 16)->count();
+        $inspectionCompleted = Job::firmDataOnly()->whereIn('job_status_id', [3, 4, 16, 30, 31, 26])->count();
+        $totalJobs = Job::firmDataOnly()->count();
         $jobFailPercent = $totalJobs > 0 ? ($jobFailed / $totalJobs) * 100 : 0;
 
         // Single query to get both failed and total counts
-        $dashboardData = Job::with(['installer.user', 'jobMeasure.measure', 'scheme'])
+        $dashboardData = Job::firmDataOnly()->with(['installer.user', 'jobMeasure.measure', 'scheme'])
             ->join('job_measures', 'jobs.id', '=', 'job_measures.job_id')
             ->join('measures', 'job_measures.measure_id', '=', 'measures.id')
             ->join('installers', 'jobs.installer_id', '=', 'installers.id')
@@ -84,6 +84,16 @@ class DashboardController extends Controller
 
         $dashboardData2 = CompletedJob::selectRaw('COUNT(*) as answered_questions, survey_questions.nc_severity, survey_questions.question_number')
             ->join('survey_questions', 'completed_jobs.survey_question_id', '=', 'survey_questions.id')
+            ->join('jobs', 'completed_jobs.job_id', '=', 'jobs.id')
+            ->when(auth()->check() && in_array(auth()->user()?->accountLevel?->name, ['Firm Admin', 'Firm Agent'], true) && (bool) (auth()->user()?->accountLevel?->firm_data_only ?? false), function ($query) {
+                $organisation = trim((string) (auth()->user()?->organisation ?? ''));
+                if ($organisation === '') {
+                    return $query->whereRaw('1 = 0');
+                }
+
+                return $query->join('property_inspectors', 'jobs.property_inspector_id', '=', 'property_inspectors.id')
+                    ->where('property_inspectors.pi_employer', $organisation);
+            })
             ->when($startDate2 && $endDate2, function ($query) use ($startDate2, $endDate2) {
                 return $query->whereBetween('completed_jobs.created_at', [$startDate2, $endDate2]);
             })

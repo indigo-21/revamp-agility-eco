@@ -89,7 +89,7 @@ class JobController extends Controller
      */
     public function show(string $id)
     {
-        $job = Job::find($id);
+        $job = Job::firmDataOnly()->findOrFail($id);
         $bookings = Booking::where('job_number', 'LIKE', "%" . Str::limit($job->job_number, 13, '') . "%")
             ->get();
         $updateSurveys = UpdateSurvey::where('job_id', $job->id)
@@ -123,7 +123,7 @@ class JobController extends Controller
      */
     public function destroy(string $id)
     {
-        $job = Job::find($id);
+        $job = Job::firmDataOnly()->findOrFail($id);
 
         $job->delete();
 

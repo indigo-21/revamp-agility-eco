@@ -167,7 +167,7 @@ class RemediationReviewController extends Controller
      */
     public function show(string $id)
     {
-        $job = Job::findOrFail($id);
+        $job = Job::firmDataOnly()->findOrFail($id);
         $completedJobs = CompletedJob::with([
             'job',
             'surveyQuestion',
@@ -212,7 +212,7 @@ class RemediationReviewController extends Controller
     public function destroy(Request $request, string $id)
     {
         $jobStatus = JobStatus::findOrFail($request->job_status_id);
-        $job = Job::findOrFail($id);
+        $job = Job::firmDataOnly()->findOrFail($id);
         $completedJobs = CompletedJob::where('job_id', $job->id)
             ->whereIn('pass_fail', FailedQuestion::values())
             ->get();

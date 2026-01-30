@@ -30,7 +30,7 @@ class ManageBookingController extends Controller
 
     public function edit(string $job_number)
     {
-        $job = Job::where('job_number', 'LIKE', "%$job_number%")->first();
+        $job = Job::firmDataOnly()->where('job_number', 'LIKE', "%$job_number%")->firstOrFail();
 
         return view('pages.booking.manage-booking.rebook')
             ->with('job_number', $job_number)
@@ -39,7 +39,7 @@ class ManageBookingController extends Controller
 
     public function show(string $job_number)
     {
-        $jobs = Job::where('job_number', 'LIKE', "%$job_number%")->get();
+        $jobs = Job::firmDataOnly()->where('job_number', 'LIKE', "%$job_number%")->get();
         $bookings = Booking::where('job_number', $job_number)->get();
 
         return view('pages.booking.manage-booking.history')
@@ -50,9 +50,13 @@ class ManageBookingController extends Controller
 
     public function rebook(Request $request, string $job_number)
     {
-        $jobs = Job::where('job_number', 'LIKE', "%$job_number%")
+        $jobs = Job::firmDataOnly()->where('job_number', 'LIKE', "%$job_number%")
             ->whereIn('job_status_id', [1, 2, 25])
             ->get();
+
+        if ($jobs->isEmpty()) {
+            abort(404);
+        }
 
         $booking = new Booking();
 
@@ -67,7 +71,10 @@ class ManageBookingController extends Controller
 
         foreach ($jobs as $key => $job) {
 
-            $job_data = Job::find($job->id);
+            $job_data = Job::firmDataOnly()->find($job->id);
+            if (!$job_data) {
+                continue;
+            }
 
             $job_data->last_update = now();
             $job_data->schedule_date = $request->booking_date;
@@ -82,7 +89,11 @@ class ManageBookingController extends Controller
 
     public function unbook(string $job_number)
     {
-        $jobs = Job::where('job_number', 'LIKE', "%$job_number%")->get();
+        $jobs = Job::firmDataOnly()->where('job_number', 'LIKE', "%$job_number%")->get();
+
+        if ($jobs->isEmpty()) {
+            abort(404);
+        }
 
         $booking = new Booking();
 
@@ -97,7 +108,10 @@ class ManageBookingController extends Controller
 
         foreach ($jobs as $key => $job) {
 
-            $job_data = Job::find($job->id);
+            $job_data = Job::firmDataOnly()->find($job->id);
+            if (!$job_data) {
+                continue;
+            }
 
             $job_data->last_update = now();
             $job_data->job_status_id = 25;

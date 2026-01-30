@@ -15,7 +15,7 @@ class RemediationReinstateController extends Controller
      */
     public function index()
     {
-        $jobs = Job::whereIn('job_status_id', [32, 33, 34, 35])
+        $jobs = Job::firmDataOnly()->whereIn('job_status_id', [32, 33, 34, 35])
             ->get();
 
         return view('pages.remediation-reinstate.index')
@@ -59,7 +59,7 @@ class RemediationReinstateController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $job = Job::findOrFail($id);
+        $job = Job::firmDataOnly()->findOrFail($id);
         $completedJobs = CompletedJob::where('job_id', $job->id)
             ->whereIn('pass_fail', FailedQuestion::values())
             ->get();

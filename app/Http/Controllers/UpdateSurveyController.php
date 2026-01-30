@@ -56,7 +56,7 @@ class UpdateSurveyController extends Controller
      */
     public function edit(string $id)
     {
-        $job = Job::findOrFail($id);
+        $job = Job::firmDataOnly()->findOrFail($id);
 
         return view('pages.update-survey.edit')
             ->with('job', $job);
@@ -139,7 +139,7 @@ class UpdateSurveyController extends Controller
                         $job->cert_no,
                         $job->jobMeasure?->umr ?? 'N/A',
                         $propertyInspector,
-                        $job->first_visit_by ?? 'N/A',
+                        $job->completedJobs->first()->created_at ?? 'N/A',
                         $installer,
                         $job->property?->address1 ?? 'N/A',
                         $job->property?->postcode ?? 'N/A',
@@ -161,7 +161,11 @@ class UpdateSurveyController extends Controller
                 return;
             }
 
-            $writeRows(collect($query)->sortBy('id'));
+            $jobs = $query instanceof \Illuminate\Support\Enumerable
+                ? collect($query)
+                : (is_array($query) ? collect($query) : collect());
+
+            $writeRows($jobs->sortBy('id'));
             fclose($handle);
         }, $filename, [
             'Content-Type' => 'text/csv',

@@ -23,7 +23,7 @@ class MakeBookingController extends Controller
      */
     public function show(string $job_number)
     {
-        $jobs = Job::where('job_number', 'LIKE', "%$job_number%")->get();
+        $jobs = Job::firmDataOnly()->where('job_number', 'LIKE', "%$job_number%")->get();
         $bookings = Booking::where('job_number', $job_number)->get();
 
         return view('pages.booking.make-booking.history')
@@ -37,7 +37,7 @@ class MakeBookingController extends Controller
      */
     public function edit(string $job_number)
     {
-        $job = Job::where('job_number', 'LIKE', "%$job_number%")->first();
+        $job = Job::firmDataOnly()->where('job_number', 'LIKE', "%$job_number%")->firstOrFail();
         $propertyInspector = PropertyInspector::find($job->property_inspector_id);
 
         return view('pages.booking.make-booking.book')
@@ -48,9 +48,13 @@ class MakeBookingController extends Controller
 
     public function book(Request $request, string $job_number)
     {
-        $jobs = Job::where('job_number', 'LIKE', "%$job_number%")
+        $jobs = Job::firmDataOnly()->where('job_number', 'LIKE', "%$job_number%")
             ->whereIn('job_status_id', [1, 2, 23, 25])
             ->get();
+
+        if ($jobs->isEmpty()) {
+            abort(404);
+        }
 
         $booking = new Booking;
 
@@ -65,7 +69,10 @@ class MakeBookingController extends Controller
 
         foreach ($jobs as $key => $job) {
 
-            $job_data = Job::find($job->id);
+            $job_data = Job::firmDataOnly()->find($job->id);
+            if (!$job_data) {
+                continue;
+            }
 
             $job_data->job_status_id = 2; // Job Booked Not Uploaded
             $job_data->last_update = now();
@@ -82,11 +89,14 @@ class MakeBookingController extends Controller
 
     public function editPI(string $job_number)
     {
-        $jobs = Job::where('job_number', 'LIKE', "%$job_number%")->get();
+        $jobs = Job::firmDataOnly()->where('job_number', 'LIKE', "%$job_number%")->get();
         $property_inspectors = PropertyInspector::all();
 
+        if ($jobs->isEmpty()) {
+            abort(404);
+        }
 
-        $job_data = Job::find($jobs->first()->id);
+        $job_data = Job::firmDataOnly()->findOrFail($jobs->first()->id);
 
         return view('pages.booking.make-booking.edit-pi')
             ->with('job_number', $job_number)
@@ -97,7 +107,11 @@ class MakeBookingController extends Controller
 
     public function editPISubmit(Request $request, string $job_number)
     {
-        $jobs = Job::where('job_number', 'LIKE', "%$job_number%")->get();
+        $jobs = Job::firmDataOnly()->where('job_number', 'LIKE', "%$job_number%")->get();
+
+        if ($jobs->isEmpty()) {
+            abort(404);
+        }
 
         $property_inspector_old = PropertyInspector::find($jobs->first()->property_inspector_id);
         $property_inspector_new = PropertyInspector::find($request->property_inspector_id);
@@ -117,7 +131,10 @@ class MakeBookingController extends Controller
         $booking->save();
 
         foreach ($jobs as $key => $job) {
-            $job_data = Job::find($job->id);
+            $job_data = Job::firmDataOnly()->find($job->id);
+            if (!$job_data) {
+                continue;
+            }
             $job_data->property_inspector_id = $request->property_inspector_id;
             $job_data->last_update = now();
 
@@ -130,7 +147,11 @@ class MakeBookingController extends Controller
 
     public function closeJob(Request $request)
     {
-        $jobs = Job::where('job_number', 'LIKE', "%$request->job_number%")->get();
+        $jobs = Job::firmDataOnly()->where('job_number', 'LIKE', "%$request->job_number%")->get();
+
+        if ($jobs->isEmpty()) {
+            abort(404);
+        }
 
         $job_status_id = match ($request->booking_outcome) {
             'Wrong Contact Details' => 28, // Wrong Contact Details
@@ -151,7 +172,10 @@ class MakeBookingController extends Controller
 
         foreach ($jobs as $key => $job) {
 
-            $job_data = Job::find($job->id);
+            $job_data = Job::firmDataOnly()->find($job->id);
+            if (!$job_data) {
+                continue;
+            }
 
             $job_data->job_status_id = $job_status_id; // Closed
             $job_data->last_update = now();
@@ -166,7 +190,11 @@ class MakeBookingController extends Controller
 
     public function attemptMade(Request $request)
     {
-        $jobs = Job::where('job_number', 'LIKE', "%$request->job_number%")->get();
+        $jobs = Job::firmDataOnly()->where('job_number', 'LIKE', "%$request->job_number%")->get();
+
+        if ($jobs->isEmpty()) {
+            abort(404);
+        }
 
         $booking = new Booking;
 
@@ -181,7 +209,10 @@ class MakeBookingController extends Controller
 
         foreach ($jobs as $key => $job) {
 
-            $job_data = Job::find($job->id);
+            $job_data = Job::firmDataOnly()->find($job->id);
+            if (!$job_data) {
+                continue;
+            }
 
             if ($job->max_attempts + 1 >= $job->client->clientSlaMetric->maximum_booking_attempts) {
 

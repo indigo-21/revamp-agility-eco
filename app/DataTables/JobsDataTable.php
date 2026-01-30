@@ -227,6 +227,7 @@ class JobsDataTable extends DataTable
         $request = request();
 
         $query = $model->newQuery()
+            ->firmDataOnly()
             ->with(['jobMeasure', 'jobStatus', 'propertyInspector.user', 'property', 'installer.user', 'client', 'invoiceStatus']);
 
         // Apply filters based on request parameters

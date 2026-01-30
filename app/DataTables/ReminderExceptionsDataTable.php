@@ -174,7 +174,7 @@ class ReminderExceptionsDataTable extends DataTable
      */
     public function query(Job $model): QueryBuilder
     {
-        $query = $model->newQuery()->with([
+        $query = $model->newQuery()->firmDataOnly()->with([
             'completedJobs',
             'remediation',
             'jobStatus',

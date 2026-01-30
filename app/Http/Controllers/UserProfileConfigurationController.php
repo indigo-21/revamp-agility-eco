@@ -64,6 +64,22 @@ class UserProfileConfigurationController extends Controller
     public function update(Request $request, string $id)
     {
 
+        if ($request->type === "firm_data_only") {
+            $accessLevel = AccountLevel::findOrFail($request->account_level_id);
+
+            if (!in_array($accessLevel->name, ['Firm Admin', 'Firm Agent'], true)) {
+                abort(403, 'Unauthorized');
+            }
+
+            $accessLevel->firm_data_only = (int) $request->selectedValue === 1;
+            $accessLevel->save();
+
+            return response()->json([
+                'message' => 'Configuration updated successfully!',
+                'data' => $request->all(),
+            ]);
+        }
+
         // $userProfileConfiguration = new UserNavigation;
 
         $userProfileConfiguration = UserNavigation::where('account_level_id', $request->account_level_id)

@@ -43,6 +43,17 @@
 
                         <!-- /.card-header -->
                         <div class="card-body">
+                            @if (in_array($accessLevel->name, ['Firm Admin', 'Firm Agent'], true))
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="checkbox" id="firm_data_only" data-account_level="{{ $accountLevelId }}"
+                                                {{ ($accessLevel->firm_data_only ?? false) ? 'checked' : '' }}>
+                                            <label for="firm_data_only">Firm Data only</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                             <table class="table table-bordered table-striped">
                                 <thead>
                                     <tr>

@@ -9,8 +9,7 @@ class UserNavigation extends Model
     protected $fillable = [
         'account_level_id',
         'navigation_id',
-        'accessed',
-        'job_status_id',
+        'permission',
     ];
 
     public function accountLevel()

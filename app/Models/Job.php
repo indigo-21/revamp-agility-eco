@@ -7,11 +7,46 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Job extends Model
 {
     use HasFactory, SoftDeletes;
+
+    /**
+     * If the logged-in user is a Firm Admin/Firm Agent AND their access level has
+     * `firm_data_only` enabled, restrict jobs to those whose allocated PI has
+     * `property_inspectors.pi_employer` matching the user's `organisation`.
+     */
+    public function scopeFirmDataOnly(Builder $query, ?User $user = null): Builder
+    {
+        $user = $user ?: auth()->user();
+
+        if (!$user || !$user->relationLoaded('accountLevel') && !$user->accountLevel) {
+            return $query;
+        }
+
+        $accountLevelName = $user->accountLevel?->name;
+        $isFirmRole = in_array($accountLevelName, ['Firm Admin', 'Firm Agent'], true);
+
+        if (!$isFirmRole) {
+            return $query;
+        }
+
+        if (!(bool) ($user->accountLevel?->firm_data_only ?? false)) {
+            return $query;
+        }
+
+        $organisation = trim((string) ($user->organisation ?? ''));
+        if ($organisation === '') {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return $query->whereHas('propertyInspector', function ($q) use ($organisation) {
+            $q->where('pi_employer', $organisation);
+        });
+    }
 
     public function property(): HasOne
     {

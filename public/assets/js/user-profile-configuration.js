@@ -30,6 +30,15 @@ $(function () {
         
         submit(navigation_id, selectedValue, account_level_id, type);
     });
+
+    // Firm Data only toggle (Firm Admin / Firm Agent)
+    $(document).on("change", "#firm_data_only", function () {
+        account_level_id = $(this).data('account_level');
+        selectedValue = $(this).is(':checked') ? 1 : 0;
+        type = "firm_data_only";
+
+        submit('firm-data-only', selectedValue, account_level_id, type);
+    });
 });
 
 function initializeSelect2() {
@@ -71,26 +80,30 @@ const successPrompt = (response) => {
     let {message, data} = response;
     let subtitle        = "";
 
-    switch (data.selectedValue) {
-        case "1":
-            subtitle = "Viewing";
-            break;
-        case "2":
-            subtitle = "View/Add/Edit";
-            break;
-        case "3":
-            subtitle = "View/Add/Edit/Delete";
-            break;
-    
-        default:
-            subtitle = "No Access";
-            break;
+    if (data.type === 'firm_data_only') {
+        subtitle = String(data.selectedValue) === "1" ? "Enabled" : "Disabled";
+    } else {
+        switch (data.selectedValue) {
+            case "1":
+                subtitle = "Viewing";
+                break;
+            case "2":
+                subtitle = "View/Add/Edit";
+                break;
+            case "3":
+                subtitle = "View/Add/Edit/Delete";
+                break;
+        
+            default:
+                subtitle = "No Access";
+                break;
+        }
     }
 
 
         $(document).Toasts('create', {
             class: 'bg-info',
-            title: "Permission",
+            title: data.type === 'firm_data_only' ? "Firm Data only" : "Permission",
             subtitle: subtitle,
             body: message,
         })

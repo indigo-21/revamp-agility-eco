@@ -23,7 +23,7 @@ class OpenNcController extends Controller
         $startDate = $dates[0] ?? null;
         $endDate = $dates[1] ?? null;
 
-        $jobs = Job::whereHas('jobStatus', function ($query) use ($request) {
+        $jobs = Job::firmDataOnly()->whereHas('jobStatus', function ($query) use ($request) {
             if ($request->filled('job_status_id')) {
                 $query->where('id', $request->job_status_id);
             }
@@ -86,7 +86,7 @@ class OpenNcController extends Controller
      */
     public function show(string $id)
     {
-        $job = Job::find($id);
+        $job = Job::firmDataOnly()->findOrFail($id);
         $bookings = Booking::where('job_number', 'LIKE', "%" . Str::limit($job->job_number, 13, '') . "%")
             ->get();
         $updateSurveys = UpdateSurvey::where('job_id', $job->id)

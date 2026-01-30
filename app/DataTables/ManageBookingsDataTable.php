@@ -172,18 +172,16 @@ class ManageBookingsDataTable extends DataTable
      */
     public function query(Job $model): QueryBuilder
     {
-        $query = $model->newQuery()->with([
+        $propertyInspector = PropertyInspector::find(auth()->user()->propertyInspector?->id);
+
+        $query = Job::firmDataOnly()->with([
             'propertyInspector.user',
             'jobStatus',
             'jobMeasure.measure',
             'property',
             'installer.user',
             'customer'
-        ]);
-
-        $propertyInspector = PropertyInspector::find(auth()->user()->propertyInspector?->id);
-
-        $query = Job::selectRaw('*, SUBSTRING(job_number, 1, LENGTH(job_number) - 3) as job_group')
+        ])->selectRaw('*, SUBSTRING(job_number, 1, LENGTH(job_number) - 3) as job_group')
             ->groupBy('job_group')
             ->where('job_status_id', 1)
             ->when($propertyInspector, function ($query) use ($propertyInspector) {

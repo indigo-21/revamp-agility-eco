@@ -24,7 +24,7 @@ class ReminderExceptionController extends Controller
     public function store(Request $request)
     {
 
-        $job = Job::findOrFail($request->input('job_id'));
+        $job = Job::firmDataOnly()->findOrFail($request->input('job_id'));
         $job->sent_reminder = true;
         $job->save();
 

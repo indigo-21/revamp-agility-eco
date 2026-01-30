@@ -22,11 +22,13 @@ class AccountLevelSeeder extends Seeder
             'Firm Property Inspector',
             'Employed Property Inspector',
             'Freelance Property Inspector',
+            'Firm Admin',
+            'Firm Agent',
 
         ];
 
         foreach ($values as $value) {
-            AccountLevel::create([
+            AccountLevel::firstOrCreate([
                 'name' => $value,
             ]);
         }

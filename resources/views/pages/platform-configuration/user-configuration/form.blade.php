@@ -214,7 +214,7 @@
                                                         {{ $piLevel->name }}
                                                     </option>
                                                 @endforeach
-                                            @elseif (isset($user) && in_array($user->account_level_id, [1, 2, 3]))
+                                            @elseif (isset($user) && in_array($user->account_level_id, [1, 2, 3, 9, 10]))
                                                 @foreach ($adminLevels as $adminLevel)
                                                     <option value="{{ $adminLevel->id }}"
                                                         {{ old('account_level_id', isset($user) ? $user->account_level_id : '') == $adminLevel->id ? 'selected' : '' }}>
@@ -230,6 +230,10 @@
                                                 @endforeach
                                             @endif
                                         </x-select>
+                                        @if (isset($user) && in_array($user->account_level_id, [4, 5]))
+                                            <input type="hidden" name="account_level_id"
+                                                value="{{ old('account_level_id', $user->account_level_id) }}">
+                                        @endif
                                         @error('account_level_id')
                                             <div class="text-danger small mb-2">{{ $message }}</div>
                                         @enderror
@@ -245,6 +249,10 @@
                                                 </option>
                                             @endforeach
                                         </x-select>
+                                        @if (isset($user) && in_array($user->user_type_id, [3, 4, 5]))
+                                            <input type="hidden" name="user_type_id"
+                                                value="{{ old('user_type_id', $user->user_type_id) }}">
+                                        @endif
                                         @error('user_type_id')
                                             <div class="text-danger small mb-2">{{ $message }}</div>
                                         @enderror

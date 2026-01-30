@@ -14,7 +14,7 @@ class RestoreMaxAttemptController extends Controller
      */
     public function index()
     {
-        $jobs = Job::where('job_status_id', 29)
+        $jobs = Job::firmDataOnly()->where('job_status_id', 29)
             ->get();
 
         return view('pages.booking.restore-max-attempt.index')
@@ -58,7 +58,7 @@ class RestoreMaxAttemptController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $job = Job::findOrFail($id);
+        $job = Job::firmDataOnly()->findOrFail($id);
         $booking = new Booking;
 
         $job->max_attempts = 0;
