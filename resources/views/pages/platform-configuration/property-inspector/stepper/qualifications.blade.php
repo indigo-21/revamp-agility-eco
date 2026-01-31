@@ -40,7 +40,7 @@
                     <tbody>
                         @if (isset($property_inspector) && $property_inspector->propertyInspectorQualifications)
                             @foreach ($property_inspector->propertyInspectorQualifications as $qualifications)
-                                <tr>
+                                <tr data-pi-qualification-id="{{ $qualifications->id }}">
                                     <td>{{ $qualifications->name }}</td>
                                     <td>{{ $qualifications->issue_date }}</td>
                                     <td>{{ $qualifications->expiry_date }}</td>
@@ -50,7 +50,7 @@
                                     </td>
                                     <td>{{ $qualifications->qualification_issue }}</td>
                                     <td>
-                                        <button class="btn btn-danger btn-sm deleteRow">Delete</button>
+                                        <button type="button" class="btn btn-danger btn-sm deleteRow">Delete</button>
                                     </td>
                                 </tr>
                             @endforeach

@@ -40,6 +40,18 @@ $(function () {
     let measuresTable = $('#measuresTable').DataTable();
     let qualificationsTable = $('#qualificationsTable').DataTable();
 
+    let measureRowCounter = 0;
+    let qualificationRowCounter = 0;
+    const getMeasureFileKey = () => {
+        measureRowCounter += 1;
+        return `measure-${Date.now()}-${measureRowCounter}`;
+    };
+
+    const getQualificationFileKey = () => {
+        qualificationRowCounter += 1;
+        return `qualification-${Date.now()}-${qualificationRowCounter}`;
+    };
+
     function validateMeasuresFields() {
         let measureCat = $('select[name="measure_id"]').val();
         let feeValue = $('input[name="measure_fee_value"]').val();
@@ -73,6 +85,7 @@ $(function () {
     $('input[name="qualification_name"], input[name="qualification_issue_date"], input[name="qualification_expiry_date"], input[name="qualification_certificate"]').on('input change', validateQualificationsFields);
 
     $('#addMeasures').on('click', function () {
+        let measureId = $('select[name="measure_id"]').val();
         let measureCat = $('select[name="measure_id"] option:selected').text();
         let feeValue = $('input[name="measure_fee_value"]').val();
         let feeCurrency = $('input[name="measure_fee_currency"]').val();
@@ -83,20 +96,26 @@ $(function () {
         let fileName = file ? file.name : 'No File';
         let imageTag = file ? `<img src="${URL.createObjectURL(file)}" width="auto" height="150">` : 'No File';
 
+        const fileKey = getMeasureFileKey();
         // Create a new file input element and clone the file
-        let clonedFileInput = `<input type="file" class="hidden-file-name-${measureCat}" style="display:none;">`;
+        let clonedFileInput = `<input type="file" class="hidden-measure-file-${fileKey}" style="display:none;">`;
 
-        measuresTable.row.add([
+        let rowNode = measuresTable.row.add([
             measureCat,
             feeValue,
             feeCurrency,
             expiryDate,
             imageTag + clonedFileInput, // Add the cloned file input
-            '<button class="btn btn-danger btn-sm deleteRow">Delete</button>'
-        ]).draw();
+            '<button type="button" class="btn btn-danger btn-sm deleteRow">Delete</button>'
+        ]).draw().node();
+
+        $(rowNode)
+            .attr('data-measure-id', measureId || '')
+            .attr('data-pi-measure-id', '')
+            .attr('data-file-key', fileKey);
 
         // Assign the file to the cloned input
-        let newFileInput = $(`.hidden-file-name-${measureCat}`).last()[0];
+        let newFileInput = $(`.hidden-measure-file-${fileKey}`)[0];
         if (file && newFileInput) {
             let dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
@@ -107,7 +126,14 @@ $(function () {
         $('select[name="measure_id"]').val('').trigger('change');
         $('input[name="measure_fee_value"]').val('');
         $('input[name="measure_expiry_date"]').val('');
-        $('input[name="measure_certificate"]').val('');
+
+        let measureCertInput = $('input[name="measure_certificate"]');
+        measureCertInput.val('');
+        measureCertInput.trigger('change');
+        let measureCertLabel = measureCertInput.closest('.custom-file').find('.custom-file-label');
+        if (measureCertLabel.length) {
+            measureCertLabel.text('Choose file');
+        }
 
         validateMeasuresFields();
     });
@@ -124,20 +150,25 @@ $(function () {
         let fileName = file ? file.name : 'No File';
         let imageTag = file ? `<img src="${URL.createObjectURL(file)}" width="auto" height="150">` : 'No File';
 
+        const fileKey = getQualificationFileKey();
         // Create a new file input element and clone the file
-        let clonedFileInput = `<input type="file" class="hidden-file-name-${qualificationName.replace(/\s+/g, '')}" style="display:none;">`;
+        let clonedFileInput = `<input type="file" class="hidden-qualification-file-${fileKey}" style="display:none;">`;
 
-        qualificationsTable.row.add([
+        let rowNode = qualificationsTable.row.add([
             qualificationName,
             issueDate,
             expiryDate,
             imageTag + clonedFileInput, // Display image but store filename
             issue,
-            '<button class="btn btn-danger btn-sm deleteRow">Delete</button>'
-        ]).draw();
+            '<button type="button" class="btn btn-danger btn-sm deleteRow">Delete</button>'
+        ]).draw().node();
+
+        $(rowNode)
+            .attr('data-pi-qualification-id', '')
+            .attr('data-file-key', fileKey);
 
         // Assign the file to the cloned input
-        let newFileInput = $(`.hidden-file-name-${qualificationName.replace(/\s+/g, '')}`).last()[0];
+        let newFileInput = $(`.hidden-qualification-file-${fileKey}`)[0];
         if (file && newFileInput) {
             let dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
@@ -148,7 +179,15 @@ $(function () {
         $('input[name="qualification_name"]').val('');
         $('input[name="qualification_issue_date"]').val('');
         $('input[name="qualification_expiry_date"]').val('');
-        $('input[name="qualification_certificate"]').val('');
+
+        let qualificationCertInput = $('input[name="qualification_certificate"]');
+        qualificationCertInput.val('');
+        qualificationCertInput.trigger('change');
+        let qualificationCertLabel = qualificationCertInput.closest('.custom-file').find('.custom-file-label');
+        if (qualificationCertLabel.length) {
+            qualificationCertLabel.text('Choose file');
+        }
+
         $('input[name="qualification_issue"]').val('');
 
         validateQualificationsFields();
@@ -248,63 +287,83 @@ $(function () {
         let formData = new FormData(propertyInspectorForm[0]);
 
         // Use DataTables API to get ALL measures data, not just visible rows
-        let measuresData = measuresTable.rows().data().toArray();
-        
-        measuresData.forEach(function(rowData, index) {
-            if (rowData.length > 0) {
-                // Extract text content from HTML elements if needed
-                let measureCat = typeof rowData[0] === 'string' ? rowData[0].replace(/<[^>]*>/g, '').trim() : rowData[0];
-                let feeValue = typeof rowData[1] === 'string' ? rowData[1].replace(/<[^>]*>/g, '').trim() : rowData[1];
-                let feeCurrency = typeof rowData[2] === 'string' ? rowData[2].replace(/<[^>]*>/g, '').trim() : rowData[2];
-                let expiryDate = typeof rowData[3] === 'string' ? rowData[3].replace(/<[^>]*>/g, '').trim() : rowData[3];
-                
-                formData.append(`measures[${index}][measure_cat]`, measureCat);
-                formData.append(`measures[${index}][measure_fee_value]`, feeValue);
-                formData.append(`measures[${index}][measure_fee_currency]`, feeCurrency);
-                formData.append(`measures[${index}][measure_expiry_date]`, expiryDate);
+        let measureIndex = 0;
+        measuresTable.rows().every(function () {
+            let rowData = this.data();
+            let rowNode = this.node();
+            if (!rowData || rowData.length === 0 || !rowNode) {
+                return;
+            }
 
-                // Try to find the file input in the HTML content
-                if (typeof rowData[4] === 'string' && rowData[4].includes('hidden-file-name-')) {
-                    let fileInputClass = rowData[4].match(/hidden-file-name-([^"]*)/);
-                    if (fileInputClass && fileInputClass[1]) {
-                        let fileInput = $(`.hidden-file-name-${fileInputClass[1]}`)[0];
-                        let file = fileInput ? fileInput.files[0] : null;
-                        if (file) {
-                            formData.append(`measures[${index}][measure_certificate]`, file);
-                        }
-                    }
+            let $row = $(rowNode);
+            let measureId = $row.attr('data-measure-id');
+            let piMeasureId = $row.attr('data-pi-measure-id');
+            let fileKey = $row.attr('data-file-key');
+
+            // Extract text content from HTML elements if needed
+            let measureCat = typeof rowData[0] === 'string' ? rowData[0].replace(/<[^>]*>/g, '').trim() : rowData[0];
+            let feeValue = typeof rowData[1] === 'string' ? rowData[1].replace(/<[^>]*>/g, '').trim() : rowData[1];
+            let feeCurrency = typeof rowData[2] === 'string' ? rowData[2].replace(/<[^>]*>/g, '').trim() : rowData[2];
+            let expiryDate = typeof rowData[3] === 'string' ? rowData[3].replace(/<[^>]*>/g, '').trim() : rowData[3];
+
+            formData.append(`measures[${measureIndex}][measure_cat]`, measureCat);
+            formData.append(`measures[${measureIndex}][measure_id]`, measureId || '');
+            formData.append(`measures[${measureIndex}][measure_fee_value]`, feeValue);
+            formData.append(`measures[${measureIndex}][measure_fee_currency]`, feeCurrency);
+            formData.append(`measures[${measureIndex}][measure_expiry_date]`, expiryDate);
+
+            if (piMeasureId) {
+                formData.append(`measures[${measureIndex}][pi_measure_id]`, piMeasureId);
+            }
+
+            if (fileKey) {
+                let fileInput = $(`.hidden-measure-file-${fileKey}`)[0];
+                let file = fileInput ? fileInput.files[0] : null;
+                if (file) {
+                    formData.append(`measures[${measureIndex}][measure_certificate]`, file);
                 }
             }
+
+            measureIndex += 1;
         });
 
         // Use DataTables API to get ALL qualifications data, not just visible rows
-        let qualificationsData = qualificationsTable.rows().data().toArray();
-        
-        qualificationsData.forEach(function(rowData, index) {
-            if (rowData.length > 0) {
-                // Extract text content from HTML elements if needed
-                let qualificationName = typeof rowData[0] === 'string' ? rowData[0].replace(/<[^>]*>/g, '').trim() : rowData[0];
-                let issueDate = typeof rowData[1] === 'string' ? rowData[1].replace(/<[^>]*>/g, '').trim() : rowData[1];
-                let expiryDate = typeof rowData[2] === 'string' ? rowData[2].replace(/<[^>]*>/g, '').trim() : rowData[2];
-                let issue = typeof rowData[4] === 'string' ? rowData[4].replace(/<[^>]*>/g, '').trim() : rowData[4];
-                
-                formData.append(`qualifications[${index}][qualification_name]`, qualificationName);
-                formData.append(`qualifications[${index}][qualification_issue_date]`, issueDate);
-                formData.append(`qualifications[${index}][qualification_expiry_date]`, expiryDate);
-                formData.append(`qualifications[${index}][qualification_issue]`, issue);
+        let qualificationIndex = 0;
+        qualificationsTable.rows().every(function () {
+            let rowData = this.data();
+            let rowNode = this.node();
+            if (!rowData || rowData.length === 0 || !rowNode) {
+                return;
+            }
 
-                // Try to find the file input in the HTML content
-                if (typeof rowData[3] === 'string' && rowData[3].includes('hidden-file-name-')) {
-                    let fileInputClass = rowData[3].match(/hidden-file-name-([^"]*)/);
-                    if (fileInputClass && fileInputClass[1]) {
-                        let fileInput = $(`.hidden-file-name-${fileInputClass[1]}`)[0];
-                        let file = fileInput ? fileInput.files[0] : null;
-                        if (file) {
-                            formData.append(`qualifications[${index}][qualification_certificate]`, file);
-                        }
-                    }
+            let $row = $(rowNode);
+            let piQualificationId = $row.attr('data-pi-qualification-id');
+            let fileKey = $row.attr('data-file-key');
+
+            // Extract text content from HTML elements if needed
+            let qualificationName = typeof rowData[0] === 'string' ? rowData[0].replace(/<[^>]*>/g, '').trim() : rowData[0];
+            let issueDate = typeof rowData[1] === 'string' ? rowData[1].replace(/<[^>]*>/g, '').trim() : rowData[1];
+            let expiryDate = typeof rowData[2] === 'string' ? rowData[2].replace(/<[^>]*>/g, '').trim() : rowData[2];
+            let issue = typeof rowData[4] === 'string' ? rowData[4].replace(/<[^>]*>/g, '').trim() : rowData[4];
+
+            formData.append(`qualifications[${qualificationIndex}][qualification_name]`, qualificationName);
+            formData.append(`qualifications[${qualificationIndex}][qualification_issue_date]`, issueDate);
+            formData.append(`qualifications[${qualificationIndex}][qualification_expiry_date]`, expiryDate);
+            formData.append(`qualifications[${qualificationIndex}][qualification_issue]`, issue);
+
+            if (piQualificationId) {
+                formData.append(`qualifications[${qualificationIndex}][pi_qualification_id]`, piQualificationId);
+            }
+
+            if (fileKey) {
+                let fileInput = $(`.hidden-qualification-file-${fileKey}`)[0];
+                let file = fileInput ? fileInput.files[0] : null;
+                if (file) {
+                    formData.append(`qualifications[${qualificationIndex}][qualification_certificate]`, file);
                 }
             }
+
+            qualificationIndex += 1;
         });
 
         $.ajaxSetup({
