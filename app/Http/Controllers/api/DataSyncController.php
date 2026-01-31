@@ -8,6 +8,7 @@ use App\Models\QueuedSms;
 use App\Models\TempSyncLogs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Controller;
 use App\Models\ClientInstaller;
@@ -88,7 +89,15 @@ class DataSyncController extends Controller
 
         $model = $modelMap[$request->table];
         $tableName = (new $model)->getTable();
-        $columns = Schema::getColumnListing($tableName);
+
+        // Cache column listings per table to avoid repeated schema queries
+        static $columnsCache = [];
+        if (isset($columnsCache[$tableName])) {
+            $columns = $columnsCache[$tableName];
+        } else {
+            $columns = Schema::getColumnListing($tableName);
+            $columnsCache[$tableName] = $columns;
+        }
 
         // Build the query
         $query = $model::select($columns);
@@ -96,59 +105,62 @@ class DataSyncController extends Controller
         // Apply filtering based on property_inspector_id for jobs and related tables
         if ($request->has('property_inspector_id')) {
             $propertyInspectorId = $request->property_inspector_id;
-            
+
             switch ($request->table) {
                 case 'jobs':
                     // Filter jobs by property_inspector_id
                     $query->where('property_inspector_id', $propertyInspectorId);
                     break;
-                    
+
                 case 'properties':
-                    // Filter properties that belong to jobs assigned to this property inspector
-                    $query->whereIn('job_id', function ($subQuery) use ($propertyInspectorId) {
-                        $subQuery->select('id')
-                                ->from('jobs')
-                                ->where('property_inspector_id', $propertyInspectorId);
+                    // Use whereExists correlated subquery for better performance
+                    $query->whereExists(function ($sub) use ($propertyInspectorId) {
+                        $sub->select(DB::raw(1))
+                            ->from('jobs')
+                            ->whereRaw('jobs.id = properties.job_id')
+                            ->where('property_inspector_id', $propertyInspectorId);
                     });
                     break;
-                    
+
                 case 'customers':
-                    // Filter customers that belong to jobs assigned to this property inspector
-                    $query->whereIn('job_id', function ($subQuery) use ($propertyInspectorId) {
-                        $subQuery->select('id')
-                                ->from('jobs')
-                                ->where('property_inspector_id', $propertyInspectorId);
+                    $query->whereExists(function ($sub) use ($propertyInspectorId) {
+                        $sub->select(DB::raw(1))
+                            ->from('jobs')
+                            ->whereRaw('jobs.id = customers.job_id')
+                            ->where('property_inspector_id', $propertyInspectorId);
                     });
                     break;
-                    
+
                 case 'job_measures':
-                    // Filter job_measures that belong to jobs assigned to this property inspector
-                    $query->whereIn('job_id', function ($subQuery) use ($propertyInspectorId) {
-                        $subQuery->select('id')
-                                ->from('jobs')
-                                ->where('property_inspector_id', $propertyInspectorId);
+                    $query->whereExists(function ($sub) use ($propertyInspectorId) {
+                        $sub->select(DB::raw(1))
+                            ->from('jobs')
+                            ->whereRaw('jobs.id = job_measures.job_id')
+                            ->where('property_inspector_id', $propertyInspectorId);
                     });
                     break;
 
                 case 'completed_jobs':
-                    // Filter completed_jobs that belong to jobs assigned to this property inspector
-                    $query->whereIn('job_id', function ($subQuery) use ($propertyInspectorId) {
-                        $subQuery->select('id')
-                                ->from('jobs')
-                                ->where('property_inspector_id', $propertyInspectorId);
+                    $query->whereExists(function ($sub) use ($propertyInspectorId) {
+                        $sub->select(DB::raw(1))
+                            ->from('jobs')
+                            ->whereRaw('jobs.id = completed_jobs.job_id')
+                            ->where('property_inspector_id', $propertyInspectorId);
                     });
                     break;
 
                 case 'completed_job_photos':
-                    // Filter completed_job_photos that belong to completed_jobs for jobs assigned to this property inspector
-                    $query->whereIn('completed_job_id', function ($subQuery) use ($propertyInspectorId) {
-                        $subQuery->select('id')
-                                ->from('completed_jobs')
-                                ->whereIn('job_id', function ($q2) use ($propertyInspectorId) {
-                                    $q2->select('id')
-                                       ->from('jobs')
-                                       ->where('property_inspector_id', $propertyInspectorId);
-                                });
+                    // Join through completed_jobs to jobs via whereExists
+                    $query->whereExists(function ($sub) use ($propertyInspectorId) {
+                        $sub->select(DB::raw(1))
+                            ->from('completed_jobs')
+                            ->whereRaw('completed_jobs.id = completed_job_photos.completed_job_id')
+                            ->whereExists(function ($sub2) use ($propertyInspectorId) {
+                                $sub2->select(DB::raw(1))
+                                    ->from('jobs')
+                                    ->whereRaw('jobs.id = completed_jobs.job_id')
+                                    ->where('property_inspector_id', $propertyInspectorId);
+                            });
                     });
                     break;
             }
@@ -179,21 +191,48 @@ class DataSyncController extends Controller
             $query->offset((int) $offset);
         }
 
-        // Execute the query and format the data
-        $data = $query->get()->map(function ($item) use ($columns) {
-            return collect($columns)->mapWithKeys(function ($col) use ($item) {
-                $value = $item->$col;
+        // If a limit is provided, fetch normally (respecting pagination)
+        if ($limit) {
+            $rows = $query->get()->map(function ($item) use ($columns) {
+                return collect($columns)->mapWithKeys(function ($col) use ($item) {
+                    $value = $item->$col;
 
-                // Convert date columns to 'Y-m-d H:i:s'
-                if ($value instanceof \Carbon\Carbon) {
-                    $value = $value->format('Y-m-d H:i:s');
+                    if ($value instanceof \Carbon\Carbon) {
+                        $value = $value->format('Y-m-d H:i:s');
+                    }
+
+                    return [$col => $value];
+                })->toArray();
+            });
+
+            return response()->json(array_values($rows->toArray()));
+        }
+
+        // For large unrestricted queries, stream the JSON response to reduce memory usage
+        return response()->stream(function () use ($query, $columns) {
+            $first = true;
+            echo '[';
+
+            // Use cursor to stream results without loading entire result set into memory
+            foreach ($query->cursor() as $item) {
+                $row = [];
+                foreach ($columns as $col) {
+                    $value = $item->$col;
+                    if ($value instanceof \Carbon\Carbon) {
+                        $value = $value->format('Y-m-d H:i:s');
+                    }
+                    $row[$col] = $value;
                 }
 
-                return [$col => $value];
-            });
-        });
+                if (! $first) {
+                    echo ',';
+                }
+                echo json_encode($row);
+                $first = false;
+            }
 
-        return response()->json($data->values());
+            echo ']';
+        }, 200, ['Content-Type' => 'application/json']);
 
         // $model = $modelMap[$request->table];
 
