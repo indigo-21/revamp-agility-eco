@@ -61,10 +61,14 @@ class PropertyInspectorJobAllocationService
             return null;
         }
 
-        self::getClientInstallers($request, $measure, $notFirmAvailable);
+        // Apply job type then measures immediately after postcode to remove PIs who cannot perform the measure
         self::jobTypeLogic($request);
         self::jobMeasureLogic($measure);
+        // Client/installer constraints are temporarily disabled.
+        // self::getClientInstallers($request, $measure, $notFirmAvailable);
         self::availabilityLogic($request, $measure);
+        // Apply employment preference ordering (Employed -> Freelance -> Firm)
+        self::employeePreferenceLogic($request);
         self::jobTypeRatingLogic($request);
         self::lowestNumberOfAllocatedLogic($request);
 
@@ -112,44 +116,9 @@ class PropertyInspectorJobAllocationService
 
     public function getClientInstallers($request, $measure, $notFirmAvailable)
     {
-        $client_installers = Client::whereHas('clientInstallers', function ($query) use ($request) {
-            $query->where('installer_id', $request->installer_id);
-        })
-            ->whereHas('clientKeyDetails', function ($query) use ($request) {
-                $query->where('is_active', 1);
-            })
-            ->where('id', $request->client_id)
-            ->exists();
-
-        $property_inspector_pool = $this->property_inspector->filter(function ($property_inspector) use ($client_installers, $notFirmAvailable) {
-            $accountLevel = $property_inspector->user->account_level_id;
-
-            if ($notFirmAvailable) {
-                return in_array($accountLevel, [7, 8]);
-            }
-
-            if ($client_installers) {
-                return $accountLevel == 6;
-            }
-
-            return in_array($accountLevel, [7, 8]);
-        });
-
-        // If client requires firm PI (account level 6) but none are available in the current pool,
-        // fall back to non-firm (7/8) within the same pool.
-        if ($client_installers && !$notFirmAvailable && $property_inspector_pool->count() == 0) {
-            $property_inspector_pool = $this->property_inspector->filter(function ($property_inspector) {
-                $accountLevel = $property_inspector->user->account_level_id;
-                return in_array($accountLevel, [7, 8]);
-            });
-        }
-
-        if ($property_inspector_pool->count() == 1) {
-            self::allocateJob($property_inspector_pool->first());
-        } else if ($property_inspector_pool->count() > 0) {
-            $this->property_inspector = $property_inspector_pool;
-        }
-
+        // getClientInstallers logic temporarily disabled per request.
+        // This method left intentionally inert to avoid applying client/installer filtering.
+        return;
     }
 
     public function postcodeLogic($postcode)
@@ -220,7 +189,12 @@ class PropertyInspectorJobAllocationService
         $property_inspector_pool = $this->property_inspector->filter(function ($property_inspector) use ($request, $measure) {
             $client = (new JobService)->getClient($request);
             $measure_data = (new JobService)->getMeasure($measure);
-            $days_available = $client ? (int) $client->clientSlaMetric->job_deadline / 2 : 0;
+            // Prefer explicit job first-visit-by if provided on the request (numeric days).
+            if (isset($request->first_visit_by) && is_numeric($request->first_visit_by)) {
+                $days_available = (int) $request->first_visit_by;
+            } else {
+                $days_available = $client ? (int) $client->clientSlaMetric->job_deadline / 2 : 0;
+            }
             $unbooked_jobs_count = 0;
 
             // count available days from now to 7 days and reduce the count if the property inspector work_sun and work_sat is equals to 0
@@ -307,11 +281,33 @@ class PropertyInspectorJobAllocationService
         }
     }
 
+    public function employeePreferenceLogic($request)
+    {
+        // Preference order: Employed (account_level_id 7), Freelance (8), Firm (6)
+        $preferenceOrder = [7, 8, 6];
+
+        foreach ($preferenceOrder as $levelId) {
+            $property_inspector_pool = $this->property_inspector->filter(function ($property_inspector) use ($levelId) {
+                return $property_inspector->user->account_level_id == $levelId;
+            });
+
+            if ($property_inspector_pool->count() == 1) {
+                self::allocateJob($property_inspector_pool->first());
+                return;
+            } else if ($property_inspector_pool->count() > 0) {
+                $this->property_inspector = $property_inspector_pool;
+                return;
+            }
+        }
+        // If none matched, leave pool unchanged (could be empty)
+    }
+
     public function lowestNumberOfAllocatedLogic($request)
     {
 
+        // Use the `job` relation (defined on PropertyInspector) to count allocated/unfinished jobs
         $job_count = $this->property_inspector->mapWithKeys(fn($property_inspector) => [
-            $property_inspector->id => $property_inspector->jobs ? $property_inspector->jobs->count() : 0
+            $property_inspector->id => $property_inspector->job ? $property_inspector->job->count() : 0
         ]);
 
         $lowest_job_count = $job_count->min();
