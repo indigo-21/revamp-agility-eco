@@ -348,9 +348,11 @@ class JobsDataTable extends DataTable
                 ->searchable(true),
             Column::computed('booked_date'),
             Column::computed('postcode')
-                ->searchable(true),
+                ->searchable(true)
+                ->orderable(true),
             Column::computed('installer')
-                ->searchable(true),
+                ->searchable(true)
+                ->orderable(true),
             Column::make('rework_deadline'),
             Column::make('job_remediation_type'),
             Column::make('close_date'),
