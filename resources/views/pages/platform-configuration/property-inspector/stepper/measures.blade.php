@@ -46,7 +46,7 @@
                     <tbody>
                         @if (isset($property_inspector) && $property_inspector->propertyInspectorMeasures)
                             @foreach ($property_inspector->propertyInspectorMeasures as $pi_measure)
-                                <tr>
+                                <tr data-pi-measure-id="{{ $pi_measure->id }}" data-measure-id="{{ $pi_measure->measure_id }}">
                                     <td>{{ $pi_measure->measure->measure_cat }}</td>
                                     <td>{{ $pi_measure->fee_value }}</td>
                                     <td>{{ $pi_measure->fee_currency }}</td>
@@ -56,7 +56,7 @@
                                             width="auto" height="150" />
                                     </td>
                                     <td>
-                                        <button class="btn btn-danger btn-sm deleteRow">Delete</button>
+                                        <button type="button" class="btn btn-danger btn-sm deleteRow">Delete</button>
                                     </td>
                                 </tr>
                             @endforeach
