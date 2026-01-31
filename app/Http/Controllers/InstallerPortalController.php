@@ -31,7 +31,11 @@ class InstallerPortalController extends Controller
                             ->orWhereHas('remediations', function ($q2) {
                             $q2->where(function ($query) {
                                 $query->where('role', 'Agent')
-                                    ->orWhereNull('role');
+                                    ->orWhereNull('role')
+                                    ->orWhere(function ($q3) {
+                                        $q3->whereIn('role', ['Installer', 'INSTALLER'])
+                                           ->where('comment', 'Agent updated the survey');
+                                    });
                             })
                                 ->whereRaw('id = (SELECT id FROM remediations WHERE completed_job_id = completed_jobs.id ORDER BY created_at DESC LIMIT 1)');
                         });
@@ -68,7 +72,22 @@ class InstallerPortalController extends Controller
         $job = Job::findOrFail($id);
         $completedJobs = CompletedJob::where('job_id', $job->id)
             ->whereIn('pass_fail', FailedQuestion::values())
-            ->get();
+            ->get()
+            ->filter(function ($completedJob) {
+                $remediations = $completedJob->remediations;
+                if ($remediations->isEmpty()) {
+                    return true;
+                }
+
+                $last = $remediations->last();
+                $role = strtolower($last?->role ?? '');
+
+                if ($role === 'agent') {
+                    return stripos($last->comment ?? '', 'Agent updated the survey') !== false;
+                }
+
+                return false;
+            })->values();
 
         $installerFirstAccess = CompletedJob::where('job_id', $job->id)
             ->get();
@@ -135,7 +154,11 @@ class InstallerPortalController extends Controller
                             ->orWhereHas('remediations', function ($q2) {
                             $q2->where(function ($query) {
                                 $query->where('role', 'Agent')
-                                    ->orWhereNull('role');
+                                    ->orWhereNull('role')
+                                    ->orWhere(function ($q3) {
+                                        $q3->whereIn('role', ['Installer', 'INSTALLER'])
+                                           ->where('comment', 'Agent updated the survey');
+                                    });
                             })
                                 ->whereRaw('id = (SELECT id FROM remediations WHERE completed_job_id = completed_jobs.id ORDER BY created_at DESC LIMIT 1)');
                         });

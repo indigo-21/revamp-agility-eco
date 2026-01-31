@@ -110,7 +110,12 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($completedJobs as $completedJob)
-                                        @if (strtolower($completedJob->remediations->last()?->role) == 'installer')
+                                        @php
+                                            $lastRem = $completedJob->remediations->last();
+                                            $lastRole = strtolower($lastRem?->role ?? '');
+                                            $lastComment = $lastRem?->comment ?? '';
+                                        @endphp
+                                        @if ($lastRole === 'installer' || ($lastRole === 'agent' && stripos($lastComment, 'Agent updated the survey') === false))
                                             <tr>
                                                 <td>
                                                     {{ $completedJob->job->job_number }}{{ $completedJob->surveyQuestion->question_number }}
