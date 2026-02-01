@@ -42,6 +42,8 @@ $(function () {
 
     let measureRowCounter = 0;
     let qualificationRowCounter = 0;
+    const measureFiles = {};
+    const qualificationFiles = {};
     const getMeasureFileKey = () => {
         measureRowCounter += 1;
         return `measure-${Date.now()}-${measureRowCounter}`;
@@ -114,12 +116,9 @@ $(function () {
             .attr('data-pi-measure-id', '')
             .attr('data-file-key', fileKey);
 
-        // Assign the file to the cloned input
-        let newFileInput = $(`.hidden-measure-file-${fileKey}`)[0];
-        if (file && newFileInput) {
-            let dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            newFileInput.files = dataTransfer.files;
+        // Cache the file by key to avoid DataTable DOM paging issues
+        if (file) {
+            measureFiles[fileKey] = file;
         }
 
         // Clear input fields
@@ -167,12 +166,9 @@ $(function () {
             .attr('data-pi-qualification-id', '')
             .attr('data-file-key', fileKey);
 
-        // Assign the file to the cloned input
-        let newFileInput = $(`.hidden-qualification-file-${fileKey}`)[0];
-        if (file && newFileInput) {
-            let dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            newFileInput.files = dataTransfer.files;
+        // Cache the file by key to avoid DataTable DOM paging issues
+        if (file) {
+            qualificationFiles[fileKey] = file;
         }
 
         // Clear input fields
@@ -195,8 +191,15 @@ $(function () {
 
     // Handle Row Deletion
     $('#measuresTable tbody, #qualificationsTable tbody').on('click', '.deleteRow', function () {
+        let $row = $(this).parents('tr');
+        let fileKey = $row.attr('data-file-key');
+        if (fileKey) {
+            delete measureFiles[fileKey];
+            delete qualificationFiles[fileKey];
+        }
+
         let table = $(this).closest('table').DataTable();
-        table.row($(this).parents('tr')).remove().draw();
+        table.row($row).remove().draw();
     });
 
     // Initialize validation state on load
@@ -316,12 +319,8 @@ $(function () {
                 formData.append(`measures[${measureIndex}][pi_measure_id]`, piMeasureId);
             }
 
-            if (fileKey) {
-                let fileInput = $(`.hidden-measure-file-${fileKey}`)[0];
-                let file = fileInput ? fileInput.files[0] : null;
-                if (file) {
-                    formData.append(`measures[${measureIndex}][measure_certificate]`, file);
-                }
+            if (fileKey && measureFiles[fileKey]) {
+                formData.append(`measures[${measureIndex}][measure_certificate]`, measureFiles[fileKey]);
             }
 
             measureIndex += 1;
@@ -355,12 +354,8 @@ $(function () {
                 formData.append(`qualifications[${qualificationIndex}][pi_qualification_id]`, piQualificationId);
             }
 
-            if (fileKey) {
-                let fileInput = $(`.hidden-qualification-file-${fileKey}`)[0];
-                let file = fileInput ? fileInput.files[0] : null;
-                if (file) {
-                    formData.append(`qualifications[${qualificationIndex}][qualification_certificate]`, file);
-                }
+            if (fileKey && qualificationFiles[fileKey]) {
+                formData.append(`qualifications[${qualificationIndex}][qualification_certificate]`, qualificationFiles[fileKey]);
             }
 
             qualificationIndex += 1;

@@ -182,9 +182,7 @@ class PropertyInspectorService
                 $property_inspector_measure->cert = $measure_certificate;
             }
 
-            if ($property_inspector_measure->exists || $measure_certificate) {
-                $property_inspector_measure->save();
-            }
+            $property_inspector_measure->save();
         }
 
     }
