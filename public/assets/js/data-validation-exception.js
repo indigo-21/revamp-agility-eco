@@ -22,7 +22,16 @@ $(function () {
 
     $("#reimportBtn").click(function (e) {
         e.preventDefault();
-        const reimportForm = $("#reimportForm");
+
+        if (!jobNumbers || jobNumbers.length === 0) {
+            Swal.fire({
+                title: 'No jobs selected',
+                text: 'Please select one or more rows to reimport.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
 
         Swal.fire({
             title: 'Are you sure?',
@@ -63,7 +72,6 @@ $(function () {
                         });
                     }
                 });
-                reimportForm.submit();
             }
         });
     });

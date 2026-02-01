@@ -6,7 +6,7 @@
 @endsection
 
 @section('content')
-    <x-title-breadcrumbs title="Edit Property Inspector: " {{ $job_data->first()->propertyInspector->user->firstname }}
+    <x-title-breadcrumbs title="Edit Property Inspector: " {{ $job_data->propertyInspector->user->firstname }}
         :breadcrumbs="[
             ['title' => 'Dashboard', 'route' => '/', 'active' => ''],
             ['title' => 'Edit PI', 'route' => '/make-booking', 'active' => ''],
@@ -28,23 +28,23 @@
                             </div>
 
                             <h3 class="profile-username text-center">
-                                {{ $job_data->first()->propertyInspector->user->firstname }}
-                                {{ $job_data->first()->propertyInspector->user->lastname }}
+                                {{ $job_data->propertyInspector->user->firstname }}
+                                {{ $job_data->propertyInspector->user->lastname }}
                             </h3>
 
                             <p class="text-muted text-center">
-                                {{ $job_data->first()->propertyInspector->user->userType->name }}
+                                {{ $job_data->propertyInspector->user->userType->name }}
                             </p>
 
                             <ul class="list-group list-group-unbordered mb-3">
                                 <li class="list-group-item">
                                     <b>Employment Status</b> <a class="float-right">
-                                        {{ $job_data->first()->propertyInspector->user->accountLevel->name }}
+                                        {{ $job_data->propertyInspector->user->accountLevel->name }}
                                     </a>
                                 </li>
                                 <li class="list-group-item">
                                     <b>Postcodes will visit</b> <a class="float-right">
-                                        @foreach ($job_data->first()->propertyInspector->propertyInspectorPostcodes as $postcode)
+                                        @foreach ($job_data->propertyInspector->propertyInspectorPostcodes as $postcode)
                                             <span class="badge badge-info">
                                                 {{ $postcode->outwardPostcode->name }}
                                             </span>
@@ -53,19 +53,19 @@
                                 </li>
                                 <li class="list-group-item">
                                     <b>Email</b> <a
-                                        class="float-right">{{ $job_data->first()->propertyInspector->user->email }}</a>
+                                        class="float-right">{{ $job_data->propertyInspector->user->email }}</a>
                                 </li>
                                 <li class="list-group-item">
                                     <b>Contact Number</b> <a
-                                        class="float-right">{{ $job_data->first()->propertyInspector->user->mobile }}</a>
+                                        class="float-right">{{ $job_data->propertyInspector->user->mobile }}</a>
                                 </li>
                                 <li class="list-group-item">
                                     <b>Address</b>
                                     <a class="float-right">
-                                        {{ $job_data->first()->propertyInspector->address1 }}
-                                        {{ $job_data->first()->propertyInspector->city }}
-                                        {{ $job_data->first()->propertyInspector->county }}
-                                        {{ $job_data->first()->propertyInspector->postcode }}
+                                        {{ $job_data->propertyInspector->address1 }}
+                                        {{ $job_data->propertyInspector->city }}
+                                        {{ $job_data->propertyInspector->county }}
+                                        {{ $job_data->propertyInspector->postcode }}
                                     </a>
                                 </li>
                             </ul>

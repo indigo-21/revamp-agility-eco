@@ -144,6 +144,21 @@ class JobService
         $scheme_data = self::getScheme($request);
         $job_number = self::getJobNumber($request, $client, $measure);
         $measure_data = self::getMeasure($measure);
+        // If this request originates from a CSV import (marker: csv_filename or job_csv_filename)
+        // and the UMR (Unique Measure Reference) is missing, mark job as status 20.
+        if ((($request->csv_filename ?? $request->job_csv_filename) ?? false) && empty($measure['umr'])) {
+            $job_status = 20;
+
+            return [
+                $client,
+                $installer_data,
+                $scheme_data,
+                $job_number,
+                $measure_data,
+                $job_status,
+                null
+            ];
+        }
         $check_customer_contact = $this->checkCustomerContactInformation($request);
         $postcode = (new PropertyInspectorJobAllocationService)->getPostcode($request->postcode);
 
@@ -243,10 +258,13 @@ class JobService
         // $last_job = Job::orderBy('created_at', 'desc')
         //     ->first();
 
-        $last_job = Job::orderByRaw("CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(job_number, '-', 1), SUBSTRING(job_number, 1, 3), -1) AS UNSIGNED) DESC")
+        // Include trashed rows when determining the last job and duplicates to
+        // avoid generating a job_number that collides with a soft-deleted record.
+        $last_job = Job::withTrashed()
+            ->orderByRaw("CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(job_number, '-', 1), SUBSTRING(job_number, 1, 3), -1) AS UNSIGNED) DESC")
             ->first();
 
-        $job_duplicate = Job::with('jobMeasure')
+        $job_duplicate = Job::withTrashed()->with('jobMeasure')
             ->where('cert_no', $request->cert_no)
             ->get();
 

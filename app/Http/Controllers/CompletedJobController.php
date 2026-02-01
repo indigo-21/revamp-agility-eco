@@ -74,7 +74,7 @@ class CompletedJobController extends Controller
             $job->last_update = now();
             $job->close_date = now();
             $job->rework_deadline = null;
-            $job->invoice_status_id = 1;
+            $job->invoice_status_id = 2;
 
             $job->save();
 

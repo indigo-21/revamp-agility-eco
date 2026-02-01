@@ -188,7 +188,7 @@ class RemediationService
             $job->job_status_id = $status;
             $job->close_date = now();
             $job->last_update = now();
-            $job->invoice_status_id = 1;
+            $job->invoice_status_id = 2;
             $job->save();
 
             // Send email to installer

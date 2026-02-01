@@ -37,7 +37,8 @@ class InstallerConfigurationController extends Controller
      */
     public function store(Request $request)
     {
-        $request->account_level_id = 5; //Installer
+        // Ensure the value exists in the request input bag (Request::has checks inputs, not dynamic properties)
+        $request->merge(['account_level_id' => 5]); // Installer
 
         $user = (new UserService)->store($request);
 
@@ -91,7 +92,8 @@ class InstallerConfigurationController extends Controller
     public function update(Request $request, string $id)
     {
         $installer = Installer::find($id);
-        $request->account_level_id = 5; //Installer
+        // Ensure the value exists in the request input bag (Request::has checks inputs, not dynamic properties)
+        $request->merge(['account_level_id' => 5]); // Installer
 
         $installer->sent_available = $request->sent_available;
         $installer->save();
