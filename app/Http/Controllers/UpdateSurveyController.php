@@ -141,7 +141,7 @@ class UpdateSurveyController extends Controller
                         $propertyInspector,
                         $job->completedJobs->first()->created_at ?? 'N/A',
                         $installer,
-                        $job->property?->address1 ?? 'N/A',
+                        ($job->property?->house_flat_prefix ?? '') . ' ' . ($job->property?->address1 ?? '') . ' ' . ($job->property?->address2 ?? '') . ' ' . ($job->property?->address3 ?? '') ?? 'N/A',
                         $job->property?->postcode ?? 'N/A',
                     ]);
                 }
