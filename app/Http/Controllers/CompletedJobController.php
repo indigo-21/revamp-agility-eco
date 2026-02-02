@@ -109,7 +109,7 @@ class CompletedJobController extends Controller
         } else {
             $job->last_update = now();
             $job->job_remediation_type = "NC";
-            $job->invoice_status_id = null;
+            // $job->invoice_status_id = null;
 
             if ($request->pass_fail === "Non-Compliant") {
                 $job->job_status_id = 16;
