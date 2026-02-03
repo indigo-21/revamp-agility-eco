@@ -83,7 +83,7 @@
                                         <tr>
                                             <td>{{ $completedJob->surveyQuestion->question_number }}</td>
                                             <td>{{ $completedJob->surveyQuestion->question }}</td>
-                                            <td>{{ $completedJob->pass_fail }}</td>
+                                            <td>{{ $completedJob->pass_fail }} {{ $completedJob->surveyQuestion->nc_severity === "Cat1" || $completedJob->surveyQuestion->nc_severity === "CAT1" ? " (CAT1)" : ""  }}</td>
                                             <td>{{ $completedJob->surveyQuestion->nc_severity }}</td>
                                             <td>{{ $completedJob->comments }}</td>
                                             <td>
