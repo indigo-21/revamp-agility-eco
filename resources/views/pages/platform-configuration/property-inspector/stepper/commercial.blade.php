@@ -51,7 +51,7 @@
             <div class="col-12 col-md-6">
 
                 <x-input name="registered_id_number" label="PI Registered ID Number"
-                    value="{{ isset($property_inspector) ? $property_inspector->registered_id_number : '' }}" :required="true"/>
+                    value="{{ isset($property_inspector) ? $property_inspector->registered_id_number : '' }}" :required="false"/>
 
                 <x-radio-layout label="Audit Jobs">
                     <div class="col-md-6">

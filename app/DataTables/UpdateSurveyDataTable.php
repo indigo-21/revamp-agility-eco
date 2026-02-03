@@ -2,6 +2,7 @@
 
 namespace App\DataTables;
 
+use App\Models\Booking;
 use App\Models\Job;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Illuminate\Support\Facades\DB;
@@ -43,11 +44,24 @@ class UpdateSurveyDataTable extends DataTable
                 return $job->propertyInspector?->user->firstname . ' ' .
                     $job->propertyInspector?->user->lastname;
             })
+            ->addColumn('booked_date', function ($job) {
+                if (empty($job->job_number) || strlen($job->job_number) < 3) {
+                    return 'N/A';
+                }
+
+                $jobGroup = substr($job->job_number, 0, strlen($job->job_number) - 3);
+
+                $booking = Booking::where('job_number', 'LIKE', "%{$jobGroup}%")
+                    ->where('booking_outcome', 'Booked')
+                    ->latest();
+
+                return $booking->exists() ? $booking->first()->booking_date : 'N/A';
+            })
             ->addColumn('installer', function ($job) {
                 return $job->installer?->user?->firstname ?? 'N/A';
             })
             ->addColumn('inspection_date', function ($job) {
-                return $job->completedJobs->first()->created_at ?? 'N/A';
+                return $job->completedJobs->first()?->created_at ?? 'N/A';
             })
             ->filterColumn('installer', function ($query, $keyword) {
                 $query->whereHas('installer', function ($installerQ) use ($keyword) {
@@ -101,6 +115,15 @@ class UpdateSurveyDataTable extends DataTable
                         ->join('property_inspectors', 'property_inspectors.user_id', '=', 'users.id')
                         ->whereColumn('property_inspectors.id', 'jobs.property_inspector_id')
                         ->limit(1),
+                    $order
+                );
+            })
+            ->orderColumn('booked_date', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('bookings')
+                        ->selectRaw('MAX(booking_date)')
+                        ->where('booking_outcome', 'Booked')
+                        ->whereRaw("bookings.job_number LIKE CONCAT('%', SUBSTRING(jobs.job_number, 1, LENGTH(jobs.job_number) - 3), '%')"),
                     $order
                 );
             })
@@ -219,6 +242,8 @@ class UpdateSurveyDataTable extends DataTable
                 ->title('UMR'),
             Column::make('propertyInspector')
                 ->title('Property Inspector'),
+            Column::make('booked_date')
+                ->title('Booking Date'),
             Column::make('inspection_date')
                 ->title('Inspection Date'),
             Column::make('installer'),

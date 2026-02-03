@@ -56,6 +56,9 @@ class JobsDataTable extends DataTable
             ->addColumn('installer', function ($job) {
                 return $job->installer?->user?->firstname ?? 'N/A';
             })
+            ->addColumn('inspection_date', function ($job) {
+                return $job->completedJobs->first()?->created_at ?? 'N/A';
+            })
             ->addColumn('reminder', function ($job) {
                 return $job->sent_reminder === 1 ? 'Yes' : 'No';
             })
@@ -158,6 +161,14 @@ class JobsDataTable extends DataTable
                     $order
                 );
             })
+            ->orderColumn('inspection_date', function ($query, $order) {
+                $query->orderBy(
+                    DB::table('completed_jobs')
+                        ->selectRaw('MIN(created_at)')
+                        ->whereColumn('completed_jobs.job_id', 'jobs.id'),
+                    $order
+                );
+            })
             ->orderColumn('invoice_status_id', function ($query, $order) {
                 $query->orderBy(
                     DB::table('invoice_statuses')
@@ -228,7 +239,18 @@ class JobsDataTable extends DataTable
 
         $query = $model->newQuery()
             ->firmDataOnly()
-            ->with(['jobMeasure', 'jobStatus', 'propertyInspector.user', 'property', 'installer.user', 'client', 'invoiceStatus']);
+            ->with([
+                'jobMeasure',
+                'jobStatus',
+                'propertyInspector.user',
+                'property',
+                'installer.user',
+                'client',
+                'invoiceStatus',
+                'completedJobs' => function ($q) {
+                    $q->orderBy('created_at', 'asc');
+                },
+            ]);
 
         // Apply filters based on request parameters
         if ($request->filled('job_status_id')) {
@@ -353,6 +375,8 @@ class JobsDataTable extends DataTable
             Column::computed('installer')
                 ->searchable(true)
                 ->orderable(true),
+            Column::computed('inspection_date')
+                ->title('Inspection Date'),
             Column::make('rework_deadline'),
             Column::make('job_remediation_type'),
             Column::make('close_date'),
