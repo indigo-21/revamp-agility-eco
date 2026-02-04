@@ -19,9 +19,9 @@
             </div>
             <div class="col-12 col-md-6">
                 <x-date name="photo_expiry" label="Photo Expiry Date"
-                    value="{{ isset($property_inspector) ? $property_inspector->photo_expiry : '' }}" />
+                    value="{{ isset($property_inspector) ? $property_inspector->photo_expiry : '' }}" :required="false" />
             </div>
-        </div>
+        </div>  
         <div class="row">
             <div class="col-12 col-md-6">
                 <x-file name="id_badge" label="ID Badge" />
@@ -30,14 +30,14 @@
             <div class="col-12 col-md-6">
 
                 <x-date name="id_issued" label="ID Badge Issue Date"
-                    value="{{ isset($property_inspector) ? $property_inspector->id_issued : '' }}" :required="true" />
+                    value="{{ isset($property_inspector) ? $property_inspector->id_issued : '' }}" :required="false" />
 
                 <x-date name="id_expiry" label="ID Badge Expiry Date"
-                    value="{{ isset($property_inspector) ? $property_inspector->id_expiry : '' }}" :required="true" />
+                    value="{{ isset($property_inspector) ? $property_inspector->id_expiry : '' }}" :required="false" />
 
                 <x-input name="id_revision" label="ID Badge Rev"
                     value="{{ isset($property_inspector) ? $property_inspector->id_revision : '' }}"
-                    :required="true" />
+                    :required="false" />
 
                 <x-select label="ID Badge Location" name="id_location" :multiple="false">
                     <option value="With Property Inspector"

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\UpdateSurveyDataTable;
+use App\Models\Booking;
 use App\Models\CompletedJob;
 use App\Models\Job;
 use Illuminate\Http\Request;
@@ -92,6 +93,9 @@ class UpdateSurveyController extends Controller
                 'propertyInspector.user',
                 'installer.user',
                 'property',
+                'completedJobs' => function ($q) {
+                    $q->orderBy('created_at', 'asc');
+                },
             ]);
 
         $dataTable = $updateSurveyDataTable->dataTable($query);
@@ -116,6 +120,7 @@ class UpdateSurveyController extends Controller
                 'Cert#',
                 'UMR',
                 'Property Inspector',
+                'Booking Date',
                 'Inspection Date',
                 'Installer',
                 'Address',
@@ -132,6 +137,21 @@ class UpdateSurveyController extends Controller
                     $installer = trim(($job->installer?->user?->firstname ?? '') . ' ' . ($job->installer?->user?->lastname ?? ''));
                     $installer = $installer !== '' ? $installer : 'N/A';
 
+                    $bookingDate = 'N/A';
+                    if (! empty($job->job_number) && strlen($job->job_number) >= 3) {
+                        $jobGroup = substr($job->job_number, 0, strlen($job->job_number) - 3);
+                        if (! empty($jobGroup)) {
+                            $booking = Booking::where('job_number', 'LIKE', "%{$jobGroup}%")
+                                ->where('booking_outcome', 'Booked')
+                                ->latest()
+                                ->first();
+
+                            if ($booking) {
+                                $bookingDate = $booking->booking_date;
+                            }
+                        }
+                    }
+
                     fputcsv($handle, [
                         $job->job_number,
                         $job->jobStatus?->description ?? 'N/A',
@@ -139,7 +159,8 @@ class UpdateSurveyController extends Controller
                         $job->cert_no,
                         $job->jobMeasure?->umr ?? 'N/A',
                         $propertyInspector,
-                        $job->completedJobs->first()->created_at ?? 'N/A',
+                        $bookingDate,
+                        $job->completedJobs->first()?->created_at ?? 'N/A',
                         $installer,
                         ($job->property?->house_flat_prefix ?? '') . ' ' . ($job->property?->address1 ?? '') . ' ' . ($job->property?->address2 ?? '') . ' ' . ($job->property?->address3 ?? '') ?? 'N/A',
                         $job->property?->postcode ?? 'N/A',

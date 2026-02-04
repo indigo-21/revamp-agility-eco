@@ -295,7 +295,7 @@
                             <table id="jobs-table" class="table table-bordered table-striped text-center">
                                 <thead>
                                     <tr>
-                                        <th colspan="11">Job Details</th>
+                                        <th colspan="12">Job Details</th>
                                         <th colspan="4">Key Dates</th>
                                         <th rowspan="2">Action</th>
                                     </tr>
@@ -309,6 +309,7 @@
                                         <th>Booked Date</th>
                                         <th>Postcode</th>
                                         <th>Installer</th>
+                                        <th>Inspection Date</th>
                                         <th>Remediation Deadline</th>
                                         <th>NC Level</th>
                                         <th>Close Date</th>
