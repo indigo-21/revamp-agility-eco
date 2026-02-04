@@ -174,6 +174,11 @@ class MakeBookingsDataTable extends DataTable
             ->filterColumn('job_group', function($query, $keyword) {
                 $query->whereRaw("SUBSTRING(job_number, 1, LENGTH(job_number) - 3) LIKE ?", ["%$keyword%"]);
             })
+            ->filterColumn('postcode', function ($query, $keyword) {
+                $query->whereHas('property', function ($q) use ($keyword) {
+                    $q->where('postcode', 'like', "%{$keyword}%");
+                });
+            })
             ->rawColumns(['action', 'job_status_id', 'measures', 'latest_comment', 'last_attempt'])
             ->setRowId('id');
     }
@@ -245,7 +250,7 @@ class MakeBookingsDataTable extends DataTable
             Column::make('job_group')->title('Job Number')->searchable(true),
             Column::make('job_status_id')->title('Job Status'),
             Column::make('property_inspector_id')->title('Job PI'),
-            Column::make('postcode')->title('Postcode'),
+            Column::make('postcode')->title('Postcode')->searchable(true),
             Column::make('address')->title('Address'),
             Column::make('installer')->title('Installer'),
             Column::make('measures')->title('Measures')->orderable(false),
