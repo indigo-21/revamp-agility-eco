@@ -41,7 +41,10 @@ class MakeBookingsDataTable extends DataTable
                     '</span>';
             })
             ->addColumn('property_inspector_id', function ($job) {
-                return $job->propertyInspector->user->firstname . ' ' . $job->propertyInspector->user->lastname;
+                $firstname = $job->propertyInspector?->user?->firstname;
+                $lastname = $job->propertyInspector?->user?->lastname;
+
+                return trim(($firstname ?? '') . ' ' . ($lastname ?? '')) ?: 'N/A';
             })
             ->addColumn('postcode', function ($job) {
                 return $job->property?->postcode ?? 'N/A';
@@ -174,6 +177,13 @@ class MakeBookingsDataTable extends DataTable
             ->filterColumn('job_group', function($query, $keyword) {
                 $query->whereRaw("SUBSTRING(job_number, 1, LENGTH(job_number) - 3) LIKE ?", ["%$keyword%"]);
             })
+            ->filterColumn('property_inspector_id', function ($query, $keyword) {
+                $query->whereHas('propertyInspector.user', function ($q) use ($keyword) {
+                    $q->whereRaw("concat(firstname, ' ', lastname) like ?", ["%{$keyword}%"])
+                        ->orWhere('firstname', 'like', "%{$keyword}%")
+                        ->orWhere('lastname', 'like', "%{$keyword}%");
+                });
+            })
             ->filterColumn('postcode', function ($query, $keyword) {
                 $query->whereHas('property', function ($q) use ($keyword) {
                     $q->where('postcode', 'like', "%{$keyword}%");
@@ -249,7 +259,7 @@ class MakeBookingsDataTable extends DataTable
         return [
             Column::make('job_group')->title('Job Number')->searchable(true),
             Column::make('job_status_id')->title('Job Status'),
-            Column::make('property_inspector_id')->title('Job PI'),
+            Column::make('property_inspector_id')->title('Job PI')->searchable(true)->orderable(true),
             Column::make('postcode')->title('Postcode')->searchable(true),
             Column::make('address')->title('Address'),
             Column::make('installer')->title('Installer'),
