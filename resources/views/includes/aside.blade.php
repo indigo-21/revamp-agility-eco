@@ -14,7 +14,7 @@
                 data-accordion="false">
                 @foreach ($navigations as $navigation)
                     @if (!$navigation->has_dropdown && $navigation->parent_id == 0)
-                        @if ($navigation->userNavigations->where('account_level_id', auth()->user()->accountLevel->id)->count())
+                        @if ($navigation->userNavigations->where('account_level_id', auth()->user()->accountLevel->id)->where('permission', '>', 0)->count())
                             <li class="nav-item">
                                 <a href="{{ $navigation->link ? route("{$navigation->link}.index") : '#' }}"
                                     class="nav-link {{ request()->routeIs("{$navigation->link}.*") ? 'active' : '' }}">
@@ -51,7 +51,7 @@
                             <ul class="nav nav-treeview">
                                 @foreach ($navigations as $sub_navigation)
                                     @if ($sub_navigation->parent_id == $navigation->id)
-                                        @if ($navigation->userNavigations->where('account_level_id', auth()->user()->accountLevel->id)->count())
+                                        @if ($sub_navigation->userNavigations->where('account_level_id', auth()->user()->accountLevel->id)->where('permission', '>', 0)->count())
                                             <li class="nav-item">
                                                 <a href="{{ $sub_navigation->link ? route("{$sub_navigation->link}.index") : '#' }}"
                                                     class="nav-link {{ request()->routeIs("{$sub_navigation->link}.*") ? 'active' : '' }}">

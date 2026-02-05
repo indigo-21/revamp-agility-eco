@@ -15,23 +15,43 @@ class NavigationAccess
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, $routeName): Response
+    public function handle(Request $request, Closure $next, string $routeName, ?string $requiredPermissionOverride = null): Response
     {
         $user = Auth::user();
 
-        // Find the navigation by route name (link)
-        $navigation = Navigation::where('link', $routeName)->first();
+        $routeNames = collect(preg_split('/[|,]/', $routeName))
+            ->map(fn ($v) => trim((string) $v))
+            ->filter();
 
-        if (!$navigation) {
-            abort(404);
+        // Permission required depends on the action unless explicitly overridden.
+        // 1: read, 2: write, 3: full access
+        if ($requiredPermissionOverride !== null && is_numeric($requiredPermissionOverride)) {
+            $requiredPermission = max(1, min(3, (int) $requiredPermissionOverride));
+        } else {
+            $method = strtoupper($request->getMethod());
+            $requiredPermission = match ($method) {
+                'GET', 'HEAD' => 1,
+                'DELETE' => 3,
+                default => 2,
+            };
         }
 
-        // Check if user has access
-        $hasAccess = $navigation->userNavigations()
-            ->where('account_level_id', $user->accountLevel->id)
-            ->exists();
+        $maxPermission = 0;
 
-        if (!$hasAccess) {
+        foreach ($routeNames as $link) {
+            $navigation = Navigation::where('link', $link)->first();
+            if (!$navigation) {
+                continue;
+            }
+
+            $permission = (int) ($navigation->userNavigations()
+                ->where('account_level_id', $user->accountLevel->id)
+                ->value('permission') ?? 0);
+
+            $maxPermission = max($maxPermission, $permission);
+        }
+
+        if ($maxPermission < $requiredPermission) {
             abort(403, 'Unauthorized');
         }
 

@@ -38,10 +38,12 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $navigations = Navigation::whereHas('userNavigations', function ($q) use ($user) {
-                $q->where('account_level_id', $user->accountLevel->id);
+                $q->where('account_level_id', $user->accountLevel->id)
+                    ->where('permission', '>', 0);
             })->with([
                         'userNavigations' => function ($q) use ($user) {
-                            $q->where('account_level_id', $user->accountLevel->id);
+                            $q->where('account_level_id', $user->accountLevel->id)
+                                ->where('permission', '>', 0);
                         }
                     ])->get();
 
@@ -52,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
                 ->first()
                 ?->userNavigations
                 ->first()
-                    ?->permission ?? 1;
+                    ?->permission ?? 0;
 
             $view->with('navigations', $navigations)
                 ->with('userPermission', $userPermission);

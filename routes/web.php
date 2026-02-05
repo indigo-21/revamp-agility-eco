@@ -27,6 +27,8 @@ use App\Http\Controllers\PropertyInspectorController;
 use App\Http\Controllers\ClientConfigurationController;
 use App\Http\Controllers\SurveyQuestionSetController;
 use App\Http\Controllers\InstallerConfigurationController;
+use App\Models\Navigation;
+use App\Models\UserNavigation;
 
 // EXECEPTION CONTROLLER
 use App\Http\Controllers\JobEntryExceptionController;
@@ -45,9 +47,31 @@ use App\Http\Controllers\UserProfileConfigurationController;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', function () {
-        return redirect()->route('dashboard.index');
+        $user = auth()->user();
+
+        $permissionFor = function (string $link) use ($user): int {
+            $navigationId = Navigation::where('link', $link)->value('id');
+            if (!$navigationId) {
+                return 0;
+            }
+
+            return (int) (UserNavigation::where('account_level_id', $user->account_level_id)
+                ->where('navigation_id', $navigationId)
+                ->value('permission') ?? 0);
+        };
+
+        if ($permissionFor('installer-dashboard') > 0) {
+            return redirect()->route('installer-dashboard.index');
+        }
+
+        if ($permissionFor('dashboard') > 0) {
+            return redirect()->route('dashboard.index');
+        }
+
+        abort(403, 'Unauthorized');
     });
-    Route::resource('dashboard', DashboardController::class);
+    Route::resource('dashboard', DashboardController::class)
+        ->middleware('navigation.access:dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -56,7 +80,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('navigation.access:job')->group(function () {
         Route::resource('job', JobController::class);
         Route::patch('job/{id}/closeJob', [JobController::class, 'closeJob']);
-        Route::post('job/export/csv', [JobController::class, 'exportCsv'])->name('job.export.csv.post');
+        Route::post('job/export/csv', [JobController::class, 'exportCsv'])
+            ->name('job.export.csv.post')
+            ->middleware('navigation.access:job,1');
         // Route::get('getQueueJobs', [JobController::class, 'getQueueJobs']);
     });
 
@@ -86,7 +112,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('navigation.access:remediation-review');
     Route::post('remediation-review/export/csv', [RemediationReviewController::class, 'exportCsv'])
         ->name('remediation-review.export.csv')
-        ->middleware('navigation.access:remediation-review');
+        ->middleware('navigation.access:remediation-review,1');
     Route::resource('remediation-reinstate', RemediationReinstateController::class)
         ->middleware('navigation.access:remediation-reinstate');
     Route::resource('reminder-exception', ReminderExceptionController::class)
@@ -105,7 +131,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('navigation.access:make-booking')->group(function () {
         Route::resource('update-survey', UpdateSurveyController::class);
         Route::post('update-survey/export/csv', [UpdateSurveyController::class, 'exportCsv'])
-            ->name('update-survey.export.csv');
+            ->name('update-survey.export.csv')
+            ->middleware('navigation.access:make-booking,1');
         Route::post('upload-survey-photo', [CompletedJobPhotoController::class, 'updateSurveyPhoto'])
             ->name('upload-survey-photo');
         Route::post('delete-survey-photo', [CompletedJobPhotoController::class, 'deleteSurveyPhoto'])
@@ -117,7 +144,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // REMEDIATION
-    Route::post('/store-remediation', [RemediationController::class, 'storeRemediation']);
+    Route::post('/store-remediation', [RemediationController::class, 'storeRemediation'])
+        ->middleware('navigation.access:installer-portal|remediation-review');
 
 
     // EXECEPTIONS
@@ -203,9 +231,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('client/search-job-types', [JobController::class, 'searchClient'])->middleware('navigation.access:job');
     Route::get('get-property-inspector', [PropertyInspectorController::class, 'searchPropertyInspector'])->middleware('navigation.access:job');
     Route::get('/pi/details/{id}', [PropertyInspectorController::class, 'getPiDetails'])->middleware('navigation.access:job');
-    Route::post('/job-upload', [JobController::class, 'upload'])->name('job.upload');
+    Route::post('/job-upload', [JobController::class, 'upload'])->name('job.upload')
+        ->middleware('navigation.access:job');
     Route::post('/remove-duplicates', [JobController::class, 'removeDuplicates'])->middleware('navigation.access:job');
-    Route::post('client-configuration/validateEmail', [ClientConfigurationController::class, 'validateEmail'])->name('validateEmail');
+    Route::post('client-configuration/validateEmail', [ClientConfigurationController::class, 'validateEmail'])->name('validateEmail')
+        ->middleware('navigation.access:client-configuration');
 
 
     // Property Inspector Portal
