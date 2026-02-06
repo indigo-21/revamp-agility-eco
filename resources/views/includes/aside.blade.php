@@ -29,6 +29,7 @@
                         @php
                             // Check if any sub-navigation is currently active
                             $hasActiveSubNav = false;
+                            $hasVisibleSubNav = false;
                             foreach ($navigations as $sub_nav) {
                                 if (
                                     $sub_nav->parent_id == $navigation->id &&
@@ -36,11 +37,25 @@
                                     request()->routeIs("{$sub_nav->link}.*")
                                 ) {
                                     $hasActiveSubNav = true;
+                                }
+
+                                if (
+                                    $sub_nav->parent_id == $navigation->id &&
+                                    $sub_nav->userNavigations
+                                        ->where('account_level_id', auth()->user()->accountLevel->id)
+                                        ->where('permission', '>', 0)
+                                        ->count()
+                                ) {
+                                    $hasVisibleSubNav = true;
+                                }
+
+                                if ($hasActiveSubNav && $hasVisibleSubNav) {
                                     break;
                                 }
                             }
                         @endphp
-                        <li class="nav-item {{ $hasActiveSubNav ? 'menu-open' : '' }}">
+                        @if ($hasVisibleSubNav)
+                            <li class="nav-item {{ $hasActiveSubNav ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ $hasActiveSubNav ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-{{ $navigation->icon }}"></i>
                                 <p>
@@ -63,7 +78,8 @@
                                     @endif
                                 @endforeach
                             </ul>
-                        </li>
+                            </li>
+                        @endif
                     @endif
                 @endforeach
             </ul>

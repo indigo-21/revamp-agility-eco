@@ -37,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
 
-            $navigations = Navigation::whereHas('userNavigations', function ($q) use ($user) {
+            $allowedNavigations = Navigation::whereHas('userNavigations', function ($q) use ($user) {
                 $q->where('account_level_id', $user->accountLevel->id)
                     ->where('permission', '>', 0);
             })->with([
@@ -46,6 +46,25 @@ class AppServiceProvider extends ServiceProvider
                                 ->where('permission', '>', 0);
                         }
                     ])->get();
+
+            // Include dropdown parents for any permitted child so menus render correctly
+            // even if the parent itself doesn't have a permission row.
+            $parentIds = $allowedNavigations
+                ->pluck('parent_id')
+                ->filter(fn ($v) => !empty($v) && (int) $v > 0)
+                ->map(fn ($v) => (int) $v)
+                ->unique()
+                ->values();
+
+            $parentNavigations = $parentIds->isEmpty()
+                ? collect()
+                : Navigation::whereIn('id', $parentIds)->get();
+
+            $navigations = $parentNavigations
+                ->merge($allowedNavigations)
+                ->unique('id')
+                ->sortBy('id')
+                ->values();
 
 
             $currentLink = request()->segment(1);

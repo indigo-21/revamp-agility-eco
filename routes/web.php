@@ -27,6 +27,7 @@ use App\Http\Controllers\PropertyInspectorController;
 use App\Http\Controllers\ClientConfigurationController;
 use App\Http\Controllers\SurveyQuestionSetController;
 use App\Http\Controllers\InstallerConfigurationController;
+use App\Http\Controllers\NavigationAuditLogController;
 use App\Models\Navigation;
 use App\Models\UserNavigation;
 
@@ -105,6 +106,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('navigation.access:scheme');
     Route::resource('user-profile-configuration', UserProfileConfigurationController::class)
         ->middleware('navigation.access:user-profile-configuration');
+
+    // AUDIT LOGS
+    Route::get('navigation-audit-log', [NavigationAuditLogController::class, 'index'])
+        ->name('navigation-audit-log.index')
+        ->middleware('navigation.access:navigation-audit-log');
 
 
     // REMEDIATION

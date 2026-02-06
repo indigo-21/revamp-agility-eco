@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Navigation;
+use App\Models\NavigationAuditLog;
 
 class NavigationAccess
 {
@@ -37,6 +38,9 @@ class NavigationAccess
         }
 
         $maxPermission = 0;
+        $foundAnyNavigation = false;
+        $matchedNavigationId = null;
+        $matchedLink = null;
 
         foreach ($routeNames as $link) {
             $navigation = Navigation::where('link', $link)->first();
@@ -44,17 +48,56 @@ class NavigationAccess
                 continue;
             }
 
+            $foundAnyNavigation = true;
+
             $permission = (int) ($navigation->userNavigations()
                 ->where('account_level_id', $user->accountLevel->id)
                 ->value('permission') ?? 0);
 
-            $maxPermission = max($maxPermission, $permission);
+            if ($permission >= $maxPermission) {
+                $maxPermission = $permission;
+                $matchedNavigationId = $navigation->id;
+                $matchedLink = $navigation->link;
+            }
         }
 
+        if (!$foundAnyNavigation) {
+            abort(404);
+        }
+
+        $route = $request->route();
+        $routeNameResolved = is_object($route) ? $route->getName() : null;
+
+        $baseLogPayload = [
+            'user_id' => $user?->id,
+            'account_level_id' => $user?->account_level_id,
+            'navigation_id' => $matchedNavigationId,
+            'navigation_link' => $matchedLink,
+            'route_name' => $routeNameResolved,
+            'uri' => '/' . ltrim($request->path(), '/'),
+            'method' => strtoupper($request->getMethod()),
+            'ip' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'referer' => $request->headers->get('referer'),
+            'required_permission' => $requiredPermission,
+            'granted_permission' => $maxPermission,
+        ];
+
         if ($maxPermission < $requiredPermission) {
+            NavigationAuditLog::create(array_merge($baseLogPayload, [
+                'allowed' => false,
+                'status_code' => 403,
+            ]));
             abort(403, 'Unauthorized');
         }
 
-        return $next($request);
+        $response = $next($request);
+
+        NavigationAuditLog::create(array_merge($baseLogPayload, [
+            'allowed' => true,
+            'status_code' => method_exists($response, 'getStatusCode') ? $response->getStatusCode() : null,
+        ]));
+
+        return $response;
     }
 }
