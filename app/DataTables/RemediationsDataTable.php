@@ -177,17 +177,23 @@ class RemediationsDataTable extends DataTable
             ->whereHas('completedJobs', function ($q) {
                 $q->whereIn('pass_fail', FailedQuestion::values())
                     ->where(function ($subQ) {
-                        // Case 1: No remediations at all
+                        // Only include jobs that have at least one failed completed job where the
+                        // latest remediation is actionable (matches what we display in the show view).
                         $subQ->whereHas('remediations', function ($q2) {
-                            $q2->where(function ($query) {
-                                    $query->whereIn('role', ['Installer', 'INSTALLER'])
-                                        ->orWhereNull('role')
+                            $q2->whereRaw('id = (
+                                    SELECT id
+                                    FROM remediations
+                                    WHERE completed_job_id = completed_jobs.id
+                                    ORDER BY created_at DESC, id DESC
+                                    LIMIT 1
+                                )')
+                                ->where(function ($query) {
+                                    $query->whereRaw('LOWER(role) = ?', ['installer'])
                                         ->orWhere(function ($q3) {
-                                            $q3->where('role', 'Agent')
-                                               ->where('comment', 'not like', '%Agent updated the survey%');
+                                            $q3->whereRaw('LOWER(role) = ?', ['agent'])
+                                                ->whereRaw("COALESCE(LOWER(comment), '') NOT LIKE ?", ['%agent updated the survey%']);
                                         });
-                                })
-                                    ->whereRaw('id = (SELECT id FROM remediations WHERE completed_job_id = completed_jobs.id ORDER BY created_at DESC LIMIT 1)');
+                                });
                         });
                     });
             });
