@@ -14,7 +14,7 @@ class UserNavigationSeeder extends Seeder
     public function run(): void
     {
         $values = [];
-        for ($i = 1; $i <= 42; $i++) {
+        for ($i = 1; $i <= 43; $i++) {
             if (!in_array($i, [2, 34, 40, 41])) {
                 $values[] = [
                     'account_level_id' => 1,

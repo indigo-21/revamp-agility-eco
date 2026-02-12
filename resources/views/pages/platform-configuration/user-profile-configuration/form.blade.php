@@ -78,12 +78,12 @@
                                                         data-account_level="{{ $accountLevelId }}"
                                                         data-navigation="{{ $navigation->id }}">
                                                         <option value="1"
-                                                            {{ !empty($navigation->userNavigations->where('account_level_id', $accountLevelId)?->first()) ? 'selected' : '' }}>
+                                                            {{ (($navigation->userNavigations->where('account_level_id', $accountLevelId)?->first()?->permission ?? 0) > 0) ? 'selected' : '' }}>
                                                             {{-- data-account --}}
                                                             Yes
                                                         </option>
                                                         <option value="0"
-                                                            {{ empty($navigation->userNavigations->where('account_level_id', $accountLevelId)?->first()) ? 'selected' : '' }}>
+                                                            {{ (($navigation->userNavigations->where('account_level_id', $accountLevelId)?->first()?->permission ?? 0) <= 0) ? 'selected' : '' }}>
                                                             No
                                                         </option>
                                                     </x-select>

@@ -350,6 +350,14 @@ class NavigationSeeder extends Seeder
                 'has_dropdown' => 0,
                 'parent_id' => 20,
             ],
+            [
+                'id' => 43,
+                'name' => 'Navigation Audit Logs',
+                'link' => 'navigation-audit-log',
+                'icon' => 'history',
+                'has_dropdown' => 0,
+                'parent_id' => 11,
+            ],
         ];
 
         foreach ($values as $value) {

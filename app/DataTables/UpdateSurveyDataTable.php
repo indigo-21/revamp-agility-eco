@@ -80,6 +80,11 @@ class UpdateSurveyDataTable extends DataTable
             ->addColumn('postcode', function ($job) {
                 return $job->property?->postcode ?? 'N/A';
             })
+            ->filterColumn('postcode', function ($query, $keyword) {
+                $query->whereHas('property', function ($q) use ($keyword) {
+                    $q->where('postcode', 'like', "%{$keyword}%");
+                });
+            })
             ->orderColumn('measure', function ($query, $order) {
                 $query->orderBy(
                     DB::table('measures')
@@ -248,7 +253,10 @@ class UpdateSurveyDataTable extends DataTable
                 ->title('Inspection Date'),
             Column::make('installer'),
             Column::make('address'),
-            Column::make('postcode'),
+            Column::computed('postcode')
+                ->title('Postcode')
+                ->searchable(true)
+                ->orderable(true),
             Column::make('action')
                 ->exportable(false)
                 ->printable(false)

@@ -196,7 +196,7 @@ $(".remediation").on("click", function () {
                     Swal.fire(
                         "Success!",
                         "The job has been marked as remediation.",
-                        "success",
+                        "success", 
                     ).then(() => {
                         location.reload();
                         // console.log(response);

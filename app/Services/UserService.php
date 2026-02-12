@@ -51,7 +51,7 @@ class UserService
             $subject = "Welcome to $appName – Your Account Details";
 
             $token = Password::createToken($user);
-            $resetUrl = "{$appUrl}/reset-password/{$token}?email=" . urlencode($user->email);
+            $resetUrl = "{$appUrl}reset-password/{$token}?email=" . urlencode($user->email);
 
             $data = [
                 '_APP_NAME_' => $appName,
