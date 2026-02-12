@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\ClientConfigurationJobsDataTable;
 use App\Models\ChargingScheme;
 use App\Models\Client;
 use App\Models\ClientType;
@@ -101,12 +102,21 @@ class ClientConfigurationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(ClientConfigurationJobsDataTable $dataTable, string $id)
     {
-        $client = Client::find($id);
+        $client = Client::query()
+            ->with([
+                'user',
+                'clientType',
+                'clientKeyDetails.chargingScheme',
+                'clientJobTypes.jobType',
+                'clientMeasures.measure',
+            ])
+            ->findOrFail($id);
 
-        return view('pages.platform-configuration.client-configuration.show')
-            ->with('client', $client);
+        return $dataTable->render('pages.platform-configuration.client-configuration.show', [
+            'client' => $client,
+        ]);
     }
 
     /**

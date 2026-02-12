@@ -120,36 +120,9 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Job Number</th>
-                                        <th>Status</th>
-                                        <th>Cert#</th>
-                                        <th>UMR</th>
-                                        <th>Postcode</th>
-                                        <th>Installer</th>
-                                        <th>Deadline</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($client->jobs as $job)
-                                        <tr>
-                                            <td>{{ $job->job_number }}</td>
-                                            <td>
-                                                <span class="right badge badge-{{ $job->jobStatus->color_scheme }}">
-                                                    {{ $job->jobStatus->description }}
-                                                </span>
-                                            </td>
-                                            <td>{{ $job->cert_no }}</td>
-                                            <td>{{ $job->jobMeasure?->umr }}</td>
-                                            <td>{{ $job->property->postcode }}</td>
-                                            <td>{{ $job->installer->user->firstname }}</td>
-                                            <td>{{ $job->deadline }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                {!! $dataTable->table() !!}
+                            </div>
                         </div>
                     </div>
 
@@ -192,7 +165,7 @@
                         </div>
                     </div>
 
-                    <div class="card card-default collapsed-card">
+                    {{-- <div class="card card-default collapsed-card">
                         <div class="card-header">
                             <h3 class="card-title">
                                 <i class="fas fa-th mr-1"></i>
@@ -231,7 +204,7 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div><!-- /.container-fluid -->
@@ -240,6 +213,6 @@
 @endsection
 
 @section('importedScripts')
+    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
     @include('includes.datatables-scripts')
-    <script src="{{ asset('assets/js/global/table.js') }}"></script>
 @endsection
