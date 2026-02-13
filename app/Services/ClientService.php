@@ -52,57 +52,56 @@ class ClientService
 
     public function storeClientKeyDetails($client, $request)
     {
-        $clientKeyDetails = new ClientKeyDetail;
-
-        $clientKeyDetails->client_id = $client->id;
-        $clientKeyDetails->is_active = $request->is_active;
-        $clientKeyDetails->can_job_outcome_appealed = $request->can_job_outcome_appealed;
-        $clientKeyDetails->charging_scheme_id = $request->charging_scheme_id;
-        $clientKeyDetails->payment_terms = $request->payment_terms;
-        $clientKeyDetails->charge_by_property_rate = $request->charge_by_property_rate;
-        $clientKeyDetails->currency = $request->currency;
-
-        $clientKeyDetails->save();
+        ClientKeyDetail::updateOrCreate(
+            ['client_id' => $client->id],
+            [
+                'is_active' => $request->is_active,
+                'can_job_outcome_appealed' => $request->can_job_outcome_appealed,
+                'charging_scheme_id' => $request->charging_scheme_id,
+                'payment_terms' => $request->payment_terms,
+                'charge_by_property_rate' => $request->charge_by_property_rate,
+                'currency' => $request->currency,
+            ]
+        );
     }
 
     public function storeClientSlaMetrics($client, $request)
     {
-        // Assuming you have a ClientSlaMetrics model
-        $clientSlaMetrics = new ClientSlaMetric;
-
-        $clientSlaMetrics->client_id = $client->id;
-        $clientSlaMetrics->client_maximum_retries = $request->client_maximum_retries;
-        $clientSlaMetrics->maximum_booking_attempts = $request->maximum_booking_attempts;
-        $clientSlaMetrics->maximum_remediation_attempts = $request->maximum_remediation_attempts;
-        $clientSlaMetrics->maximum_no_show = $request->maximum_no_show;
-        $clientSlaMetrics->maximum_number_appeals = $request->maximum_number_appeals;
-        $clientSlaMetrics->job_deadline = $request->job_deadline;
-        $clientSlaMetrics->cat1_remediate_notify = $request->cat1_remediate_notify;
-        $clientSlaMetrics->cat1_remediate_notify_duration_unit = $request->cat1_remediate_notify_duration_unit;
-        $clientSlaMetrics->cat1_remediate_complete = $request->cat1_remediate_complete;
-        $clientSlaMetrics->cat1_remediate_complete_duration_unit = $request->cat1_remediate_complete_duration_unit;
-        $clientSlaMetrics->cat1_reinspect_remediation = $request->cat1_reinspect_remediation;
-        $clientSlaMetrics->cat1_reinspect_remediation_duration_unit = $request->cat1_reinspect_remediation_duration_unit;
-        $clientSlaMetrics->cat1_challenge = $request->cat1_challenge;
-        $clientSlaMetrics->cat1_challenge_duration_unit = $request->cat1_challenge_duration_unit;
-        $clientSlaMetrics->cat1_remediate_no_access = $request->cat1_remediate_no_access;
-        $clientSlaMetrics->cat1_remediate_no_access_duration_unit = $request->cat1_remediate_no_access_duration_unit;
-        $clientSlaMetrics->cat1_unremediated = $request->cat1_unremediated;
-        $clientSlaMetrics->cat1_unremediated_duration_unit = $request->cat1_unremediated_duration_unit;
-        $clientSlaMetrics->nc_remediate_notify = $request->nc_remediate_notify;
-        $clientSlaMetrics->nc_remediate_notify_duration_unit = $request->nc_remediate_notify_duration_unit;
-        $clientSlaMetrics->nc_remediate_complete = $request->nc_remediate_complete;
-        $clientSlaMetrics->nc_remediate_complete_duration_unit = $request->nc_remediate_complete_duration_unit;
-        $clientSlaMetrics->nc_reinspect_remediation = $request->nc_reinspect_remediation;
-        $clientSlaMetrics->nc_reinspect_remediation_duration_unit = $request->nc_reinspect_remediation_duration_unit;
-        $clientSlaMetrics->nc_challenge = $request->nc_challenge;
-        $clientSlaMetrics->nc_challenge_duration_unit = $request->nc_challenge_duration_unit;
-        $clientSlaMetrics->nc_remediate_no_access = $request->nc_remediate_no_access;
-        $clientSlaMetrics->nc_remediate_no_access_duration_unit = $request->nc_remediate_no_access_duration_unit;
-        $clientSlaMetrics->nc_unremediated = $request->nc_unremediated;
-        $clientSlaMetrics->nc_unremediated_duration_unit = $request->nc_unremediated_duration_unit;
-
-        $clientSlaMetrics->save();
+        ClientSlaMetric::updateOrCreate(
+            ['client_id' => $client->id],
+            [
+                'client_maximum_retries' => $request->client_maximum_retries,
+                'maximum_booking_attempts' => $request->maximum_booking_attempts,
+                'maximum_remediation_attempts' => $request->maximum_remediation_attempts,
+                'maximum_no_show' => $request->maximum_no_show,
+                'maximum_number_appeals' => $request->maximum_number_appeals,
+                'job_deadline' => $request->job_deadline,
+                'cat1_remediate_notify' => $request->cat1_remediate_notify,
+                'cat1_remediate_notify_duration_unit' => $request->cat1_remediate_notify_duration_unit,
+                'cat1_remediate_complete' => $request->cat1_remediate_complete,
+                'cat1_remediate_complete_duration_unit' => $request->cat1_remediate_complete_duration_unit,
+                'cat1_reinspect_remediation' => $request->cat1_reinspect_remediation,
+                'cat1_reinspect_remediation_duration_unit' => $request->cat1_reinspect_remediation_duration_unit,
+                'cat1_challenge' => $request->cat1_challenge,
+                'cat1_challenge_duration_unit' => $request->cat1_challenge_duration_unit,
+                'cat1_remediate_no_access' => $request->cat1_remediate_no_access,
+                'cat1_remediate_no_access_duration_unit' => $request->cat1_remediate_no_access_duration_unit,
+                'cat1_unremediated' => $request->cat1_unremediated,
+                'cat1_unremediated_duration_unit' => $request->cat1_unremediated_duration_unit,
+                'nc_remediate_notify' => $request->nc_remediate_notify,
+                'nc_remediate_notify_duration_unit' => $request->nc_remediate_notify_duration_unit,
+                'nc_remediate_complete' => $request->nc_remediate_complete,
+                'nc_remediate_complete_duration_unit' => $request->nc_remediate_complete_duration_unit,
+                'nc_reinspect_remediation' => $request->nc_reinspect_remediation,
+                'nc_reinspect_remediation_duration_unit' => $request->nc_reinspect_remediation_duration_unit,
+                'nc_challenge' => $request->nc_challenge,
+                'nc_challenge_duration_unit' => $request->nc_challenge_duration_unit,
+                'nc_remediate_no_access' => $request->nc_remediate_no_access,
+                'nc_remediate_no_access_duration_unit' => $request->nc_remediate_no_access_duration_unit,
+                'nc_unremediated' => $request->nc_unremediated,
+                'nc_unremediated_duration_unit' => $request->nc_unremediated_duration_unit,
+            ]
+        );
     }
 
     public function storeClientInstallers($client, $request)

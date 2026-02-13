@@ -35,7 +35,7 @@ class Client extends Model
 
     public function clientKeyDetails(): HasOne
     {
-        return $this->hasOne(ClientKeyDetail::class);
+        return $this->hasOne(ClientKeyDetail::class)->latestOfMany();
     }
 
     public function clientInstallers(): HasMany
@@ -45,7 +45,7 @@ class Client extends Model
 
     public function clientSlaMetric(): HasOne
     {
-        return $this->hasOne(ClientSlaMetric::class);
+        return $this->hasOne(ClientSlaMetric::class)->latestOfMany();
     }
 
     public function clientType(): BelongsTo
