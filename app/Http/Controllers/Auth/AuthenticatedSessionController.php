@@ -28,14 +28,16 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if (auth()->user()->accountLevel()->whereIn('id', [6, 7, 8])->first()) {
-            return redirect()->route('pi-dashboard.index');
-        } else if (auth()->user()->accountLevel()->whereIn('id', [5])->first()) {
-            return redirect()->route('installer-dashboard.index');
-        } else {
-            return redirect()->intended(route('dashboard.index', absolute: false));
+        $intended = (string) ($request->session()->get('url.intended') ?? '');
+        if ($intended !== '') {
+            $path = (string) (parse_url($intended, PHP_URL_PATH) ?? '');
+
+            if ($path === '/' || $path === '/dashboard' || str_starts_with($path, '/dashboard/')) {
+                $request->session()->forget('url.intended');
+            }
         }
 
+        return redirect()->intended(route('home', absolute: false));
     }
 
     /**
