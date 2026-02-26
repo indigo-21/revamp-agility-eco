@@ -327,7 +327,7 @@ class JobsDataTable extends DataTable
                 'scrollX' => true, // Enable horizontal scrolling if needed
                 // 'responsive' => true,
                 'autoWidth' => true,
-                'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                'lengthMenu' => [[10, 25, 50, 100], [10, 25, 50, 100]],
                 'pageLength' => 10,
             ])
             ->buttons([
