@@ -40,9 +40,10 @@ class BillingReportCommand extends Command
         $thirdParty = User::where('user_type_id', 2)
             ->get();
 
-        $nonCompliance = CompletedJob::whereIn('pass_fail', FailedQuestion::values())
-            ->groupBy('job_id')
-            ->get();
+        $nonComplianceCount = CompletedJob::whereIn('pass_fail', FailedQuestion::values())
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
 
         $totalUsers = $users->count() + $propertyInspector->count() + $thirdParty->count();
 
@@ -58,7 +59,7 @@ class BillingReportCommand extends Command
             '_PROPERTY_INSPECTORS_' => $propertyInspector->count(),
             '_USERS_' => $users->count(),
             '_THIRD_PARTY_' => $thirdParty->count(),
-            '_NON_COMPLIANCE_' => $nonCompliance->count(),
+            '_NON_COMPLIANCE_' => $nonComplianceCount,
         ];
 
         $template = '
