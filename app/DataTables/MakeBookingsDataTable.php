@@ -3,7 +3,6 @@
 namespace App\DataTables;
 
 use App\DataTables\Concerns\ExportsAllRows;
-use App\Models\Booking;
 use App\Models\Job;
 use App\Models\PropertyInspector;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
@@ -56,24 +55,17 @@ class MakeBookingsDataTable extends DataTable
                 return $job->installer->user->firstname ?? 'N/A';
             })
             ->addColumn('measures', function ($job) {
-                $measureData = "";
-
-                // Compute job_group from job_number
-                $jobGroup = substr($job->job_number, 0, strlen($job->job_number) - 3);
-
-                $relatedJobs = Job::where(
-                    'job_number',
-                    'LIKE',
-                    "%{$jobGroup}%",
-                )
-                    ->whereIn('job_status_id', [25, 23])
-                    ->get();
-
-                foreach ($relatedJobs as $relatedJob) {
-                    $measureData .= '<span class="badge badge-info">' . $relatedJob->jobMeasure?->measure?->measure_cat . '</span>';
+                if (empty($job->measures_list)) {
+                    return 'N/A';
                 }
 
-                return $measureData ?? 'N/A';
+                $measureData = collect(explode('||', $job->measures_list))
+                    ->filter()
+                    ->unique()
+                    ->map(fn ($measure) => '<span class="badge badge-info">' . e($measure) . '</span>')
+                    ->implode(' ');
+
+                return $measureData ?: 'N/A';
             })
             ->addColumn('customer_name', function ($job) {
                 return $job->customer?->customer_name ?? 'N/A';
@@ -85,26 +77,10 @@ class MakeBookingsDataTable extends DataTable
                 return $job->customer?->customer_primary_tel ?? 'N/A';
             })
             ->addColumn('latest_comment', function ($job) {
-                // Compute job_group from job_number
-                $jobGroup = substr($job->job_number, 0, strlen($job->job_number) - 3);
-
-                $lastBooking = Booking::where(
-                    'job_number',
-                    $jobGroup,
-                )->orderBy('created_at', 'desc');
-
-                return $lastBooking->first()?->booking_notes ?? 'No comments';
+                return $job->latest_comment ?? 'No comments';
             })
             ->addColumn('last_attempt', function ($job) {
-                // Compute job_group from job_number
-                $jobGroup = substr($job->job_number, 0, strlen($job->job_number) - 3);
-                
-                $lastBooking = Booking::where(
-                    'job_number',
-                    $jobGroup,
-                )->orderBy('created_at', 'desc');
-
-                return $lastBooking->where('booking_outcome', 'Attempt Made')->first()?->booking_date ?? 'No Attempts Made';
+                return $job->last_attempt ?? 'No Attempts Made';
             })
             ->orderColumn('job_status_id', function ($query, $order) {
                 $query->orderBy('job_status_id', $order);
@@ -203,7 +179,6 @@ class MakeBookingsDataTable extends DataTable
         $query = $model->newQuery()->firmDataOnly()->with([
             'propertyInspector.user',
             'jobStatus',
-            'jobMeasure.measure',
             'property',
             'installer.user',
             'customer'
@@ -211,7 +186,30 @@ class MakeBookingsDataTable extends DataTable
 
         $propertyInspector = PropertyInspector::find(auth()->user()->propertyInspector?->id);
 
-        $query->selectRaw('*, SUBSTRING(job_number, 1, LENGTH(job_number) - 3) as job_group')
+        $query->selectRaw('jobs.*, SUBSTRING(jobs.job_number, 1, LENGTH(jobs.job_number) - 3) as job_group')
+            ->selectRaw("(
+                SELECT GROUP_CONCAT(DISTINCT measures.measure_cat SEPARATOR '||')
+                FROM jobs related_jobs
+                LEFT JOIN job_measures ON job_measures.job_id = related_jobs.id
+                LEFT JOIN measures ON measures.id = job_measures.measure_id
+                WHERE SUBSTRING(related_jobs.job_number, 1, LENGTH(related_jobs.job_number) - 3) = SUBSTRING(jobs.job_number, 1, LENGTH(jobs.job_number) - 3)
+                  AND related_jobs.job_status_id IN (25, 23)
+            ) as measures_list")
+            ->selectRaw("(
+                SELECT bookings.booking_notes
+                FROM bookings
+                WHERE bookings.job_number = SUBSTRING(jobs.job_number, 1, LENGTH(jobs.job_number) - 3)
+                ORDER BY bookings.created_at DESC
+                LIMIT 1
+            ) as latest_comment")
+            ->selectRaw("(
+                SELECT bookings.booking_date
+                FROM bookings
+                WHERE bookings.job_number = SUBSTRING(jobs.job_number, 1, LENGTH(jobs.job_number) - 3)
+                  AND bookings.booking_outcome = 'Attempt Made'
+                ORDER BY bookings.created_at DESC
+                LIMIT 1
+            ) as last_attempt")
             ->groupBy(DB::raw('SUBSTRING(job_number, 1, LENGTH(job_number) - 3)'))
             ->whereIn('job_status_id', [25, 23])
             ->where('close_date', null)
