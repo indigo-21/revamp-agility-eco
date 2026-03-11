@@ -29,9 +29,15 @@ class BillingReportCommand extends Command
      */
     public function handle()
     {
-        $users = User::whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->whereNotIn('user_type_id', [2, 3, 4])
+        $users = User::whereNotIn('user_type_id', [2, 3, 4])
+            ->whereNotIn('email', [
+                'james.zarsuelo@indigo21.com',
+                'andy.sumpter@contactone.net',
+                'christine.carillo@indigo21.com',
+                'support@indigo21.com',
+                'greg.thomas@contactone.net',
+                'amy.thomas@contactone.net',
+            ])
             ->get();
 
         $propertyInspector = User::where('user_type_id', 4)
@@ -40,9 +46,10 @@ class BillingReportCommand extends Command
         $thirdParty = User::where('user_type_id', 2)
             ->get();
 
-        $nonCompliance = CompletedJob::whereIn('pass_fail', FailedQuestion::values())
-            ->groupBy('job_id')
-            ->get();
+        $nonComplianceCount = CompletedJob::whereIn('pass_fail', FailedQuestion::values())
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
 
         $totalUsers = $users->count() + $propertyInspector->count() + $thirdParty->count();
 
@@ -58,7 +65,7 @@ class BillingReportCommand extends Command
             '_PROPERTY_INSPECTORS_' => $propertyInspector->count(),
             '_USERS_' => $users->count(),
             '_THIRD_PARTY_' => $thirdParty->count(),
-            '_NON_COMPLIANCE_' => $nonCompliance->count(),
+            '_NON_COMPLIANCE_' => $nonComplianceCount,
         ];
 
         $template = '
