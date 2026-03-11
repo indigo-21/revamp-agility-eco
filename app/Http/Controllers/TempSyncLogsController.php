@@ -4,27 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\TempSyncLogs;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class TempSyncLogsController extends Controller
 {
 
     public function storeQuery(Request $request)
     {
-        $validated = $request->validate([
-            'query' => ['required', 'string'],
-        ]);
+        $log = new TempSyncLogs();
 
-        $query = trim($validated['query']);
+        $log->sql_query = $request->input('query');
 
-        if (TempSyncLogs::query()->where('sql_query', $query)->exists()) {
-            return response()->json([
-                'message' => 'Query already stored',
+        $log->save();
+
+        if (!$request->query) {
+            throw ValidationException::withMessages([
+                'query' => ['The query field is required.'],
             ]);
         }
-
-        $log = new TempSyncLogs();
-        $log->sql_query = $query;
-        $log->save();
 
         return response()->json([
             'message' => 'Query stored successfully',

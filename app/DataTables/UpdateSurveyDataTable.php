@@ -77,16 +77,6 @@ class UpdateSurveyDataTable extends DataTable
             ->addColumn('address', function ($job) {
                 return ($job->property?->house_flat_prefix ?? '') . ' ' . ($job->property?->address1 ?? '') . ' ' . ($job->property?->address2 ?? '') . ' ' . ($job->property?->address3 ?? '');
             })
-            ->filterColumn('address', function ($query, $keyword) {
-                $query->whereHas('property', function ($q) use ($keyword) {
-                    $q->where(function ($sub) use ($keyword) {
-                        $sub->where('house_flat_prefix', 'like', "%{$keyword}%")
-                            ->orWhere('address1', 'like', "%{$keyword}%")
-                            ->orWhere('address2', 'like', "%{$keyword}%")
-                            ->orWhere('address3', 'like', "%{$keyword}%");
-                    });
-                });
-            })
             ->addColumn('postcode', function ($job) {
                 return $job->property?->postcode ?? 'N/A';
             })

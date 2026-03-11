@@ -39,7 +39,6 @@ use App\Http\Controllers\DocumentExceptionController;
 use App\Http\Controllers\BookingExceptionController;
 use App\Http\Controllers\RemoveJobExceptionController;
 use App\Http\Controllers\UserProfileConfigurationController;
-use App\Services\PostLoginRedirectService;
 
 
 
@@ -51,15 +50,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', function () {
         $user = auth()->user();
 
-        $landingUrl = app(PostLoginRedirectService::class)
-            ->preferredLandingUrl($user, absolute: false);
+        $permissionFor = function (string $link) use ($user): int {
+            $navigationId = Navigation::where('link', $link)->value('id');
+            if (!$navigationId) {
+                return 0;
+            }
 
-        if ($landingUrl) {
-            return redirect()->to($landingUrl);
+            return (int) (UserNavigation::where('account_level_id', $user->account_level_id)
+                ->where('navigation_id', $navigationId)
+                ->value('permission') ?? 0);
+        };
+
+        if ($permissionFor('installer-dashboard') > 0) {
+            return redirect()->route('installer-dashboard.index');
+        }
+
+        if ($permissionFor('dashboard') > 0) {
+            return redirect()->route('dashboard.index');
         }
 
         abort(403, 'Unauthorized');
-    })->name('home');
+    });
     Route::resource('dashboard', DashboardController::class)
         ->middleware('navigation.access:dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
