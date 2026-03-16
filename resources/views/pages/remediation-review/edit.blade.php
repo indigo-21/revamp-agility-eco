@@ -119,5 +119,6 @@
     <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <!-- Toastr -->
     <script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
+    <script src="{{ asset('assets/js/show-modal-image.js') }}"></script>
     <script src="{{ asset('assets/js/remediation-review.js') }}"></script>
 @endsection

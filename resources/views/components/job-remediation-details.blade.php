@@ -28,7 +28,9 @@
             <div class="col-md-12">
                 @foreach ($completedJob->completedJobPhotos as $completedJobPhoto)
                     <img src="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}" alt=""
-                        width="100" height="100" class="img-thumbnail mb-2">
+                        width="100" height="100" class="img-thumbnail mb-2 survey-photo-thumb"
+                        data-full="{{ asset("storage/completed_job_photos/{$completedJobPhoto->filename}") }}"
+                        style="cursor: pointer;">
                 @endforeach
             </div>
         </div>
