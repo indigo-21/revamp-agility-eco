@@ -69,12 +69,19 @@ class PropertyInspectorService
 
     public function storePIPostcode($pi_id, $request)
     {
+        $outwardPostcodes = $request->outward_postcode_id ?? [];
 
-        PropertyInspectorPostcode::whereNotIn('outward_postcode_id', $request->outward_postcode_id)
+        // If no outward postcodes are provided, remove all existing ones and return
+        if (empty($outwardPostcodes)) {
+            PropertyInspectorPostcode::where('property_inspector_id', $pi_id)->delete();
+            return;
+        }
+
+        PropertyInspectorPostcode::whereNotIn('outward_postcode_id', $outwardPostcodes)
             ->where('property_inspector_id', $pi_id)
             ->delete();
 
-        foreach ($request->outward_postcode_id as $postcode) {
+        foreach ($outwardPostcodes as $postcode) {
 
             $property_inspector_postcode = PropertyInspectorPostcode::where('outward_postcode_id', $postcode)
                 ->where('property_inspector_id', $pi_id)

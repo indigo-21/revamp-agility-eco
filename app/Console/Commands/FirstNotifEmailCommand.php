@@ -28,8 +28,8 @@ class FirstNotifEmailCommand extends Command
      */
     public function handle()
     {
-        $completedJobs = Job::where('job_status_id', [16])
-            ->get();
+        // Only consider jobs that are in the "completed" status (id 16)
+        $completedJobs = Job::where('job_status_id', 16)->get();
         $appUrl = env('APP_URL');
 
         $firstTemplateCat1 = MessageTemplate::where('data_id', 4)
@@ -42,28 +42,46 @@ class FirstNotifEmailCommand extends Command
             ->where('is_active', 1)
             ->first();
 
-        foreach ($completedJobs as $key => $job) {
+        foreach ($completedJobs as $job) {
+            // If any remedial work has been logged, skip this job
             $jobRemediationCount = $job->remediation->count();
-            $dateCreated = $job->completedJobs->first()->created_at;
-            $dateCreatedPlusOneDay = $dateCreated->addDay();
-
-            // Skip if job has remediations or not due today
-            if ($jobRemediationCount !== 0 || !$dateCreatedPlusOneDay->isToday()) {
+            if ($jobRemediationCount !== 0) {
                 continue;
             }
 
-            // Get the appropriate template based on remediation type
-            $template = null;
-            if ($job->job_remediation_type === 'Cat1' && $firstTemplateCat1) {
-                $template = $firstTemplateCat1;
-            } elseif ($job->job_remediation_type === 'NC' && $firstTemplateNc) {
-                $template = $firstTemplateNc;
+            // Use the earliest completion record for the job
+            $completionRecord = $job->completedJobs()->orderBy('created_at', 'asc')->first();
+            if (!$completionRecord) {
+                continue;
             }
 
-            // Send email if template exists
-            if ($template) {
-                $this->sendRemediationEmail($job, $template, $appUrl);
+            $completedAt = $completionRecord->created_at->copy();
+
+            // Determine when the first notification should be sent
+            // Cat1: 24 hours (1 day) after completion
+            // NC:   7 days after completion
+            $template = null;
+            $dueDate = null;
+
+            if ($job->job_remediation_type === 'Cat1' && $firstTemplateCat1) {
+                $template = $firstTemplateCat1;
+                $dueDate = $completedAt->copy()->addDay();
+            } elseif ($job->job_remediation_type === 'NC' && $firstTemplateNc) {
+                $template = $firstTemplateNc;
+                $dueDate = $completedAt->copy()->addDays(7);
             }
+
+            // If we don't have a matching template or due date, skip
+            if (!$template || !$dueDate) {
+                continue;
+            }
+
+            // Only send on the exact due date (command is expected to run daily)
+            if (!$dueDate->isToday()) {
+                continue;
+            }
+
+            $this->sendRemediationEmail($job, $template, $appUrl);
         }
 
         $this->info('First notification emails sent successfully.');
