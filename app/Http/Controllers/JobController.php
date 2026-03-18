@@ -137,11 +137,20 @@ class JobController extends Controller
     {
         set_time_limit(0);
 
+        $user = auth()->user();
+        $accountLevelName = $user?->accountLevel?->name;
+        $isAdmin = $accountLevelName === 'Admin';
+
+        // DataTables pagination parameters (current page start/length)
+        $start = (int) $request->input('start', 0);
+        $length = (int) $request->input('length', 10);
+
         $query = $jobsDataTable->query(new Job());
 
         $dataTable = $jobsDataTable->dataTable($query);
 
-        if (method_exists($dataTable, 'skipPaging')) {
+        // Admins export all filtered rows; others export only the current page
+        if ($isAdmin && method_exists($dataTable, 'skipPaging')) {
             $dataTable->skipPaging();
         }
 
@@ -158,7 +167,7 @@ class JobController extends Controller
 
         $filename = 'Jobs_' . now()->format('YmdHis') . '.csv';
 
-        return response()->streamDownload(function () use ($query) {
+        return response()->streamDownload(function () use ($query, $isAdmin, $start, $length) {
             $handle = fopen('php://output', 'w');
 
             $headers = [
@@ -219,20 +228,44 @@ class JobController extends Controller
                 }
             };
 
+            // Admins: export all filtered rows (existing behaviour)
+            if ($isAdmin) {
+                if ($query instanceof \Illuminate\Support\Enumerable) {
+                    $sorted = collect($query)->sortBy('id');
+                    $writeRows($sorted);
+                    return;
+                }
+
+                if ($query instanceof \Illuminate\Database\Eloquent\Builder || $query instanceof \Illuminate\Database\Query\Builder) {
+                    $query->orderBy('id')->chunk(1000, function ($jobs) use ($writeRows) {
+                        $writeRows($jobs);
+                    });
+                    return;
+                }
+
+                $jobs = collect($query)->sortBy('id');
+                $writeRows($jobs);
+                return;
+            }
+
+            // Non-admins: export only the current page (start/length)
+            if ($query instanceof \Illuminate\Database\Eloquent\Builder || $query instanceof \Illuminate\Database\Query\Builder) {
+                $jobs = $query->orderBy('id')
+                    ->skip($start)
+                    ->take($length)
+                    ->get();
+
+                $writeRows($jobs);
+                return;
+            }
+
             if ($query instanceof \Illuminate\Support\Enumerable) {
-                $sorted = collect($query)->sortBy('id');
+                $sorted = collect($query)->sortBy('id')->slice($start, $length);
                 $writeRows($sorted);
                 return;
             }
 
-            if ($query instanceof \Illuminate\Database\Eloquent\Builder || $query instanceof \Illuminate\Database\Query\Builder) {
-                $query->orderBy('id')->chunk(1000, function ($jobs) use ($writeRows) {
-                    $writeRows($jobs);
-                });
-                return;
-            }
-
-            $jobs = collect($query)->sortBy('id');
+            $jobs = collect($query)->sortBy('id')->slice($start, $length);
             $writeRows($jobs);
 
             fclose($handle);

@@ -70,11 +70,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('navigation.access:job')->group(function () {
         Route::resource('job', JobController::class);
         Route::patch('job/{id}/closeJob', [JobController::class, 'closeJob']);
-        Route::post('job/export/csv', [JobController::class, 'exportCsv'])
-            ->name('job.export.csv.post')
-            ->middleware('navigation.access:job,1');
         // Route::get('getQueueJobs', [JobController::class, 'getQueueJobs']);
     });
+
+    // Job CSV export: allow users with view permission on Job screen
+    Route::post('job/export/csv', [JobController::class, 'exportCsv'])
+        ->name('job.export.csv.post')
+        ->middleware('navigation.access:job,1');
 
     // OPEN NC
     Route::resource('open-nc', OpenNcController::class)
