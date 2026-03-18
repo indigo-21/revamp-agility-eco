@@ -42,9 +42,9 @@
                             number
                             <b>{{ $job->cert_no }}</b> and Unique Measure Reference (UMR)
                             <b>{{ $job->jobMeasure->umr }}</b>
-                            at <b>{{ $job->property->address1 }} {{ $job->property->city }}
-                                {{ $job->property->county }}
-                                {{ $job->property->postcode }}</b> was subject to a Quality Audit Inspection. Some
+                            at <b>{{ $job->property?->address1 }} {{ $job->property?->city }}
+                                {{ $job->property?->county }}
+                                {{ $job->property?->postcode }}</b> was subject to a Quality Audit Inspection. Some
                             of the
                             work done
                             has been deemed to be non-compliant on one or more points. <br><br>
