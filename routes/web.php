@@ -254,4 +254,6 @@ Route::get('/privacy-policy', function () {
     return view('privacy-policy');
 })->name('privacy-policy');
 
+Route::get('/ping', fn () => 'OK');
+
 require __DIR__ . '/auth.php';
