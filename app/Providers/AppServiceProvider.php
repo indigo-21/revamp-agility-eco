@@ -37,46 +37,59 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
 
-            $allowedNavigations = Navigation::whereHas('userNavigations', function ($q) use ($user) {
-                $q->where('account_level_id', $user->accountLevel->id)
-                    ->where('permission', '>', 0);
-            })->with([
-                        'userNavigations' => function ($q) use ($user) {
-                            $q->where('account_level_id', $user->accountLevel->id)
-                                ->where('permission', '>', 0);
-                        }
-                    ])->get();
+            $request = request();
+            $cacheKey = 'shared_navigation_data';
 
-            // Include dropdown parents for any permitted child so menus render correctly
-            // even if the parent itself doesn't have a permission row.
-            $parentIds = $allowedNavigations
-                ->pluck('parent_id')
-                ->filter(fn ($v) => !empty($v) && (int) $v > 0)
-                ->map(fn ($v) => (int) $v)
-                ->unique()
-                ->values();
+            if ($request->attributes->has($cacheKey)) {
+                $data = $request->attributes->get($cacheKey);
+            } else {
+                $allowedNavigations = Navigation::whereHas('userNavigations', function ($q) use ($user) {
+                    $q->where('account_level_id', $user->accountLevel->id)
+                        ->where('permission', '>', 0);
+                })->with([
+                            'userNavigations' => function ($q) use ($user) {
+                                $q->where('account_level_id', $user->accountLevel->id)
+                                    ->where('permission', '>', 0);
+                            }
+                        ])->get();
 
-            $parentNavigations = $parentIds->isEmpty()
-                ? collect()
-                : Navigation::whereIn('id', $parentIds)->get();
+                // Include dropdown parents for any permitted child so menus render correctly
+                // even if the parent itself doesn't have a permission row.
+                $parentIds = $allowedNavigations
+                    ->pluck('parent_id')
+                    ->filter(fn ($v) => !empty($v) && (int) $v > 0)
+                    ->map(fn ($v) => (int) $v)
+                    ->unique()
+                    ->values();
 
-            $navigations = $parentNavigations
-                ->merge($allowedNavigations)
-                ->unique('id')
-                ->sortBy('id')
-                ->values();
+                $parentNavigations = $parentIds->isEmpty()
+                    ? collect()
+                    : Navigation::whereIn('id', $parentIds)->get();
 
+                $navigations = $parentNavigations
+                    ->merge($allowedNavigations)
+                    ->unique('id')
+                    ->sortBy('id')
+                    ->values();
 
-            $currentLink = request()->segment(1);
-            $userPermission = $navigations
-                ->where('link', $currentLink)
-                ->first()
-                ?->userNavigations
-                ->first()
-                    ?->permission ?? 0;
+                $currentLink = $request->segment(1);
+                $userPermission = $navigations
+                    ->where('link', $currentLink)
+                    ->first()
+                    ?->userNavigations
+                    ->first()
+                        ?->permission ?? 0;
 
-            $view->with('navigations', $navigations)
-                ->with('userPermission', $userPermission);
+                $data = [
+                    'navigations' => $navigations,
+                    'userPermission' => $userPermission,
+                ];
+
+                $request->attributes->set($cacheKey, $data);
+            }
+
+            $view->with('navigations', $data['navigations'])
+                ->with('userPermission', $data['userPermission']);
         });
     }
 }
