@@ -6,12 +6,12 @@
         <div class="user-block d-flex ">
             <h6
                 style="background-color: #e7493a; color: #fff; border-radius: 50%; height: 40px; width: 40px;display: flex; align-items: center; justify-content: center; margin-bottom: 0;">
-                {{ Str::substr($list->user->firstname, 0, 1) }}{{ Str::substr($list->user->lastname, 0, 1) }}
+                {{ Str::substr($list->user?->firstname, 0, 1) }}{{ Str::substr($list->user?->lastname, 0, 1) }}
             </h6>
             <div>
                 <span class="username" style="margin-left: 15px;">
-                    <a href="#">{{ $list->user->firstname }} {{ $list->user->lastname }} -
-                        {{ $list->user->accountLevel->name }}</a>
+                    <a href="#">{{ $list->user?->firstname }} {{ $list->user?->lastname }} -
+                        {{ $list->user?->accountLevel->name }}</a>
                 </span>
                 <span class="description" style="margin-left: 15px;">
                     {{ Carbon\Carbon::parse($list->created_at)->format('F j, Y') }}
